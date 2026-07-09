@@ -589,8 +589,7 @@ function showModal(p) {
 function closeModal() { document.getElementById('modalOverlay')?.classList.remove('open'); currentModalCode = ''; }
 
 /* =========================================
-   NUEVA FUNCIÓN DE COMPARTIR ESTRICTA
-   (Solo invoca el Web Share API Nativo)
+   NUEVA FUNCIÓN DE COMPARTIR A PRUEBA DE FALLOS
    ========================================= 
 */
 window.compartirProducto = async function() {
@@ -603,6 +602,9 @@ window.compartirProducto = async function() {
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
 
   if (navigator.share) {
+    let archivoCompartidoExito = false;
+
+    // 1. Intentamos enviar IMAGEN + TEXTO
     try {
       const imgElement = document.querySelector('#modalImgWrap img');
       if (imgElement && imgElement.src) {
@@ -613,30 +615,35 @@ window.compartirProducto = async function() {
         const ext = isJpg ? '.jpg' : '.png';
         const file = new File([blob], `${p.codigo}${ext}`, { type: fileType });
 
-        // Intentar compartir archivo (imagen) + texto
-        if (navigator.canShare && navigator.canShare({ files: [file], text: textToShare })) {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
             text: textToShare
           });
-          return;
+          archivoCompartidoExito = true; // Si llegamos aquí, se envió con éxito (o se abrió el menú).
         }
       }
-      
-      // Si la imagen falla o el dispositivo no soporta archivos, intenta enviar solo el texto
-      await navigator.share({
-        text: textToShare
-      });
-      
     } catch (error) {
-      console.log("Error o cancelación al compartir:", error);
-      if (error.name !== 'AbortError') {
-         alert("Tu sistema operativo o navegador no permite compartir el archivo. Es posible que debas abrir este sitio en un servidor seguro (HTTPS).");
+      // Si el usuario simplemente canceló el menú nativo (presionó la X), no hacemos nada más.
+      if (error.name === 'AbortError') return;
+      // Si fue otro error (ej. navegador de escritorio rechazando el archivo), lo dejamos pasar al paso 2.
+    }
+
+    // 2. Si falló la imagen por restricciones de Windows/Mac, enviamos SOLO TEXTO.
+    if (!archivoCompartidoExito) {
+      try {
+        await navigator.share({
+          text: textToShare
+        });
+      } catch (textError) {
+        if (textError.name !== 'AbortError') {
+           console.log("No se pudo abrir el menú nativo en este entorno.");
+        }
       }
     }
+
   } else {
-    // Si la función nativa no existe en absoluto (Ej. versión de escritorio local o navegador antiguo)
-    alert("La función de compartir nativa no está soportada en este entorno.\n\nPara ver el menú de múltiples aplicaciones en escritorio, debes usar Chrome/Edge actualizado y abrir el archivo desde un servidor web (HTTPS), no de forma local.");
+    alert("Tu navegador no soporta la función nativa de compartir.");
   }
 };
 </script>
