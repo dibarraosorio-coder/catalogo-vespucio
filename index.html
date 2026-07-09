@@ -203,17 +203,6 @@
     .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
-    /* ESTILOS NUEVOS: Menú Alternativo de Compartir (Escritorio) */
-    .share-fallback-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-    .share-fallback-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
-    .share-fallback-box { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 24px; width: 90%; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
-    .share-fallback-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; font-family: 'Nunito', sans-serif; }
-    .share-fallback-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 12px 16px; margin-bottom: 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text-main); font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif;}
-    .share-fallback-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .share-fallback-btn svg { width: 20px; height: 20px; color: var(--neon-green); }
-    .share-fallback-close { margin-top: 12px; background: transparent; border: none; color: var(--text-muted); font-weight: 700; cursor: pointer; padding: 8px; font-family: 'Nunito', sans-serif; font-size: 0.9rem;}
-    .share-fallback-close:hover { color: var(--neon-red); }
-
     .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
@@ -364,30 +353,6 @@
       <div class="modal-img-section" id="modalImgWrap"></div>
 
     </div>
-  </div>
-</div>
-
-<div id="shareFallbackOverlay" class="share-fallback-overlay" onclick="closeShareFallback()">
-  <div class="share-fallback-box" onclick="event.stopPropagation()">
-    <div class="share-fallback-title">Compartir Producto</div>
-    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.3;">Elige cómo deseas enviar los detalles:</div>
-    
-    <button class="share-fallback-btn" onclick="shareToWhatsApp()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-      WhatsApp Web
-    </button>
-    
-    <button class="share-fallback-btn" onclick="shareToEmail()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-      Correo Electrónico
-    </button>
-
-    <button class="share-fallback-btn" onclick="copyShareTextOnly(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-      Copiar Texto Manualmente
-    </button>
-
-    <button class="share-fallback-close" onclick="closeShareFallback()">Cancelar</button>
   </div>
 </div>
 
@@ -623,15 +588,11 @@ function showModal(p) {
 
 function closeModal() { document.getElementById('modalOverlay')?.classList.remove('open'); currentModalCode = ''; }
 
-
 /* =========================================
-  LÓGICA ACTUALIZADA DE COMPARTIR 
-  (Móvil Nativo + Fallback Visual Escritorio)
-  ========================================= 
+   NUEVA FUNCIÓN DE COMPARTIR ESTRICTA
+   (Solo invoca el Web Share API Nativo)
+   ========================================= 
 */
-
-let currentShareTextFallback = "";
-
 window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0};
@@ -641,7 +602,6 @@ window.compartirProducto = async function() {
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
 
-  // 1. INTENTO API NATIVA: Solo funciona si se cumple la seguridad del navegador (HTTPS) o estás en móvil
   if (navigator.share) {
     try {
       const imgElement = document.querySelector('#modalImgWrap img');
@@ -653,70 +613,32 @@ window.compartirProducto = async function() {
         const ext = isJpg ? '.jpg' : '.png';
         const file = new File([blob], `${p.codigo}${ext}`, { type: fileType });
 
+        // Intentar compartir archivo (imagen) + texto
         if (navigator.canShare && navigator.canShare({ files: [file], text: textToShare })) {
-          await navigator.share({ files: [file], text: textToShare });
+          await navigator.share({
+            files: [file],
+            text: textToShare
+          });
           return;
         }
       }
-      await navigator.share({ text: textToShare });
-      return; 
+      
+      // Si la imagen falla o el dispositivo no soporta archivos, intenta enviar solo el texto
+      await navigator.share({
+        text: textToShare
+      });
+      
     } catch (error) {
-      // Si el usuario presionó la 'X' en el menú de su celular/sistema
-      if (error.name === 'AbortError') return;
-      // Si ocurre un error de protocolo (ej. escritorio sin HTTPS), abrimos nuestro menú alternativo
-      abrirMenuCompartirAlternativo(textToShare);
+      console.log("Error o cancelación al compartir:", error);
+      if (error.name !== 'AbortError') {
+         alert("Tu sistema operativo o navegador no permite compartir el archivo. Es posible que debas abrir este sitio en un servidor seguro (HTTPS).");
+      }
     }
   } else {
-    // 2. FALLBACK ESCRITORIO: Si la API nativa es bloqueada o el navegador es antiguo
-    abrirMenuCompartirAlternativo(textToShare);
+    // Si la función nativa no existe en absoluto (Ej. versión de escritorio local o navegador antiguo)
+    alert("La función de compartir nativa no está soportada en este entorno.\n\nPara ver el menú de múltiples aplicaciones en escritorio, debes usar Chrome/Edge actualizado y abrir el archivo desde un servidor web (HTTPS), no de forma local.");
   }
 };
-
-// --- FUNCIONES DEL MENÚ ALTERNATIVO ---
-
-function abrirMenuCompartirAlternativo(texto) {
-  currentShareTextFallback = texto;
-  const overlay = document.getElementById('shareFallbackOverlay');
-  if (overlay) overlay.classList.add('open');
-}
-
-window.closeShareFallback = function() {
-  const overlay = document.getElementById('shareFallbackOverlay');
-  if (overlay) overlay.classList.remove('open');
-}
-
-window.shareToWhatsApp = function() {
-  window.open(`https://wa.me/?text=${encodeURIComponent(currentShareTextFallback)}`, '_blank');
-  closeShareFallback();
-}
-
-window.shareToEmail = function() {
-  window.location.href = `mailto:?subject=${encodeURIComponent("Detalles del Producto: " + currentModalCode)}&body=${encodeURIComponent(currentShareTextFallback)}`;
-  closeShareFallback();
-}
-
-// Opción puramente manual: El usuario DECIDE si quiere copiar el texto
-window.copyShareTextOnly = async function(btn) {
-  try {
-    await navigator.clipboard.writeText(currentShareTextFallback);
-    
-    // Animación del botón para indicar éxito sin toasts molestos
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ¡Copiado con éxito!`;
-    btn.style.borderColor = "var(--neon-green)";
-    btn.style.color = "var(--neon-green)";
-    
-    setTimeout(() => {
-      btn.innerHTML = originalHTML;
-      btn.style.borderColor = "var(--input-border)";
-      btn.style.color = "var(--text-main)";
-      closeShareFallback();
-    }, 1500);
-
-  } catch (error) {
-    console.error("El navegador bloqueó la copia al portapapeles:", error);
-  }
-}
 </script>
 </body>
 </html>
