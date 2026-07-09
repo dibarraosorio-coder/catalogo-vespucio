@@ -189,6 +189,7 @@
     .modal-stock-info{text-align:left; margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border);}
     .modal-stock-status{font-size:1rem;font-weight:700;margin-top:0;}
     
+    /* MODIFICADO: Estilos precisos y elegantes para la caja extra en el modal */
     #modalExtraInfo { margin-top: 24px; display: none; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
     .modal-extra-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
     .modal-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0; line-height: 1; }
@@ -200,14 +201,18 @@
     .modal-close:hover{transform:scale(1.1);background:var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red);}
     
     .modal-actions-bar { display: flex; justify-content: center; margin-top: 24px; border: none; }
-    .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
-    .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
+    .btn-whatsapp-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
+    .btn-whatsapp-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
     .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
     .empty-state{text-align:center;padding:80px 24px;color:var(--text-muted);font-weight:700;grid-column:1/-1;font-size:1.1rem; background: var(--tab-bg); border-radius: 16px; border: 1px dashed var(--glass-border);}
     
+    /* TOAST DE NOTIFICACIÓN */
+    .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--neon-green); color: #000; padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; text-align: center; white-space: nowrap; border: 2px solid rgba(0,0,0,0.1); }
+    .toast-notification.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
     ::-webkit-scrollbar{width:8px;}
     ::-webkit-scrollbar-track{background:var(--bg-body);}
     ::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:10px;}
@@ -238,6 +243,7 @@
       .modal-stock-section { padding: 10px 20px; }
       .modal-stock-number { font-size: 1.5rem; }
       
+      /* Rediseño extra info en movil (Lista ordenada) */
       #modalExtraInfo { margin-top: 16px; padding: 16px; flex-direction: column; gap: 12px; justify-content: center; align-items: stretch; }
       .modal-extra-block { display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
       .modal-extra-block:last-child { border-bottom: none; padding-bottom: 0; }
@@ -344,7 +350,7 @@
         </div>
         
         <div class="modal-actions-bar">
-          <button class="btn-share-modal" onclick="shareProduct()" title="Compartir">
+          <button class="btn-whatsapp-modal" onclick="sendWhatsApp()" title="Compartir">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
           </button>
         </div>
@@ -359,6 +365,9 @@
 <button id="backToTop" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Volver arriba">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
 </button>
+
+<!-- Toast para notificar copiado -->
+<div id="toastMsg" class="toast-notification">✅ Detalles copiados. ¡Pégalos en Teams!</div>
 
 <script>
 const URL_POWER_AUTOMATE = "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA"; 
@@ -462,6 +471,7 @@ async function sincronizarERP() {
             let valCol = cols[valorIdx];
             let planCol = cols[planIdx];
 
+            // MODIFICADO: Solo guarda los datos si NO son una "x" (indistinto mayuscula/minuscula)
             if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
             if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
           }
@@ -547,6 +557,7 @@ function renderGrid(append = false) {
     const card = document.createElement('div'); card.className = `product-card card-${badge.cls}`; card.onclick = () => showModal(p);
     
     let extraHTML = '';
+    // Ahora ed.valor y ed.plan solo existirán si no son una X
     if (ed.valor || ed.plan) {
         extraHTML = `<div class="extras-wrap">
           ${ed.valor ? `<div class="card-stock-row"><span class="status-text">${ed.valor} UF</span></div>` : ``}
@@ -578,6 +589,7 @@ function showModal(p) {
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
+  // MODIFICADO: Mostrar la caja extra y sus bloques internos solo si la información existe
   document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan) ? 'flex' : 'none';
   document.getElementById('modalValorWrap').style.display = ed.valor ? 'flex' : 'none'; 
   document.getElementById('modalValor').textContent = ed.valor ? ed.valor + ' UF' : '';
@@ -591,7 +603,15 @@ function showModal(p) {
 
 function closeModal() { document.getElementById('modalOverlay')?.classList.remove('open'); currentModalCode = ''; }
 
-window.shareProduct = async function() {
+function showToast(msg) {
+  const toast = document.getElementById('toastMsg');
+  if(!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+window.sendWhatsApp = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0};
   const ed = EXTRA_DATA[currentModalCode] || {};
@@ -600,46 +620,38 @@ window.shareProduct = async function() {
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
 
-  // Comprobar si el navegador soporta el menú de compartir nativo
-  if (navigator.share) {
-    try {
-      const imgElement = document.querySelector('#modalImgWrap img');
-      let fileToShare = null;
-
-      // Intentar empaquetar la imagen si existe
-      if (imgElement && imgElement.src) {
-        try {
-          const response = await fetch(imgElement.src);
-          const blob = await response.blob();
-          const isJpg = imgElement.src.toLowerCase().endsWith('.jpg');
-          const fileType = isJpg ? 'image/jpeg' : 'image/png';
-          const ext = isJpg ? '.jpg' : '.png';
-          fileToShare = new File([blob], `${p.codigo}${ext}`, { type: fileType });
-        } catch (err) {
-          console.log("No se pudo cargar la imagen para compartir.", err);
-        }
-      }
-
-      // Si tenemos archivo y el navegador soporta compartir archivos nativamente:
-      if (fileToShare && navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
-        await navigator.share({
-          files: [fileToShare],
-          text: textToShare
-        });
-      } else {
-        // Si no soporta imagen, abre el menú para compartir SOLO TEXTO en cualquier app
-        await navigator.share({
-          text: textToShare
-        });
-      }
-      return; 
-    } catch (error) {
-      console.log("Error en el menú de compartir o usuario canceló:", error);
-      if (error.name === 'AbortError' || error.message.includes('abort')) return; 
-    }
+  try {
+    await navigator.clipboard.writeText(textToShare);
+    showToast("✅ Detalles copiados. ¡Pégalos en Teams!");
+  } catch (error) {
+    console.log("No se pudo copiar automáticamente al portapapeles.", error);
   }
 
-  // Solo como última opción (si el navegador es muy antiguo y no tiene Web Share API)
+  try {
+    const imgElement = document.querySelector('#modalImgWrap img');
+    if (imgElement && imgElement.src && navigator.canShare) {
+      
+      const response = await fetch(imgElement.src);
+      const blob = await response.blob();
+      
+      const isJpg = imgElement.src.toLowerCase().endsWith('.jpg');
+      const fileType = isJpg ? 'image/jpeg' : 'image/png';
+      const ext = isJpg ? '.jpg' : '.png';
+      
+      const file = new File([blob], `${p.codigo}${ext}`, { type: fileType });
+
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          text: textToShare
+        });
+        return; 
+      }
+    }
+  } catch (error) {
+    console.log("El navegador no soporta enviar la imagen directamente o hubo un error.", error);
+  }
+
   window.open(`https://wa.me/?text=${encodeURIComponent(textToShare)}`, '_blank');
 };
 </script>
