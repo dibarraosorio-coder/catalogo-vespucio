@@ -1,0 +1,39 @@
+name: Quitar Fondo a Imágenes
+
+# Esto permite que tú actives el proceso manualmente cuando quieras
+on:
+  workflow_dispatch: 
+
+jobs:
+  procesar-imagenes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permiso para que el robot pueda guardar archivos en tu repo
+
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar la herramienta rembg
+        run: pip install "rembg[cli]"
+
+      - name: Procesar las imágenes
+        run: |
+          # Creamos una carpeta nueva para no borrar tus imágenes originales por accidente
+          mkdir -p img_sin_fondo
+          
+          # Le decimos a rembg que procese toda la carpeta 'img' y guarde el resultado en 'img_sin_fondo'
+          rembg p img/ img_sin_fondo/
+
+      - name: Guardar las imágenes procesadas en GitHub (Commit y Push)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add img_sin_fondo/
+          git commit -m "🤖 Automático: Imágenes sin fondo generadas con rembg" || echo "No hay imágenes nuevas para procesar"
+          git push
