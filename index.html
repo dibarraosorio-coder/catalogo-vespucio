@@ -262,7 +262,7 @@
 
 <header>
   <div class="last-updated" id="lastUpdatedBadge"></div>
-  <img class="header-logo" id="mainLogo" src="img/LOGO.png" onerror="this.style.display='none'" alt="Parque del Recuerdo" title="Logo"/>
+  <img class="header-logo" id="mainLogo" src="img_sin_fondo/LOGO.png" onerror="this.style.display='none'" alt="Parque del Recuerdo" title="Logo"/>
   <div class="header-title" title="Catálogo">STOCK ÁNFORAS, COFRES Y RELICARIOS</div>
   <div class="header-subtitle">Catálogo Interno de Inventario — Parque Américo Vespucio</div>
 </header>
@@ -555,7 +555,7 @@ function renderGrid(append = false) {
 
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
-        <img src="img/${p.codigo}.png" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }" loading="lazy" alt="${p.codigo}"/>
+        <img src="img_sin_fondo/${p.codigo}.png" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }" loading="lazy" alt="${p.codigo}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -584,7 +584,7 @@ function showModal(p) {
   document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
   
   const imgWrap = document.getElementById('modalImgWrap');
-  imgWrap.innerHTML = `<img src="img/${p.codigo}.png" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}"/>`;
+  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}"/>`;
   
   // ==========================================
   // PRECARGA INVISIBLE DE IMAGEN PARA ESCRITORIO
