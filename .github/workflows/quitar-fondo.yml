@@ -20,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar la herramienta rembg
-        run: pip install "rembg[cli]"
+        run: pip install "rembg[cpu,cli]"
 
       - name: Procesar las imágenes
         run: |
