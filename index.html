@@ -1101,7 +1101,7 @@ function renderGrid(append = false) {
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
-        <img src="img/${p.codigo}.png" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }" loading="lazy" alt="Imagen de ${cleanDesc}"/>
+        <img src="img_sin_fondo/${p.codigo}.png" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -1131,20 +1131,25 @@ function showModal(p) {
   
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
-  imgWrap.innerHTML = `<img src="img/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}"/>`;
+  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img/${p.codigo}.png';"/>`;
   
   // ==========================================
   // PRECARGA INVISIBLE DE IMAGEN PARA ESCRITORIO
   // ==========================================
   window.currentShareFile = null;
-  fetch(`img/${p.codigo}.png`)
+  fetch(`img_sin_fondo/${p.codigo}.png`)
     .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
     .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
     .catch(() => {
-       fetch(`img/${p.codigo}.jpg`)
+       fetch(`img/${p.codigo}.png`)
          .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
-         .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
-         .catch(()=> {/* Falla silenciosa si no hay imagen */});
+         .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
+         .catch(() => {
+            fetch(`img/${p.codigo}.jpg`)
+              .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+              .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
+              .catch(()=> {/* Falla silenciosa si no hay imagen */});
+         });
     });
 
   overlay.classList.add('open');
