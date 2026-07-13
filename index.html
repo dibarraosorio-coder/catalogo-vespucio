@@ -14,6 +14,7 @@
       --bg-body: #020d08;
       --bg-gradient: linear-gradient(145deg, #020d08 0%, #010604 100%);
       --header-bg: linear-gradient(160deg, rgba(2,13,8,.98) 0%, rgba(6,27,19,.96) 50%, rgba(2,13,8,.92) 100%);
+      --header-bg-solid: rgba(2,13,8,0.95);
       --header-title: #ffffff;
       --header-shadow: 0 2px 10px rgba(0,0,0,0.8);
       --text-main: #f8fafc;
@@ -54,6 +55,7 @@
       --bg-body: #f3f4f6;
       --bg-gradient: #f3f4f6;
       --header-bg: #ffffff;
+      --header-bg-solid: rgba(255,255,255,0.95);
       --header-title: #1f2937;
       --header-shadow: none;
       --text-main: #1f2937;
@@ -88,11 +90,7 @@
       --accent-gold: #d97706;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
       font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
@@ -106,10 +104,7 @@
     body::before {
       content: '';
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(ellipse at 15% 20%, rgba(16,185,129,.04) 0%, transparent 40%),
                   radial-gradient(ellipse at 85% 80%, rgba(253,224,71,.02) 0%, transparent 40%);
       pointer-events: none;
@@ -119,10 +114,8 @@
     header { 
       position: relative; 
       text-align: center; 
-      padding: 40px 24px 30px; 
+      padding: 40px 24px 20px; 
       background: var(--header-bg); 
-      border-bottom: 1px solid var(--glass-border); 
-      box-shadow: 0 2px 16px rgba(0,0,0,0.1); 
       z-index: 1; 
       transition: background 0.3s ease; 
     }
@@ -154,12 +147,7 @@
       border: 1px solid var(--glass-border); 
     }
     
-    .header-logo { 
-      max-height: 85px; 
-      width: auto; 
-      margin-bottom: 12px; 
-      cursor: default; 
-    }
+    .header-logo { max-height: 85px; width: auto; margin-bottom: 12px; cursor: default; }
     
     .header-title { 
       font-family: 'Cormorant Garamond', Georgia, serif; 
@@ -184,36 +172,53 @@
       font-weight: 700; 
     }
 
+    /* BARRA DE CONTROLES STICKY */
+    .controls-container {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--header-bg-solid);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      padding: 16px 24px;
+      margin-bottom: 24px;
+      transition: background 0.3s ease;
+    }
+
     .controls-main-bar { 
       display: flex; 
       flex-wrap: wrap; 
       gap: 12px; 
       max-width: 1400px; 
       margin: 0 auto; 
-      padding: 24px; 
-      align-items: stretch; 
+      align-items: center; 
       justify-content: center; 
     }
     
-    .controls-main-bar > * { flex: 1 1 auto; }
-    
     .theme-toggle-btn { 
-      flex: 0 1 auto !important; 
+      flex: 0 0 44px; 
+      height: 44px;
       width: 44px; 
       padding: 0 !important; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
       color: var(--text-main); 
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      background: var(--btn-bg);
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    
+    .theme-toggle-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
     .theme-toggle-btn svg { width: 22px; height: 22px; }
     
     .search-wrap { 
       position: relative; 
-      flex: 3 1 280px; 
+      flex: 1 1 240px; 
+      max-width: 320px;
     }
-    
     .search-wrap svg { 
       position: absolute; 
       left: 16px; 
@@ -222,293 +227,193 @@
       color: var(--text-muted); 
       pointer-events: none; 
     }
-    
-    #searchInput, .sort-select { 
+    #searchInput { 
       height: 44px; 
       width: 100%; 
       border: 1px solid var(--input-border); 
       border-radius: 8px; 
       background: var(--input-bg); 
-      backdrop-filter: blur(10px); 
       font-family: 'Nunito', sans-serif; 
       font-size: 0.85rem; 
       font-weight: 600; 
       color: var(--text-main); 
       outline: none; 
       transition: all .2s; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+      padding: 0 16px 0 46px; 
+    }
+    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
+
+    /* DROPDOWNS PERSONALIZADOS (Reemplazo de los native selects) */
+    .custom-dropdown {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 180px;
+      max-width: 220px; /* Tamaño más acotado */
     }
     
-    #searchInput { padding: 0 16px 0 46px; }
+    .dropdown-header {
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      white-space: nowrap;
+    }
     
-    #searchInput:focus, .sort-select:focus { 
+    .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;}
+    .dropdown-header span.arrow { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.3s; }
+    
+    .dropdown-header:hover, .custom-dropdown.open .dropdown-header {
       border-color: var(--neon-green); 
-      box-shadow: 0 0 0 3px rgba(16,185,129,.2); 
+      background: var(--btn-hover);
+    }
+    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--neon-green); }
+
+    .dropdown-list {
+      position: absolute;
+      top: 52px;
+      left: 0;
+      width: 100%;
+      background: var(--modal-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      padding: 8px;
+      backdrop-filter: blur(16px);
     }
     
-    #searchInput::placeholder { 
-      color: var(--text-muted); 
-      font-weight: 500; 
-      opacity: 0.8; 
+    .custom-dropdown.open .dropdown-list { display: flex; animation: slideDown 0.2s ease forwards; }
+    @keyframes slideDown { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
+
+    .dropdown-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      transition: all 0.2s;
     }
     
-    .sort-select { 
-      padding: 0 32px 0 14px; 
-      appearance: none; 
-      cursor: pointer; 
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); 
-      background-repeat: no-repeat; 
-      background-position: right 12px center; 
-      background-size: 14px; 
-      flex: 1 1 160px;
+    .dropdown-item:hover { background: var(--tab-hover-bg); color: var(--neon-green); }
+    
+    /* Personalización de Radio y Checkbox sin el azul nativo */
+    .dropdown-item input[type="radio"], .dropdown-item input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--text-muted);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      flex-shrink: 0;
     }
+    .dropdown-item input[type="radio"] { border-radius: 50%; }
     
-    .sort-select:hover { background: var(--btn-hover); }
-    .sort-select option { background: var(--bg-body); color: var(--text-main); }
-    
-    .filter-tabs, .stock-tabs { 
+    .dropdown-item input:checked { border-color: var(--neon-green); background: var(--neon-green); }
+    .dropdown-item input:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 1px;
+      width: 4px; height: 8px;
+      border: solid #000;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .dropdown-item input[type="radio"]:checked::after {
+      left: 3px; top: 3px;
+      width: 6px; height: 6px;
+      border: none;
+      border-radius: 50%;
+      background: #000;
+      transform: none;
+    }
+
+    /* PESTAÑAS DE STOCK (Se mantienen por ser funcionales y pequeñas) */
+    .stock-tabs { 
       display: flex; 
-      flex-wrap: wrap; 
       gap: 4px; 
       background: var(--tab-bg); 
-      backdrop-filter: blur(10px); 
       border: 1px solid var(--input-border); 
       padding: 4px; 
       border-radius: 8px; 
       align-items: center; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-      flex: 2 1 auto; 
-      justify-content: center;
-    }
-    
-    .filter-tab, .stock-tab, .action-btn { 
-      height: 34px; 
-      padding: 0 14px; 
-      border: 1px solid transparent; 
-      border-radius: 6px; 
-      font-family: 'Nunito', sans-serif; 
-      font-size: 0.82rem; 
-      font-weight: 700; 
-      cursor: pointer; 
-      transition: all .2s ease; 
-      color: var(--text-muted); 
-      background: transparent; 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-      flex: 1 1 auto; 
-      justify-content: center; 
-      white-space: nowrap;
-    }
-    
-    .filter-tab.active, .stock-tab[data-stock="all"].active { 
-      background: var(--tab-active-bg); 
-      color: var(--tab-active-color); 
-      border-color: var(--tab-active-border); 
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05); 
-    }
-    
-    .filter-tab:hover:not(.active), .stock-tab:hover:not(.active) { 
-      background: var(--tab-hover-bg); 
-      color: var(--text-main); 
-    }
-    
-    .stock-tab .tab-dot { 
-      width: 7px; 
-      height: 7px; 
-      border-radius: 50%; 
-      display: inline-block; 
-      background: var(--text-muted); 
-    }
-    
-    .stock-tab[data-stock="all"].active .tab-dot { background: var(--tab-active-color); }
-    
-    .stock-tab[data-stock="with"].active { 
-      background: rgba(16,185,129,0.1); 
-      color: var(--neon-green); 
-      border-color: rgba(16,185,129,0.3); 
-    }
-    
-    .stock-tab[data-stock="with"] .tab-dot { background: var(--neon-green); }
-    
-    .stock-tab[data-stock="without"].active { 
-      background: rgba(239,68,68,.1); 
-      color: var(--neon-red); 
-      border-color: rgba(239,68,68,.3); 
-    }
-    
-    .stock-tab[data-stock="without"] .tab-dot { background: var(--neon-red); }
-    
-    .action-btn { 
-      height: 44px; 
-      background: var(--btn-bg); 
-      border: 1px solid var(--input-border); 
-      color: var(--btn-text); 
       flex: 0 1 auto; 
-      transition: all 0.2s ease;
     }
-    
-    .action-btn:hover { 
-      background: var(--btn-hover); 
-      color: var(--neon-green); 
-      border-color: var(--neon-green); 
+    .stock-tab { 
+      height: 34px; padding: 0 14px; border: 1px solid transparent; border-radius: 6px; 
+      font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; 
+      cursor: pointer; transition: all .2s ease; color: var(--text-muted); background: transparent; 
+      display: flex; align-items: center; gap: 6px; white-space: nowrap;
     }
-    
-    .results-count { 
-      font-size: 0.85rem; 
-      color: var(--text-muted); 
-      font-weight: 700; 
-      text-align: center; 
-      width: 100%; 
-      margin-top: -8px; 
-      margin-bottom: 16px; 
-    }
+    .stock-tab.active { background: var(--tab-active-bg); color: var(--tab-active-color); border-color: var(--tab-active-border); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .stock-tab:hover:not(.active) { background: var(--tab-hover-bg); color: var(--text-main); }
+    .stock-tab .tab-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; background: var(--text-muted); }
+    .stock-tab[data-stock="all"].active .tab-dot { background: var(--tab-active-color); }
+    .stock-tab[data-stock="with"].active { background: rgba(16,185,129,0.1); color: var(--neon-green); border-color: rgba(16,185,129,0.3); }
+    .stock-tab[data-stock="with"] .tab-dot { background: var(--neon-green); }
+    .stock-tab[data-stock="without"].active { background: rgba(239,68,68,.1); color: var(--neon-red); border-color: rgba(239,68,68,.3); }
+    .stock-tab[data-stock="without"] .tab-dot { background: var(--neon-red); }
 
-    .catalog-wrap {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 100%;
-      padding: 0 24px 80px;
+    .action-btn.clean-btn { 
+      height: 44px; padding: 0 16px; background: var(--btn-bg); border: 1px solid var(--input-border); 
+      border-radius: 8px; color: var(--btn-text); flex: 0 0 auto; transition: all 0.2s ease;
+      font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer;
     }
-    
-    #catalogGrid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 20px; 
-      transition: all 0.3s;
-    }
-    
-    .product-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-      box-shadow: var(--glass-shadow);
-      position: relative;
-      animation: cardIn .4s ease both; 
-      display: flex; 
-      flex-direction: column;
-    }
-    
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--glass-shadow-hover); 
-      border-color: var(--card-border-hover);
-    }
+    .action-btn.clean-btn:hover { background: var(--btn-hover); color: var(--neon-red); border-color: var(--neon-red); }
 
-    .badge-ribbon { 
-      position: absolute; 
-      top: 20px; 
-      right: -40px; 
-      padding: 4px 40px; 
-      font-size: 0.6rem; 
-      font-weight: 800; 
-      transform: rotate(45deg); 
-      z-index: 10; 
-      text-transform: uppercase; 
-      letter-spacing: 1px; 
-      text-align: center; 
-      width: 170px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3); 
-      line-height: 1.2; 
-    }
+    .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
+
+    /* GRILLA Y TARJETAS */
+    .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
+    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; }
+    
+    .product-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; box-shadow: var(--glass-shadow); position: relative; animation: cardIn .4s ease both; display: flex; flex-direction: column; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow-hover); border-color: var(--card-border-hover); }
+
+    .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
     .badge-out { background: var(--neon-red); color: white; }
     .badge-low { background: var(--neon-yellow); color: #000; }
-    .badge-desc { 
-      background: #64748b; 
-      color: white; 
-      border-top: 1px solid #94a3b8; 
-      border-bottom: 1px solid #94a3b8;
-    }
+    .badge-desc { background: #64748b; color: white; border-top: 1px solid #94a3b8; border-bottom: 1px solid #94a3b8; }
 
     .card-stock-zero { border: 1px solid rgba(239,68,68,.4); }
     .card-stock-zero .card-code, .card-stock-zero .status-text { color: var(--neon-red); }
     .card-stock-zero .card-img-wrap { background: rgba(239,68,68,.03); }
-    
     .card-stock-low { border: 1px solid rgba(253,224,71,.4); }
     .card-stock-low .card-img-wrap { background: rgba(253,224,71,.03); }
-    
     .card-stock-ok { border: 1px solid var(--glass-border); }
     .card-stock-ok .card-img-wrap { background: transparent; }
 
-    .card-img-wrap {
-      width: 100%;
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative; 
-      border-bottom: 1px solid var(--card-img-border); 
-      flex-shrink: 0;
-    }
-    
-    /* CAMBIO APLICADO: Fade-in suave para las imágenes */
-    .card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 12px;
-      transition: transform .4s ease, opacity .4s ease; 
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
-      opacity: 0; /* Inicia invisible */
-    }
-    
-    .card-img-wrap img.loaded {
-      opacity: 1; /* Se hace visible cuando tiene la clase loaded */
-    }
-    
+    .card-img-wrap { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--card-img-border); flex-shrink: 0; }
+    .card-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform .4s ease, opacity .4s ease; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); opacity: 0; }
+    .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
-    .no-img {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-muted);
-    }
-    
-    .no-img svg { width: 24px; height: 24px; }
-    .no-img span { font-size: .65rem; letter-spacing: .05em; font-weight: 700; text-transform: uppercase; }
-    
-    .card-hover-overlay {
-      position: absolute;
-      inset: 0;
-      transition: background .3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-    }
-    
-    .product-card:hover .card-hover-overlay {
-      opacity: 1;
-      background: var(--card-overlay); 
-      backdrop-filter: blur(2px);
-    }
-    
-    .view-btn {
-      background: var(--neon-green);
-      color: #000;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: .05em;
-      transform: translateY(4px);
-      transition: transform .2s;
-      text-transform: uppercase; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    
+    .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; align-items: center; justify-content: center; opacity: 0; }
+    .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
+    .view-btn { background: var(--neon-green); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: transform .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .product-card:hover .view-btn { transform: translateY(0); }
 
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -521,101 +426,20 @@
     .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
-    /* MODAL ACTUALIZADO */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--modal-overlay);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-    
-    .modal-overlay.open {
-      display: flex;
-      animation: fadeIn .2s ease;
-    }
-    
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
+    .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     
-    .modal-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 20px;
-    }
+    .modal-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px; }
+    .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; max-width: 960px; gap: 32px; animation: modalIn .3s ease; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    .modal-box {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      max-width: 960px;
-      gap: 32px;
-      animation: modalIn .3s ease;
-    }
-    
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(.95) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    
-    .modal-img-section {
-      flex: 1; 
-      width: 100%;
-      max-width: 540px;
-      height: 400px;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0; 
-      border-radius: 20px; 
-      overflow: visible;
-    }
-    
-    .modal-img-section img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 20px 40px rgba(0,0,0,.8));
-      transition: transform .3s ease; 
-      cursor: zoom-in; 
-      position: relative; 
-      z-index: 50; 
-      transform-origin: center center;
-    }
-    
+    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; }
+    .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; }
     .modal-img-section img:hover { transform: scale(1.6); z-index: 150; }
 
-    .modal-content {
-      position: relative; 
-      flex: 1; 
-      width: 100%;
-      max-width: 500px;
-      padding: 32px 24px;
-      overflow: hidden;
-      text-align: center;
-      font-family: 'Nunito', sans-serif;
-      background: var(--modal-bg); 
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,.8);
-      margin-top: 0; 
-      z-index: 10;
-    }
-    
+    .modal-content { position: relative; flex: 1; width: 100%; max-width: 500px; padding: 32px 24px; overflow: hidden; text-align: center; font-family: 'Nunito', sans-serif; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); margin-top: 0; z-index: 10; }
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
     .modal-code { font-size: 1.6rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 12px; }
     .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin-bottom: 24px; padding: 0 10px; }
@@ -631,35 +455,9 @@
     #modalValor { color: var(--accent-gold); }
     #modalPlan { color: var(--neon-green); }
     
-    .modal-close {
-      position: fixed;
-      top: 24px;
-      right: 28px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1px solid var(--glass-border);
-      background: var(--modal-close-bg);
-      color: var(--text-main);
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .2s;
-      z-index: 100; 
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
-      backdrop-filter: blur(8px);
-    }
+    .modal-close { position: fixed; top: 24px; right: 28px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
+    .modal-close:hover { transform: scale(1.1); background: var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red); }
     
-    .modal-close:hover {
-      transform: scale(1.1);
-      background: var(--modal-close-hover); 
-      border-color: var(--neon-red); 
-      color: var(--neon-red);
-    }
-    
-    /* BOTÓN COMPARTIR ACTUALIZADO */
     .modal-actions-bar { display: flex; justify-content: center; margin-top: 24px; border: none; }
     .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
@@ -668,17 +466,7 @@
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
     
-    .empty-state {
-      text-align: center;
-      padding: 80px 24px;
-      color: var(--text-muted);
-      font-weight: 700;
-      grid-column: 1/-1;
-      font-size: 1.1rem; 
-      background: var(--tab-bg); 
-      border-radius: 16px; 
-      border: 1px dashed var(--glass-border);
-    }
+    .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); font-weight: 700; grid-column: 1/-1; font-size: 1.1rem; background: var(--tab-bg); border-radius: 16px; border: 1px dashed var(--glass-border); }
 
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-body); }
@@ -686,7 +474,6 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
-    
     @media (max-width: 900px) {
       #catalogGrid { grid-template-columns: repeat(4, 1fr); }
       .modal-box { flex-direction: column-reverse; max-width: 560px; }
@@ -694,13 +481,12 @@
       .modal-img-section img { cursor: default; }
       .modal-img-section img:hover { transform: none; z-index: 50; }
     }
-    
     @media (max-width: 600px) {
-      header { padding: 32px 20px 24px; }
-      .controls-main-bar { padding: 16px; }
-      .search-wrap { flex: 1 1 100%; }
+      header { padding: 32px 20px 10px; }
+      .controls-container { padding: 12px 16px; }
+      .search-wrap { flex: 1 1 100%; max-width: 100%; }
+      .custom-dropdown { min-width: 140px; max-width: 100%; }
       #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
-      
       .modal-wrapper { padding: 16px; }
       .modal-box { gap: 12px; margin: auto; }
       .modal-img-section { height: 160px; } 
@@ -709,7 +495,6 @@
       .modal-desc { font-size: 0.95rem; margin-bottom: 16px; line-height: 1.4; }
       .modal-stock-section { padding: 10px 20px; }
       .modal-stock-number { font-size: 1.5rem; }
-      
       #modalExtraInfo { margin-top: 16px; padding: 16px; flex-direction: column; gap: 12px; justify-content: center; align-items: stretch; }
       .modal-extra-block { display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
       .modal-extra-block:last-child { border-bottom: none; padding-bottom: 0; }
@@ -741,50 +526,66 @@
 <main id="main-content">
   <div class="controls-container">
     <div class="controls-main-bar">
-      <button class="action-btn theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
+      
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
       <div class="search-wrap">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
         <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
       </div>
-      <div class="filter-tabs" role="tablist">
-        <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">Todos</button>
-        <button class="filter-tab" data-filter="ánfora" role="tab" aria-selected="false">Ánforas</button>
-        <button class="filter-tab" data-filter="cofre" role="tab" aria-selected="false">Cofres</button>
-        <button class="filter-tab" data-filter="relicario" role="tab" aria-selected="false">Relicarios</button>
-        <button class="filter-tab" data-filter="pulsera" role="tab" aria-selected="false">Pulseras</button>
+
+      <div class="custom-dropdown" id="ddCat">
+        <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
+        <div class="dropdown-list">
+          <label class="dropdown-item"><input type="radio" name="catFilter" value="all" checked> Todas</label>
+          <label class="dropdown-item"><input type="radio" name="catFilter" value="ánfora"> Ánforas</label>
+          <label class="dropdown-item"><input type="radio" name="catFilter" value="cofre"> Cofres</label>
+          <label class="dropdown-item"><input type="radio" name="catFilter" value="relicario"> Relicarios</label>
+          <label class="dropdown-item"><input type="radio" name="catFilter" value="pulsera"> Pulseras</label>
+        </div>
       </div>
+
       <div class="stock-tabs" role="tablist">
         <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
         <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
         <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
       </div>
-      <select id="sortSelect" class="sort-select">
-        <option value="asc">A - Z (Por defecto)</option>
-        <option value="desc">Z - A</option>
-        <option value="stockDesc">Mayor a Menor Stock</option>
-        <option value="stockAsc">Menor a Mayor Stock</option>
-        <option value="valorAsc" class="price-option">Menor a Mayor Precio (UF)</option>
-        <option value="valorDesc" class="price-option">Mayor a Menor Precio (UF)</option>
-      </select>
-      <select id="filterValor" class="sort-select">
-        <option value="all">Todos los Valores (UF)</option>
-        <option value="0-3">Hasta 3 UF</option>
-        <option value="4-6">De 4 a 6 UF</option>
-        <option value="7+">7 UF o más</option>
-      </select>
-      <select id="filterPlan" class="sort-select">
-        <option value="all">Todos los Planes</option>
-        <option value="PREMIUM">PREMIUM</option>
-        <option value="FULL">FULL</option>
-        <option value="LIBRE">LIBRE</option>
-        <option value="BASICO">BÁSICO</option>
-        <option value="OFERTA">OFERTA</option>
-        <option value="REGALO">REGALO</option>
-        <option value="sin_plan">Sin Plan</option>
-      </select>
-      <button class="action-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
+
+      <div class="custom-dropdown" id="ddUF">
+        <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
+        <div class="dropdown-list" id="ufOptionsList">
+          </div>
+      </div>
+
+      <div class="custom-dropdown" id="ddPlan">
+        <div class="dropdown-header"><span class="text">Todos los Planes</span><span class="arrow">▼</span></div>
+        <div class="dropdown-list">
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="all" checked> Todos los Planes</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="PREMIUM"> PREMIUM</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="FULL"> FULL</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="LIBRE"> LIBRE</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="BASICO"> BÁSICO</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="OFERTA"> OFERTA</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="REGALO"> REGALO</label>
+          <label class="dropdown-item"><input type="radio" name="planFilter" value="sin_plan"> Sin Plan</label>
+        </div>
+      </div>
+
+      <div class="custom-dropdown" id="ddSort">
+        <div class="dropdown-header"><span class="text">A - Z (Por defecto)</span><span class="arrow">▼</span></div>
+        <div class="dropdown-list">
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="asc" checked> A - Z (Por defecto)</label>
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="desc"> Z - A</label>
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockDesc"> Mayor a Menor Stock</label>
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockAsc"> Menor a Mayor Stock</label>
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorAsc"> Menor a Mayor Precio (UF)</label>
+          <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorDesc"> Mayor a Menor Precio (UF)</label>
+        </div>
+      </div>
+
+      <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar
       </button>
+
     </div>
     <div class="results-count" id="resultsCount"></div>
   </div>
@@ -827,7 +628,6 @@
       </div>
       
       <div class="modal-img-section" id="modalImgWrap"></div>
-
     </div>
   </div>
 </div>
@@ -837,65 +637,49 @@
 </button>
 
 <script>
-// Funciones auxiliares para manejo seguro de LocalStorage (Evita errores si las cookies están bloqueadas)
+// Funciones auxiliares para LocalStorage
 function safeGetLocal(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
 function safeSetLocal(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
 function safeRemoveLocal(key) { try { localStorage.removeItem(key); } catch(e) {} }
 
 const URL_POWER_AUTOMATE = "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA"; 
-
 const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "COF0034", "COF0008", "ANF0292", "ANF0291", "ANF0290"];
+
 let products = []; let EXTRA_DATA = {};
-
-let currentFilter = safeGetLocal('catFilter') || 'all'; 
-let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
-let currentSearch = safeGetLocal('searchQuery') || ''; 
-let currentSort = safeGetLocal('sortOrder') || 'asc'; 
-let savedValFilter = safeGetLocal('valFilter') || 'all'; 
-let savedPlanFilter = safeGetLocal('planFilter') || 'all';
-
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
-
-// Variable global para precargar la imagen y evitar que Windows bloquee el botón
 window.currentShareFile = null;
 
+// Estados de Filtro
+let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
+let currentSearch = safeGetLocal('searchQuery') || ''; 
+
+// Iconos Tema
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Inicializar Tema
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
-  document.querySelectorAll('.filter-tab').forEach(b => { 
-    if(b.dataset.filter === currentFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
-    else { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }
-  });
+  // Setup Botones de Stock
   document.querySelectorAll('.stock-tab').forEach(b => { 
     if(b.dataset.stock === currentStockFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
     else { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }
+    b.addEventListener('click', () => { 
+      document.querySelectorAll('.stock-tab').forEach(btn => { btn.classList.remove('active'); btn.setAttribute('aria-selected', 'false'); }); 
+      b.classList.add('active'); b.setAttribute('aria-selected', 'true');
+      currentStockFilter = b.dataset.stock; safeSetLocal('stockFilter', currentStockFilter); renderGrid(); 
+    });
   });
-  
-  if(document.getElementById('searchInput')) document.getElementById('searchInput').value = currentSearch;
-  if(document.getElementById('sortSelect')) document.getElementById('sortSelect').value = currentSort;
-  if(document.getElementById('filterValor')) document.getElementById('filterValor').value = savedValFilter;
-  if(document.getElementById('filterPlan')) document.getElementById('filterPlan').value = savedPlanFilter;
 
-  document.querySelectorAll('.filter-tab').forEach(btn => btn.addEventListener('click', () => { 
-    document.querySelectorAll('.filter-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }); 
-    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
-    currentFilter = btn.dataset.filter; safeSetLocal('catFilter', currentFilter); renderGrid(); 
-  }));
-  
-  document.querySelectorAll('.stock-tab').forEach(btn => btn.addEventListener('click', () => { 
-    document.querySelectorAll('.stock-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }); 
-    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
-    currentStockFilter = btn.dataset.stock; safeSetLocal('stockFilter', currentStockFilter); renderGrid(); 
-  }));
-  
-  document.getElementById('searchInput')?.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
-  document.getElementById('sortSelect')?.addEventListener('change', e => { currentSort = e.target.value; safeSetLocal('sortOrder', currentSort); renderGrid(); });
-  document.getElementById('filterValor')?.addEventListener('change', e => { savedValFilter = e.target.value; safeSetLocal('valFilter', savedValFilter); renderGrid(); });
-  document.getElementById('filterPlan')?.addEventListener('change', e => { savedPlanFilter = e.target.value; safeSetLocal('planFilter', savedPlanFilter); renderGrid(); });
+  // Buscador
+  const searchInput = document.getElementById('searchInput');
+  if(searchInput) {
+    searchInput.value = currentSearch;
+    searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
+  }
 
+  // Setup Scroll & Infinite Load
   window.addEventListener('scroll', () => {
     const topBtn = document.getElementById('backToTop');
     if (window.scrollY > 400) topBtn.classList.add('visible'); else topBtn.classList.remove('visible');
@@ -906,94 +690,166 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Lógica Dropdowns Custom
+  setupCustomDropdowns();
+
+  // Sincronizar Datos
   await sincronizarERP();
-  renderLastUpdated(); renderGrid();
+  renderLastUpdated(); 
+  renderUFMultiSelect(); // Llenar las UF reales extraídas de la base de datos
+  renderGrid();
   
   setTimeout(() => { const loader = document.getElementById('loader-screen'); if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.visibility = 'hidden'; loader.style.display = 'none'; }, 600); } }, 300);
 });
 
+// ==========================================
+// LÓGICA DE MENÚS DESPLEGABLES PERSONALIZADOS
+// ==========================================
+function setupCustomDropdowns() {
+  document.querySelectorAll('.custom-dropdown').forEach(dd => {
+    const header = dd.querySelector('.dropdown-header');
+    
+    // Toggle abrir/cerrar
+    header.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dd.classList.contains('open');
+      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open')); // Cierra otros
+      if (!isOpen) dd.classList.add('open');
+    });
+
+    // Lógica para selects simples (Radio)
+    dd.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const textSpan = dd.querySelector('.dropdown-header .text');
+        // Actualizar texto cabecera
+        if(radio.name === 'catFilter') textSpan.textContent = radio.value === 'all' ? 'Categoría: Todas' : radio.parentNode.textContent.trim();
+        else textSpan.textContent = radio.parentNode.textContent.trim();
+        dd.classList.remove('open');
+        renderGrid();
+      });
+    });
+  });
+
+  // Cerrar si se hace click fuera
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-dropdown').forEach(dd => dd.classList.remove('open'));
+  });
+}
+
+function updateUFHeader() {
+  const dd = document.getElementById('ddUF');
+  const checked = dd.querySelectorAll('input[type="checkbox"]:checked');
+  const textSpan = dd.querySelector('.dropdown-header .text');
+  if (checked.length === 0) textSpan.textContent = "Todos los Valores (UF)";
+  else if (checked.length === 1) textSpan.textContent = checked[0].parentNode.textContent.trim();
+  else textSpan.textContent = `${checked.length} Valores seleccionados`;
+}
+
+function renderUFMultiSelect() {
+  const ufSet = new Set();
+  products.forEach(p => {
+    let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
+    if (valStr) { let val = parseFloat(valStr.replace(',', '.')); if (!isNaN(val)) ufSet.add(val); }
+  });
+  
+  const ufArr = Array.from(ufSet).sort((a, b) => a - b);
+  const list = document.getElementById('ufOptionsList');
+  list.innerHTML = '';
+  
+  ufArr.forEach(uf => {
+    list.innerHTML += `<label class="dropdown-item" onclick="event.stopPropagation()"><input type="checkbox" value="${uf}" class="uf-cb"> ${uf} UF</label>`;
+  });
+
+  document.querySelectorAll('.uf-cb').forEach(cb => {
+    cb.addEventListener('change', () => { updateUFHeader(); renderGrid(); });
+  });
+}
+
+window.clearFilters = function() {
+  // Limpiar variables
+  currentStockFilter = 'all'; currentSearch = '';
+  safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
+  
+  // Limpiar UI Buscador y Stock
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.stock-tab').forEach(b => { 
+    b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
+    if(b.dataset.stock === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
+  }); 
+
+  // Reset Custom Dropdowns (Radios)
+  document.querySelector('input[name="catFilter"][value="all"]').checked = true;
+  document.querySelector('#ddCat .dropdown-header .text').textContent = 'Categoría: Todas';
+  
+  document.querySelector('input[name="planFilter"][value="all"]').checked = true;
+  document.querySelector('#ddPlan .dropdown-header .text').textContent = 'Todos los Planes';
+  
+  document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
+  document.querySelector('#ddSort .dropdown-header .text').textContent = 'A - Z (Por defecto)';
+
+  // Reset Custom Dropdown (Checkboxes UF)
+  document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
+  updateUFHeader();
+
+  renderGrid();
+};
+
+// ==========================================
+// OBTENCIÓN DE DATOS (ERP)
+// ==========================================
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
-  
   try {
-    // ----------------------------------------------------
-    // SISTEMA DE CACHÉ: Evita cargar los datos si se recarga en menos de 5 min
-    // ----------------------------------------------------
-    const cacheKey = 'erp_cache_data';
-    const cacheTimeKey = 'erp_cache_timestamp';
-    const cachedData = sessionStorage.getItem(cacheKey);
-    const cachedTime = sessionStorage.getItem(cacheTimeKey);
-    const now = Date.now();
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos en milisegundos
+    const cacheKey = 'erp_cache_data'; const cacheTimeKey = 'erp_cache_timestamp';
+    const cachedData = sessionStorage.getItem(cacheKey); const cachedTime = sessionStorage.getItem(cacheTimeKey);
+    const now = Date.now(); const CACHE_DURATION = 5 * 60 * 1000;
 
     if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_DURATION)) {
       const parsedCache = JSON.parse(cachedData);
-      products = parsedCache.products;
-      EXTRA_DATA = parsedCache.EXTRA_DATA;
-      console.log("Cargado desde caché rápida.");
-      return; // Salimos de la función temprano, ahorrando peticiones
+      products = parsedCache.products; EXTRA_DATA = parsedCache.EXTRA_DATA;
+      return; 
     }
 
     let sheetData = {};
     try {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv";
-      const sheetRes = await fetch(sheetUrl);
+      const sheetRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
       if (sheetRes.ok) {
-        const csvText = await sheetRes.text();
-        const rows = csvText.split('\n');
+        const rows = (await sheetRes.text()).split('\n');
         rows.forEach(row => {
           const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-          let code = null; 
-          let qty = 0;
+          let code = null; let qty = 0;
           for(let i=0; i<cols.length; i++) {
             let cell = cols[i].trim().replace(/^"|"$/g, '');
-            if(!code && isValidCode(cell)) { code = cell.toUpperCase(); }
-            else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
+            if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
           }
-          if(code && qty > 0) {
-            sheetData[code] = (sheetData[code] || 0) + qty;
-          }
+          if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
         });
       }
-    } catch(e) { console.error("Error al leer el Google Sheet de stock:", e); }
+    } catch(e) {}
 
     try {
-      const valoresUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv";
-      const valRes = await fetch(valoresUrl);
+      const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
-        const valCsv = await valRes.text();
-        const rows = valCsv.split(/\r?\n/); 
-        
-        let planIdx = 3; 
-        let valorIdx = 4; 
-
+        const rows = (await valRes.text()).split(/\r?\n/); 
+        let planIdx = 3; let valorIdx = 4; 
         rows.forEach((row, index) => {
           const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-          
           if (index === 0) {
-            const headerPlan = cols.findIndex(c => c.toUpperCase().includes('PLAN'));
-            const headerValor = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
-            if(headerPlan !== -1) planIdx = headerPlan;
-            if(headerValor !== -1) valorIdx = headerValor;
-            return;
+            const hp = cols.findIndex(c => c.toUpperCase().includes('PLAN')); const hv = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
+            if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv; return;
           }
-
           let codeIdx = cols.findIndex(c => isValidCode(c));
           if(codeIdx !== -1) {
-            let code = cols[codeIdx].toUpperCase().trim();
-            if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
-            
-            let valCol = cols[valorIdx];
-            let planCol = cols[planIdx];
-
+            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
+            let valCol = cols[valorIdx]; let planCol = cols[planIdx];
             if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
             if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
           }
         });
       }
-    } catch(e) { console.error("Error al leer la hoja de Valores:", e); }
+    } catch(e) {}
 
     const response = await fetch(URL_POWER_AUTOMATE);
     if (response.ok) {
@@ -1001,88 +857,77 @@ async function sincronizarERP() {
        if(Array.isArray(datosERP) && datosERP.length > 0) {
            products = datosERP.map(item => {
                const cod = String(item.codigo).toUpperCase().trim();
-               let qtyERP = parseInt(item.cantidad) || 0;
-               let qtyRestar = sheetData[cod] || 0;
-               let finalQty = Math.max(0, qtyERP - qtyRestar); 
-               
+               let finalQty = Math.max(0, (parseInt(item.cantidad) || 0) - (sheetData[cod] || 0)); 
                return { codigo: cod, descripcion: item.descripcion || "Sin descripción", cantidad: finalQty };
            }).filter(p => isValidCode(p.codigo));
-           
-           // Guardar en caché después del éxito
            sessionStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
            sessionStorage.setItem(cacheTimeKey, now.toString());
        }
-    } else { console.error("Error ERP:", response.status); }
-  } catch (err) { console.error("Error conexión ERP:", err); }
+    }
+  } catch (err) {}
 }
 
 function toggleTheme() { 
   const body = document.body; const btn = document.getElementById('themeToggleBtn'); 
-  if (body.classList.contains('light-mode')) { 
-    body.classList.remove('light-mode'); safeSetLocal('theme', 'dark'); btn.innerHTML = svgSun; 
-  } else { 
-    body.classList.add('light-mode'); safeSetLocal('theme', 'light'); btn.innerHTML = svgMoon; 
-  } 
+  if (body.classList.contains('light-mode')) { body.classList.remove('light-mode'); safeSetLocal('theme', 'dark'); btn.innerHTML = svgSun; } 
+  else { body.classList.add('light-mode'); safeSetLocal('theme', 'light'); btn.innerHTML = svgMoon; } 
 }
 
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
-function renderLastUpdated() { const badge = document.getElementById('lastUpdatedBadge'); badge.textContent = 'Stock en línea'; }
-
+function renderLastUpdated() { document.getElementById('lastUpdatedBadge').textContent = 'Stock en línea'; }
 function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsWith('anf')) return {label:'Ánfora'}; if (code.startsWith('cof')) return {label:'Cofre'}; if (code.startsWith('rel')) return {label:'Relicario'}; if (code.startsWith('pul')) return {label:'Pulsera'}; return {label:'Otro'}; }
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
-window.clearFilters = function() {
-  currentFilter = 'all'; currentStockFilter = 'all'; currentSearch = ''; currentSort = 'asc'; savedValFilter = 'all'; savedPlanFilter = 'all'; 
-  safeRemoveLocal('catFilter'); safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery'); safeRemoveLocal('sortOrder'); safeRemoveLocal('valFilter'); safeRemoveLocal('planFilter'); 
-  document.getElementById('searchInput').value = ''; document.getElementById('sortSelect').value = 'asc'; document.getElementById('filterValor').value = 'all'; document.getElementById('filterPlan').value = 'all'; 
-  
-  document.querySelectorAll('.filter-tab').forEach(b => { 
-    b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
-    if(b.dataset.filter === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
-  }); 
-  document.querySelectorAll('.stock-tab').forEach(b => { 
-    b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
-    if(b.dataset.stock === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
-  }); 
-  renderGrid();
-};
-
+// ==========================================
+// RENDERIZADO DE GRILLA Y FILTROS
+// ==========================================
 function renderGrid(append = false) {
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
   
+  // Leer valores actuales de los Custom Dropdowns
+  const catVal = document.querySelector('input[name="catFilter"]:checked').value;
+  const planVal = document.querySelector('input[name="planFilter"]:checked').value;
+  const sortVal = document.querySelector('input[name="sortOrder"]:checked').value;
+  const ufSelected = Array.from(document.querySelectorAll('.uf-cb:checked')).map(cb => parseFloat(cb.value));
+
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
-    let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(currentFilter);
-    if (currentFilter !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
+    // Categoría
+    let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
+    if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
+    
+    // Buscador
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); let codeNorm = normalizeStr(p.codigo); let descNorm = p.descripcion ? normalizeStr(p.descripcion) : ""; 
       if (!codeNorm.includes(q) && !descNorm.includes(q)) return false; 
     }
 
+    // Stock
     if (currentStockFilter === 'with' && p.cantidad === 0) return false; 
     if (currentStockFilter === 'without' && p.cantidad > 0) return false;
 
+    // UF Múltiple
     let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
     let val = parseFloat(valStr ? valStr.replace(',', '.') : 'NaN'); 
-    let plan = ((EXTRA_DATA[p.codigo] || {}).plan || "").toUpperCase();
+    if (ufSelected.length > 0 && !ufSelected.includes(val)) return false;
     
-    if (savedValFilter === '0-3' && (isNaN(val) || val > 3)) return false; 
-    if (savedValFilter === '4-6' && (isNaN(val) || val < 4 || val > 6)) return false; 
-    if (savedValFilter === '7+' && (isNaN(val) || val < 7)) return false; 
-    if (savedPlanFilter !== 'all' && (savedPlanFilter === 'sin_plan' ? plan !== '' : plan !== savedPlanFilter)) return false;
+    // Plan
+    let plan = ((EXTRA_DATA[p.codigo] || {}).plan || "").toUpperCase();
+    if (planVal !== 'all' && (planVal === 'sin_plan' ? plan !== '' : plan !== planVal)) return false;
     
     return true;
   });
 
-  if (currentSort === 'asc') filtered.sort((a,b) => String(a.codigo).localeCompare(String(b.codigo))); 
-  else if (currentSort === 'desc') filtered.sort((a,b) => String(b.codigo).localeCompare(String(a.codigo))); 
-  else if (currentSort === 'stockDesc') filtered.sort((a,b) => (b.cantidad||0) - (a.cantidad||0)); 
-  else if (currentSort === 'stockAsc') filtered.sort((a,b) => (a.cantidad||0) - (b.cantidad||0)); 
-  else if (currentSort === 'valorAsc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vA - vB; }); 
-  else if (currentSort === 'valorDesc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vB - vA; });
+  // Ordenamiento
+  if (sortVal === 'asc') filtered.sort((a,b) => String(a.codigo).localeCompare(String(b.codigo))); 
+  else if (sortVal === 'desc') filtered.sort((a,b) => String(b.codigo).localeCompare(String(a.codigo))); 
+  else if (sortVal === 'stockDesc') filtered.sort((a,b) => (b.cantidad||0) - (a.cantidad||0)); 
+  else if (sortVal === 'stockAsc') filtered.sort((a,b) => (a.cantidad||0) - (b.cantidad||0)); 
+  else if (sortVal === 'valorAsc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vA - vB; }); 
+  else if (sortVal === 'valorDesc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vB - vA; });
 
   window.currentTotalItems = filtered.length;
   const paginated = filtered.slice(append ? (currentPage-1)*ITEMS_PER_PAGE : 0, currentPage * ITEMS_PER_PAGE);
@@ -1104,7 +949,6 @@ function renderGrid(append = false) {
 
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // CAMBIO APLICADO: Se añade onload="this.classList.add('loaded')" y decoding="async"
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
@@ -1120,6 +964,9 @@ function renderGrid(append = false) {
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
 }
 
+// ==========================================
+// MODAL & COMPARTIR
+// ==========================================
 let currentModalCode = '';
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
@@ -1151,7 +998,7 @@ function showModal(p) {
             fetch(`img/${p.codigo}.jpg`)
               .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
               .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
-              .catch(()=> {/* Falla silenciosa si no hay imagen */});
+              .catch(()=> {});
          });
     });
 
@@ -1169,28 +1016,13 @@ window.compartirProducto = async function() {
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
 
-  if (!navigator.share) {
-    alert("Tu navegador no soporta el menú nativo de compartir.");
-    return;
-  }
+  if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
 
   if (window.currentShareFile && navigator.canShare) {
     const shareData = { files: [window.currentShareFile], text: textToShare };
-    if (navigator.canShare(shareData)) {
-      try {
-        await navigator.share(shareData);
-        return; 
-      } catch (err) {
-        if (err.name === 'AbortError') return; 
-      }
-    }
+    if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } }
   }
-
-  try {
-    await navigator.share({ text: textToShare });
-  } catch (err) {
-    console.error("No se pudo abrir el menú nativo:", err);
-  }
+  try { await navigator.share({ text: textToShare }); } catch (err) {}
 };
 </script>
 </body>
