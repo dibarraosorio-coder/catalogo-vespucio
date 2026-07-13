@@ -244,12 +244,12 @@
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
-    /* DROPDOWNS PERSONALIZADOS (Reemplazo de los native selects) */
+    /* DROPDOWNS PERSONALIZADOS */
     .custom-dropdown {
       position: relative;
       flex: 1 1 auto;
       min-width: 180px;
-      max-width: 220px; /* Tamaño más acotado */
+      max-width: 220px;
     }
     
     .dropdown-header {
@@ -316,7 +316,6 @@
     
     .dropdown-item:hover { background: var(--tab-hover-bg); color: var(--neon-green); }
     
-    /* Personalización de Radio y Checkbox sin el azul nativo */
     .dropdown-item input[type="radio"], .dropdown-item input[type="checkbox"] {
       appearance: none;
       width: 16px;
@@ -350,7 +349,7 @@
       transform: none;
     }
 
-    /* PESTAÑAS DE STOCK (Se mantienen por ser funcionales y pequeñas) */
+    /* PESTAÑAS DE STOCK */
     .stock-tabs { 
       display: flex; 
       gap: 4px; 
@@ -419,6 +418,18 @@
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
+    
+    /* EFECTO HOVER PARA COPIAR DESCRIPCIÓN SÓLO EN ESCRITORIO */
+    @media (hover: hover) and (pointer: fine) {
+      .card-desc {
+        cursor: copy;
+        transition: color 0.2s ease;
+      }
+      .card-desc:hover {
+        color: var(--neon-green);
+      }
+    }
+
     .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; }
     
     .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
@@ -649,19 +660,15 @@ let products = []; let EXTRA_DATA = {};
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
 window.currentShareFile = null;
 
-// Estados de Filtro
 let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
 let currentSearch = safeGetLocal('searchQuery') || ''; 
 
-// Iconos Tema
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Inicializar Tema
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
-  // Setup Botones de Stock
   document.querySelectorAll('.stock-tab').forEach(b => { 
     if(b.dataset.stock === currentStockFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
     else { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }
@@ -672,14 +679,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Buscador
   const searchInput = document.getElementById('searchInput');
   if(searchInput) {
     searchInput.value = currentSearch;
     searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
   }
 
-  // Setup Scroll & Infinite Load
   window.addEventListener('scroll', () => {
     const topBtn = document.getElementById('backToTop');
     if (window.scrollY > 400) topBtn.classList.add('visible'); else topBtn.classList.remove('visible');
@@ -690,38 +695,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Lógica Dropdowns Custom
   setupCustomDropdowns();
-
-  // Sincronizar Datos
   await sincronizarERP();
   renderLastUpdated(); 
-  renderUFMultiSelect(); // Llenar las UF reales extraídas de la base de datos
+  renderUFMultiSelect(); 
   renderGrid();
   
   setTimeout(() => { const loader = document.getElementById('loader-screen'); if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.visibility = 'hidden'; loader.style.display = 'none'; }, 600); } }, 300);
 });
 
-// ==========================================
-// LÓGICA DE MENÚS DESPLEGABLES PERSONALIZADOS
-// ==========================================
 function setupCustomDropdowns() {
   document.querySelectorAll('.custom-dropdown').forEach(dd => {
     const header = dd.querySelector('.dropdown-header');
-    
-    // Toggle abrir/cerrar
     header.addEventListener('click', (e) => {
       e.stopPropagation();
       const isOpen = dd.classList.contains('open');
-      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open')); // Cierra otros
+      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open')); 
       if (!isOpen) dd.classList.add('open');
     });
 
-    // Lógica para selects simples (Radio)
     dd.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const textSpan = dd.querySelector('.dropdown-header .text');
-        // Actualizar texto cabecera
         if(radio.name === 'catFilter') textSpan.textContent = radio.value === 'all' ? 'Categoría: Todas' : radio.parentNode.textContent.trim();
         else textSpan.textContent = radio.parentNode.textContent.trim();
         dd.classList.remove('open');
@@ -730,7 +725,6 @@ function setupCustomDropdowns() {
     });
   });
 
-  // Cerrar si se hace click fuera
   document.addEventListener('click', () => {
     document.querySelectorAll('.custom-dropdown').forEach(dd => dd.classList.remove('open'));
   });
@@ -766,18 +760,15 @@ function renderUFMultiSelect() {
 }
 
 window.clearFilters = function() {
-  // Limpiar variables
   currentStockFilter = 'all'; currentSearch = '';
   safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
   
-  // Limpiar UI Buscador y Stock
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.stock-tab').forEach(b => { 
     b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
     if(b.dataset.stock === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
   }); 
 
-  // Reset Custom Dropdowns (Radios)
   document.querySelector('input[name="catFilter"][value="all"]').checked = true;
   document.querySelector('#ddCat .dropdown-header .text').textContent = 'Categoría: Todas';
   
@@ -787,16 +778,12 @@ window.clearFilters = function() {
   document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
   document.querySelector('#ddSort .dropdown-header .text').textContent = 'A - Z (Por defecto)';
 
-  // Reset Custom Dropdown (Checkboxes UF)
   document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
   updateUFHeader();
 
   renderGrid();
 };
 
-// ==========================================
-// OBTENCIÓN DE DATOS (ERP)
-// ==========================================
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
 async function sincronizarERP() {
@@ -880,13 +867,27 @@ function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
 // ==========================================
-// RENDERIZADO DE GRILLA Y FILTROS
+// FUNCIÓN PARA COPIAR TEXTO CON EFECTOS
 // ==========================================
+window.copiarTexto = function(el) {
+  const texto = el.getAttribute('data-desc');
+  navigator.clipboard.writeText(texto).then(() => {
+    const originalText = el.textContent;
+    el.textContent = "¡Copiado al portapapeles!";
+    el.style.color = "var(--neon-green)";
+    el.style.fontWeight = "800";
+    setTimeout(() => {
+      el.textContent = originalText;
+      el.style.color = "";
+      el.style.fontWeight = "";
+    }, 1500);
+  }).catch(err => console.error("Error al copiar:", err));
+};
+
 function renderGrid(append = false) {
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
   
-  // Leer valores actuales de los Custom Dropdowns
   const catVal = document.querySelector('input[name="catFilter"]:checked').value;
   const planVal = document.querySelector('input[name="planFilter"]:checked').value;
   const sortVal = document.querySelector('input[name="sortOrder"]:checked').value;
@@ -895,33 +896,27 @@ function renderGrid(append = false) {
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
     
-    // Categoría
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
-    // Buscador
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); let codeNorm = normalizeStr(p.codigo); let descNorm = p.descripcion ? normalizeStr(p.descripcion) : ""; 
       if (!codeNorm.includes(q) && !descNorm.includes(q)) return false; 
     }
 
-    // Stock
     if (currentStockFilter === 'with' && p.cantidad === 0) return false; 
     if (currentStockFilter === 'without' && p.cantidad > 0) return false;
 
-    // UF Múltiple
     let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
     let val = parseFloat(valStr ? valStr.replace(',', '.') : 'NaN'); 
     if (ufSelected.length > 0 && !ufSelected.includes(val)) return false;
     
-    // Plan
     let plan = ((EXTRA_DATA[p.codigo] || {}).plan || "").toUpperCase();
     if (planVal !== 'all' && (planVal === 'sin_plan' ? plan !== '' : plan !== planVal)) return false;
     
     return true;
   });
 
-  // Ordenamiento
   if (sortVal === 'asc') filtered.sort((a,b) => String(a.codigo).localeCompare(String(b.codigo))); 
   else if (sortVal === 'desc') filtered.sort((a,b) => String(b.codigo).localeCompare(String(a.codigo))); 
   else if (sortVal === 'stockDesc') filtered.sort((a,b) => (b.cantidad||0) - (a.cantidad||0)); 
@@ -949,6 +944,7 @@ function renderGrid(append = false) {
 
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // INTEGRACIÓN APLICADA: onClick condicionado con matchMedia para escritorio y prevención del modal
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
@@ -956,7 +952,7 @@ function renderGrid(append = false) {
       </div>
       <div class="card-body">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><div class="card-code">${p.codigo}</div><div class="status-text ${statusObj.cls}" style="text-align:right;">Stock: ${qty}</div></div>
-        <div class="card-desc">${p.descripcion || "Sin descripción"}</div>
+        <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         ${extraHTML}
       </div>`;
     grid.appendChild(card);
@@ -964,9 +960,6 @@ function renderGrid(append = false) {
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
 }
 
-// ==========================================
-// MODAL & COMPARTIR
-// ==========================================
 let currentModalCode = '';
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
