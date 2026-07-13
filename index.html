@@ -451,13 +451,19 @@
       flex-shrink: 0;
     }
     
+    /* CAMBIO APLICADO: Fade-in suave para las imágenes */
     .card-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       padding: 12px;
-      transition: transform .4s ease; 
+      transition: transform .4s ease, opacity .4s ease; 
       filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+      opacity: 0; /* Inicia invisible */
+    }
+    
+    .card-img-wrap img.loaded {
+      opacity: 1; /* Se hace visible cuando tiene la clase loaded */
     }
     
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
@@ -1096,12 +1102,12 @@ function renderGrid(append = false) {
         </div>`;
     }
 
-    // ACCESIBILIDAD: Mejora del atributo ALT en las imágenes para describir qué se está mostrando
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // CAMBIO APLICADO: Se añade onload="this.classList.add('loaded')" y decoding="async"
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
-        <img src="img_sin_fondo/${p.codigo}.png" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" alt="Imagen de ${cleanDesc}"/>
+        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -1133,9 +1139,6 @@ function showModal(p) {
   const imgWrap = document.getElementById('modalImgWrap');
   imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img/${p.codigo}.png';"/>`;
   
-  // ==========================================
-  // PRECARGA INVISIBLE DE IMAGEN PARA ESCRITORIO
-  // ==========================================
   window.currentShareFile = null;
   fetch(`img_sin_fondo/${p.codigo}.png`)
     .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
@@ -1157,10 +1160,6 @@ function showModal(p) {
 
 function closeModal() { document.getElementById('modalOverlay')?.classList.remove('open'); currentModalCode = ''; }
 
-/* =========================================
-   FUNCIÓN DE COMPARTIR A PRUEBA DE FALLOS
-   ========================================= 
-*/
 window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0};
@@ -1175,22 +1174,18 @@ window.compartirProducto = async function() {
     return;
   }
 
-  // 1. INTENTO ÓPTIMO: Enviar Archivo Precargado + Texto
   if (window.currentShareFile && navigator.canShare) {
     const shareData = { files: [window.currentShareFile], text: textToShare };
     if (navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
-        return; // ¡Éxito absoluto!
+        return; 
       } catch (err) {
-        if (err.name === 'AbortError') return; // El usuario cerró el menú a propósito
-        // Si el sistema (ej. Windows) rechaza enviar archivos, el código cae aquí y ejecuta el Paso 2
+        if (err.name === 'AbortError') return; 
       }
     }
   }
 
-  // 2. PLAN B GARANTIZADO: Enviar Solo el Texto
-  // Si la imagen no existía, o si Windows bloqueó el archivo en el paso anterior, abrimos el menú de todas formas con los detalles.
   try {
     await navigator.share({ text: textToShare });
   } catch (err) {
