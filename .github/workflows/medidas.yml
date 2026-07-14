@@ -1,31 +1,53 @@
-name: 📏 Buscar Medidas Automáticamente
+import os
+import json
+import csv
+import urllib.request
+import urllib.parse
+import re
+import time
 
-on:
-  workflow_dispatch: # Permite ejecutar el robot manualmente con un botón
-  schedule:
-    - cron: '0 2 * * 0' # Se ejecutará automáticamente todos los domingos a las 02:00 AM
+SERPAPI_KEY = os.environ.get("SERPAPI_KEY")
+SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv"
+MEDIDAS_FILE = "medidas.json"
 
-jobs:
-  actualizar-medidas:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Descargar Repositorio
-        uses: actions/checkout@v3
+medidas = {}
+if os.path.exists(MEDIDAS_FILE):
+    with open(MEDIDAS_FILE, "r", encoding="utf-8") as f:
+        try:
+            medidas = json.load(f)
+        except:
+            medidas = {}
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+# 1. Descargar códigos
+print("Descargando lista de productos...")
+try:
+    with urllib.request.urlopen(SHEET_URL, timeout=30) as response:
+        lines = [l.decode('utf-8') for l in response.readlines()]
+    codigos = list(set([re.search(r'(ANF|COF|REL|PUL)\d+', l.upper()).group(0) for l in lines if re.search(r'(ANF|COF|REL|PUL)\d+', l.upper())]))
+except Exception as e:
+    print(f"Error descargando lista: {e}")
+    codigos = []
 
-      - name: Ejecutar Robot de Búsqueda
-        env:
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-        run: python buscar_medidas.py
+# 2. Búsqueda por lotes pequeños (solo 10 por ejecución para asegurar que termine)
+nuevos = 0
+for codigo in codigos[:10]: # Solo 10 por corrida para evitar bloqueos
+    if codigo not in medidas:
+        print(f"[{nuevos+1}/10] Buscando: {codigo}...")
+        query = urllib.parse.quote(f'"{codigo}" urn OR relicario dimensions')
+        url = f"https://serpapi.com/search.json?q={query}&api_key={SERPAPI_KEY}"
+        try:
+            with urllib.request.urlopen(url, timeout=30) as res:
+                data = json.loads(res.read().decode('utf-8'))
+                snippet = data.get("answer_box", {}).get("snippet") or (data.get("organic_results", [{}])[0].get("snippet", ""))
+                if snippet:
+                    medidas[codigo] = snippet
+                    nuevos += 1
+                    time.sleep(2) # Pausa entre búsquedas para no saturar
+        except Exception as e:
+            print(f"Error en {codigo}: {e}")
+            break # Si falla, paramos para guardar lo que llevamos
 
-      - name: Guardar y Subir Archivo JSON (Auto-Commit)
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action Bot"
-          git add medidas.json
-          git commit -m "🤖 Automático: Actualización de medidas de productos" || echo "No hay cambios nuevos para guardar"
-          git push
+# 3. Guardar
+with open(MEDIDAS_FILE, "w", encoding="utf-8") as f:
+    json.dump(medidas, f, indent=4, ensure_ascii=False)
+print(f"Proceso finalizado. Total guardadas: {len(medidas)}")
