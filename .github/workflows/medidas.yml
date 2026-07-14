@@ -1,0 +1,33 @@
+name: 📏 Buscar Medidas Automáticamente
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 0' # Domingos a las 2 AM
+
+jobs:
+  actualizar-medidas:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Permiso CLAVE para que el bot pueda guardar el archivo
+    steps:
+      - name: Descargar Repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Ejecutar Robot de Búsqueda
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python buscar_medidas.py
+
+      - name: Guardar y Subir Archivo JSON
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+          git add medidas.json
+          git commit -m "🤖 Automático: Actualización de medidas de productos" || echo "No hay cambios nuevos para guardar"
+          git push
