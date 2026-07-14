@@ -459,7 +459,7 @@
     .modal-stock-info { text-align: left; margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border); }
     .modal-stock-status { font-size: 1rem; font-weight: 700; margin-top: 0; }
     
-    #modalExtraInfo { margin-top: 24px; display: none; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
+    #modalExtraInfo { margin-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
     .modal-extra-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
     .modal-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0; line-height: 1; }
     .modal-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
@@ -629,7 +629,7 @@
             <div class="modal-extra-title">Plan</div>
             <div id="modalPlan" class="modal-extra-val"></div>
           </div>
-        </div>
+          </div>
         
         <div class="modal-actions-bar">
           <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir a cualquier aplicación">
@@ -851,6 +851,21 @@ async function sincronizarERP() {
            sessionStorage.setItem(cacheTimeKey, now.toString());
        }
     }
+    
+    // ==========================================
+    // NUEVO: LEER EL ARCHIVO JSON DEL ROBOT
+    // ==========================================
+    try {
+      const medidasRes = await fetch("medidas.json?t=" + new Date().getTime());
+      if (medidasRes.ok) {
+        const medidasJson = await medidasRes.json();
+        Object.keys(medidasJson).forEach(cod => {
+          if (!EXTRA_DATA[cod]) EXTRA_DATA[cod] = {};
+          EXTRA_DATA[cod].medidas = medidasJson[cod];
+        });
+      }
+    } catch(e) { console.log("Archivo de medidas no encontrado o en construcción..."); }
+
   } catch (err) {}
 }
 
@@ -866,9 +881,6 @@ function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsW
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
-// ==========================================
-// FUNCIÓN PARA COPIAR TEXTO CON EFECTOS
-// ==========================================
 window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
@@ -944,7 +956,6 @@ function renderGrid(append = false) {
 
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // INTEGRACIÓN APLICADA: onClick condicionado con matchMedia para escritorio y prevención del modal
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
@@ -969,12 +980,30 @@ function showModal(p) {
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
-  document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan) ? 'flex' : 'none';
+  document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan || ed.medidas) ? 'flex' : 'none';
   document.getElementById('modalValorWrap').style.display = ed.valor ? 'flex' : 'none'; 
   document.getElementById('modalValor').textContent = ed.valor ? ed.valor + ' UF' : '';
   document.getElementById('modalPlanWrap').style.display = ed.plan ? 'flex' : 'none'; 
   document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
   
+  // ==========================================
+  // NUEVO: INSERTAR MEDIDAS SI EXISTEN
+  // ==========================================
+  let medWrap = document.getElementById('modalMedidasWrap');
+  if(!medWrap) {
+    medWrap = document.createElement('div');
+    medWrap.id = 'modalMedidasWrap';
+    medWrap.className = 'modal-extra-block';
+    medWrap.style.flexBasis = "100%";
+    medWrap.style.marginTop = "12px";
+    medWrap.style.borderTop = "1px solid var(--glass-border)";
+    medWrap.style.paddingTop = "16px";
+    medWrap.innerHTML = `<div class="modal-extra-title" style="margin-bottom: 8px;">Dimensiones</div><div id="modalMedidas" class="modal-extra-val" style="font-size:1rem; font-weight:600; color:var(--text-main); line-height:1.4;"></div>`;
+    document.getElementById('modalExtraInfo').appendChild(medWrap);
+  }
+  medWrap.style.display = ed.medidas ? 'flex' : 'none';
+  if(ed.medidas) document.getElementById('modalMedidas').textContent = ed.medidas;
+
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
   imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img/${p.codigo}.png';"/>`;
@@ -1008,6 +1037,7 @@ window.compartirProducto = async function() {
   let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK: ${p.cantidad || 0}`;
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
+  if (ed.medidas) textToShare += `\n📏 MEDIDAS: ${ed.medidas}`; 
 
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
 
