@@ -244,7 +244,18 @@
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
-    /* DROPDOWNS PERSONALIZADOS */
+    /* FILTROS Y DROPDOWNS (ESCRITORIO) */
+    .mobile-filter-toggle { display: none; }
+    .mobile-filter-header { display: none; }
+    .filters-overlay { display: none; }
+    .filters-wrapper, .filters-panel {
+        display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto;
+    }
+    #filterActiveDot {
+        position: absolute; top: 10px; right: 10px; width: 8px; height: 8px;
+        background: var(--neon-red); border-radius: 50%; display: none;
+    }
+
     .custom-dropdown {
       position: relative;
       flex: 1 1 auto;
@@ -419,15 +430,9 @@
     .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
     
-    /* EFECTO HOVER PARA COPIAR DESCRIPCIÓN SÓLO EN ESCRITORIO */
     @media (hover: hover) and (pointer: fine) {
-      .card-desc {
-        cursor: copy;
-        transition: color 0.2s ease;
-      }
-      .card-desc:hover {
-        color: var(--neon-green);
-      }
+      .card-desc { cursor: copy; transition: color 0.2s ease; }
+      .card-desc:hover { color: var(--neon-green); }
     }
 
     .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; }
@@ -484,6 +489,7 @@
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
+    /* MEDIA QUERIES & OPTIMIZACIÓN MÓVIL (OPCIÓN 3) */
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
     @media (max-width: 900px) {
       #catalogGrid { grid-template-columns: repeat(4, 1fr); }
@@ -492,11 +498,10 @@
       .modal-img-section img { cursor: default; }
       .modal-img-section img:hover { transform: none; z-index: 50; }
     }
+    
     @media (max-width: 600px) {
       header { padding: 32px 20px 10px; }
       .controls-container { padding: 12px 16px; }
-      .search-wrap { flex: 1 1 100%; max-width: 100%; }
-      .custom-dropdown { min-width: 140px; max-width: 100%; }
       #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
       .modal-wrapper { padding: 16px; }
       .modal-box { gap: 12px; margin: auto; }
@@ -511,92 +516,66 @@
       .modal-extra-block:last-child { border-bottom: none; padding-bottom: 0; }
       .modal-extra-title { font-size: 0.75rem; margin: 0; text-align: left; }
       .modal-extra-val { font-size: 1.2rem; margin: 0; text-align: right; }
+
+      /* Ajustes Opción 3: Modal de Filtros para Móviles */
+      .controls-main-bar { flex-direction: column; gap: 0; }
+      .search-header-mobile { flex-wrap: nowrap !important; }
+      .search-wrap { flex: 1 1 auto; max-width: none; }
+      
+      .mobile-filter-toggle { 
+          display: flex; flex: 0 0 44px; height: 44px; width: 44px; position: relative;
+          align-items: center; justify-content: center; 
+          background: var(--btn-bg); border: 1px solid var(--input-border); 
+          border-radius: 8px; color: var(--text-main); cursor: pointer; transition: all .2s;
+      }
+      .mobile-filter-toggle:active { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+
+      .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; pointer-events: none; }
+      .filters-wrapper.open { pointer-events: auto; }
+      
+      .filters-overlay { display: block; position: absolute; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
+      .filters-wrapper.open .filters-overlay { opacity: 1; }
+      
+      .filters-panel {
+          position: absolute; bottom: 0; left: 0; width: 100%; max-height: 85vh; overflow-y: auto;
+          background: var(--modal-bg); border-radius: 24px 24px 0 0; padding: 24px 20px 40px;
+          display: flex; flex-direction: column; gap: 16px; align-items: stretch; justify-content: flex-start;
+          transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 -10px 40px rgba(0,0,0,0.5); border-top: 1px solid var(--glass-border);
+      }
+      .filters-wrapper.open .filters-panel { transform: translateY(0); }
+      
+      .mobile-filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px; }
+      .mobile-filter-header h3 { font-size: 1.1rem; color: var(--text-main); font-family: 'Nunito', sans-serif; margin: 0; font-weight: 800; }
+      .close-filters-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--btn-bg); color: var(--text-main); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+      
+      /* Acordeones para el Modal */
+      .custom-dropdown { max-width: 100%; min-width: 100%; }
+      .dropdown-list { 
+          position: static; box-shadow: none; border: 1px solid var(--glass-border); 
+          border-top: none; border-radius: 0 0 8px 8px; margin-top: -4px; max-height: 200px;
+      }
+      .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--neon-green); background: var(--btn-hover); }
+      .custom-dropdown.open .dropdown-list { border-color: var(--neon-green); }
+
+      .stock-tabs { width: 100%; justify-content: space-between; }
+      .stock-tab { flex: 1; justify-content: center; }
+      .action-btn.clean-btn { margin-top: 12px; height: 50px; justify-content: center; font-size: 1.05rem; }
     }
 
-    /* --- NUEVOS ESTILOS: CARGADOR INTERACTIVO --- */
-/* --- NUEVOS ESTILOS: CARGADOR INTERACTIVO --- */
+    /* --- ESTILOS: CARGADOR INTERACTIVO --- */
     .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--bg-body);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 99999;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: var(--bg-body); display: flex; justify-content: center;
+        align-items: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease;
     }
-
-    .loader-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
-    }
-
-    /* Envoltura para centrar el anillo y la foto en el mismo eje */
-    .loader-image-wrapper {
-        position: relative;
-        width: 150px;
-        height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* El anillo exterior que gira alrededor de la ánfora */
-    .loader-spinner-ring {
-        position: absolute;
-        width: 140px;
-        height: 140px;
-        border: 3px solid rgba(0, 242, 155, 0.08);
-        border-radius: 50%;
-        border-top-color: var(--neon-green);
-        animation: spin 1.2s linear infinite;
-        z-index: 1;
-    }
-
-    /* El círculo interior estático que contiene la foto */
-    .loader-image-container {
-        position: absolute;
-        width: 115px;
-        height: 115px;
-        border-radius: 50%;
-        border: 1px solid rgba(16, 185, 129, 0.15);
-        overflow: hidden;
-        background-color: var(--glass-bg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
-        backdrop-filter: blur(8px);
-        z-index: 2;
-    }
-
-    .loader-image-container img {
-        width: 80%;
-        height: 80%;
-        object-fit: contain;
-        transition: opacity 0.5s ease-in-out;
-        opacity: 0;
-        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-    }
-
-    .loader-img-fade-in {
-        opacity: 1 !important;
-    }
-
-    .loader-text-new {
-        font-family: 'Cinzel', serif;
-        letter-spacing: 4px;
-        color: var(--text-main);
-        font-size: 13px;
-        margin: 0;
-        animation: pulse 1.5s infinite;
-    }
-
+    .loader-content { display: flex; flex-direction: column; align-items: center; gap: 25px; }
+    .loader-image-wrapper { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+    .loader-spinner-ring { position: absolute; width: 140px; height: 140px; border: 3px solid rgba(0, 242, 155, 0.08); border-radius: 50%; border-top-color: var(--neon-green); animation: spin 1.2s linear infinite; z-index: 1; }
+    .loader-image-container { position: absolute; width: 115px; height: 115px; border-radius: 50%; border: 1px solid rgba(16, 185, 129, 0.15); overflow: hidden; background-color: var(--glass-bg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(8px); z-index: 2; }
+    .loader-image-container img { width: 80%; height: 80%; object-fit: contain; transition: opacity 0.5s ease-in-out; opacity: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+    .loader-img-fade-in { opacity: 1 !important; }
+    .loader-text-new { font-family: 'Cinzel', serif; letter-spacing: 4px; color: var(--text-main); font-size: 13px; margin: 0; animation: pulse 1.5s infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   </style>
@@ -626,64 +605,82 @@
   <div class="controls-container">
     <div class="controls-main-bar">
       
-      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
-      <div class="search-wrap">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
-        <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
-      </div>
-
-      <div class="custom-dropdown" id="ddCat">
-        <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
-        <div class="dropdown-list">
-          <label class="dropdown-item"><input type="radio" name="catFilter" value="all" checked> Todas</label>
-          <label class="dropdown-item"><input type="radio" name="catFilter" value="ánfora"> Ánforas</label>
-          <label class="dropdown-item"><input type="radio" name="catFilter" value="cofre"> Cofres</label>
-          <label class="dropdown-item"><input type="radio" name="catFilter" value="relicario"> Relicarios</label>
-          <label class="dropdown-item"><input type="radio" name="catFilter" value="pulsera"> Pulseras</label>
-        </div>
-      </div>
-
-      <div class="stock-tabs" role="tablist">
-        <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
-        <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
-        <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
-      </div>
-
-      <div class="custom-dropdown" id="ddUF">
-        <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
-        <div class="dropdown-list" id="ufOptionsList">
+      <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
+          <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
+          
+          <div class="search-wrap" style="flex:1 1 auto;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+            <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
           </div>
+
+          <button class="mobile-filter-toggle" onclick="toggleMobileFilters()" title="Filtros">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+              <span id="filterActiveDot"></span>
+          </button>
       </div>
 
-      <div class="custom-dropdown" id="ddPlan">
-        <div class="dropdown-header"><span class="text">Todos los Planes</span><span class="arrow">▼</span></div>
-        <div class="dropdown-list">
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="all" checked> Todos los Planes</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="PREMIUM"> PREMIUM</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="FULL"> FULL</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="LIBRE"> LIBRE</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="BASICO"> BÁSICO</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="OFERTA"> OFERTA</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="REGALO"> REGALO</label>
-          <label class="dropdown-item"><input type="radio" name="planFilter" value="sin_plan"> Sin Plan</label>
+      <div class="filters-wrapper" id="filtersWrapper">
+        <div class="filters-overlay" onclick="toggleMobileFilters()"></div>
+        <div class="filters-panel">
+            <div class="mobile-filter-header">
+                <h3>Filtros de Catálogo</h3>
+                <button class="close-filters-btn" onclick="toggleMobileFilters()">✕</button>
+            </div>
+
+            <div class="custom-dropdown" id="ddCat">
+              <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list">
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="all" checked> Todas</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="ánfora"> Ánforas</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="cofre"> Cofres</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="relicario"> Relicarios</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="pulsera"> Pulseras</label>
+              </div>
+            </div>
+
+            <div class="stock-tabs" role="tablist">
+              <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
+              <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
+              <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
+            </div>
+
+            <div class="custom-dropdown" id="ddUF">
+              <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list" id="ufOptionsList">
+                </div>
+            </div>
+
+            <div class="custom-dropdown" id="ddPlan">
+              <div class="dropdown-header"><span class="text">Todos los Planes</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list">
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="all" checked> Todos los Planes</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="PREMIUM"> PREMIUM</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="FULL"> FULL</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="LIBRE"> LIBRE</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="BASICO"> BÁSICO</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="OFERTA"> OFERTA</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="REGALO"> REGALO</label>
+                <label class="dropdown-item"><input type="radio" name="planFilter" value="sin_plan"> Sin Plan</label>
+              </div>
+            </div>
+
+            <div class="custom-dropdown" id="ddSort">
+              <div class="dropdown-header"><span class="text">A - Z (Por defecto)</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list">
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="asc" checked> A - Z (Por defecto)</label>
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="desc"> Z - A</label>
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockDesc"> Mayor a Menor Stock</label>
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockAsc"> Menor a Mayor Stock</label>
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorAsc"> Menor a Mayor Precio (UF)</label>
+                <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorDesc"> Mayor a Menor Precio (UF)</label>
+              </div>
+            </div>
+
+            <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar Filtros
+            </button>
         </div>
       </div>
-
-      <div class="custom-dropdown" id="ddSort">
-        <div class="dropdown-header"><span class="text">A - Z (Por defecto)</span><span class="arrow">▼</span></div>
-        <div class="dropdown-list">
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="asc" checked> A - Z (Por defecto)</label>
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="desc"> Z - A</label>
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockDesc"> Mayor a Menor Stock</label>
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="stockAsc"> Menor a Mayor Stock</label>
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorAsc"> Menor a Mayor Precio (UF)</label>
-          <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorDesc"> Mayor a Menor Precio (UF)</label>
-        </div>
-      </div>
-
-      <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar
-      </button>
 
     </div>
     <div class="results-count" id="resultsCount"></div>
@@ -736,7 +733,6 @@
 </button>
 
 <script>
-// Funciones auxiliares para LocalStorage
 function safeGetLocal(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
 function safeSetLocal(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
 function safeRemoveLocal(key) { try { localStorage.removeItem(key); } catch(e) {} }
@@ -754,10 +750,7 @@ let currentSearch = safeGetLocal('searchQuery') || '';
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 
-// ========================================================
-// --- NUEVAS FUNCIONES: CARGADOR INTERACTIVO ---
-// ========================================================
-const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"]; // Aquí puedes agregar más códigos base
+const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"];
 let intervalLoader = null;
 
 function iniciarCargadorInteractivo() {
@@ -778,7 +771,7 @@ function iniciarCargadorInteractivo() {
             const codigo = fotosSincronizacion[index];
             imgElement.src = `img_sin_fondo/${codigo}.png`;
             imgElement.onload = () => { imgElement.classList.add("loader-img-fade-in"); };
-            imgElement.onerror = () => { imgElement.src = `img/${codigo}.jpg`; }; // Fallback
+            imgElement.onerror = () => { imgElement.src = `img/${codigo}.jpg`; };
             index = (index + 1) % fotosSincronizacion.length;
         }, 500); 
     };
@@ -799,10 +792,21 @@ function detenerCargadorInteractivo() {
         }, 500);
     }
 }
-// ========================================================
+
+// LOGICA MODAL MÓVIL (NUEVA)
+function toggleMobileFilters() {
+    const wrapper = document.getElementById('filtersWrapper');
+    if (!wrapper) return;
+    wrapper.classList.toggle('open');
+    if (wrapper.classList.contains('open')) {
+        document.body.style.overflow = 'hidden'; // Evita scrollear el fondo
+    } else {
+        document.body.style.overflow = '';
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
-  iniciarCargadorInteractivo(); // <-- Encendemos la animación enseguida
+  iniciarCargadorInteractivo();
 
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
@@ -833,13 +837,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   setupCustomDropdowns();
-  
   await sincronizarERP();
   renderLastUpdated(); 
   renderUFMultiSelect(); 
   renderGrid();
   
-  // Apagamos la animación de carga interactiva al finalizar
   setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
@@ -898,6 +900,19 @@ function renderUFMultiSelect() {
   });
 }
 
+// LOGICA PUNTO ROJO DE FILTRO ACTIVO
+function updateFilterDot() {
+    const catVal = document.querySelector('input[name="catFilter"]:checked').value;
+    const planVal = document.querySelector('input[name="planFilter"]:checked').value;
+    const ufSelected = document.querySelectorAll('.uf-cb:checked').length > 0;
+    
+    const isFilterActive = catVal !== 'all' || planVal !== 'all' || ufSelected || currentStockFilter !== 'all';
+    const dot = document.getElementById('filterActiveDot');
+    if (dot) {
+        dot.style.display = isFilterActive ? 'block' : 'none';
+    }
+}
+
 window.clearFilters = function() {
   currentStockFilter = 'all'; currentSearch = '';
   safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
@@ -919,6 +934,9 @@ window.clearFilters = function() {
 
   document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
   updateUFHeader();
+
+  const wrapper = document.getElementById('filtersWrapper');
+  if(wrapper && wrapper.classList.contains('open')) { toggleMobileFilters(); }
 
   renderGrid();
 };
@@ -981,32 +999,22 @@ async function sincronizarERP() {
     if (response.ok) {
        const datosERP = await response.json();
        if(Array.isArray(datosERP) && datosERP.length > 0) {
-           // ==========================================================
-           // --- APLICACIÓN LÓGICA PLAN C: AGRUPAR Y SUMAR MOVIMIENTOS ---
-           // ==========================================================
            const stockConsolidado = {};
            datosERP.forEach(mov => {
                const cod = String(mov.codigo).toUpperCase().trim();
                if (!stockConsolidado[cod]) {
                    stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" };
                }
-               
-               // Suma o resta matemáticamente cada movimiento recibido
                stockConsolidado[cod].cantidad += parseFloat(mov.cantidad || 0);
-               
-               // Si viene una descripción válida y aún no teníamos una, la guardamos
                if (mov.descripcion && mov.descripcion.trim() !== "" && stockConsolidado[cod].descripcion === "Sin descripción") {
                    stockConsolidado[cod].descripcion = mov.descripcion;
                }
            });
 
-           // Transformar de vuelta al formato "products" que necesita el catálogo visual
            products = Object.keys(stockConsolidado).map(cod => {
-               // Aplicamos también el descuento de la hoja de Google Sheets si existe
                let finalQty = Math.max(0, stockConsolidado[cod].cantidad - (sheetData[cod] || 0)); 
                return { codigo: cod, descripcion: stockConsolidado[cod].descripcion, cantidad: finalQty };
            }).filter(p => isValidCode(p.codigo));
-           // ==========================================================
 
            sessionStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
            sessionStorage.setItem(cacheTimeKey, now.toString());
@@ -1027,9 +1035,6 @@ function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsW
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
-// ==========================================
-// FUNCIÓN PARA COPIAR TEXTO CON EFECTOS
-// ==========================================
 window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
@@ -1046,6 +1051,8 @@ window.copiarTexto = function(el) {
 };
 
 function renderGrid(append = false) {
+  updateFilterDot(); // Actualizar el punto rojo cada vez que se renderiza
+
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
   
