@@ -452,8 +452,12 @@
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
     .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; }
-    .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; }
-    .modal-img-section img:hover { transform: scale(1.6); z-index: 150; }
+    .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
+    
+    @media (hover: hover) and (pointer: fine) {
+       .modal-img-section img { pointer-events: auto; }
+       .modal-img-section img:hover { transform: scale(1.6); z-index: 150; }
+    }
 
     .modal-content { position: relative; flex: 1; width: 100%; max-width: 500px; padding: 32px 24px; overflow: hidden; text-align: center; font-family: 'Nunito', sans-serif; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); margin-top: 0; z-index: 10; }
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
@@ -478,6 +482,35 @@
     .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
+    /* --- ESTILOS FLECHAS DE NAVEGACIÓN MODAL --- */
+    .modal-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 1px solid var(--glass-border);
+        background: var(--modal-close-bg);
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        backdrop-filter: blur(8px);
+    }
+    .modal-nav-btn:hover {
+        background: var(--btn-hover);
+        color: var(--neon-green);
+        border-color: var(--neon-green);
+        transform: translateY(-50%) scale(1.1);
+    }
+    .nav-prev { left: 24px; }
+    .nav-next { right: 24px; }
+
     .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
@@ -495,8 +528,8 @@
       #catalogGrid { grid-template-columns: repeat(4, 1fr); }
       .modal-box { flex-direction: column-reverse; max-width: 560px; }
       .modal-img-section { height: 300px; }
-      .modal-img-section img { cursor: default; }
-      .modal-img-section img:hover { transform: none; z-index: 50; }
+      .nav-prev { left: 10px; }
+      .nav-next { right: 10px; }
     }
     
     @media (max-width: 600px) {
@@ -517,6 +550,8 @@
       .modal-extra-title { font-size: 0.75rem; margin: 0; text-align: left; }
       .modal-extra-val { font-size: 1.2rem; margin: 0; text-align: right; }
 
+      .modal-nav-btn { width: 44px; height: 44px; display: none; } /* Ocultamos flechas físicas en móvil para favorecer swipe */
+      
       /* Ajustes Opción 3: Modal de Filtros para Móviles */
       .controls-main-bar { flex-direction: column; gap: 0; }
       .search-header-mobile { flex-wrap: nowrap !important; }
@@ -693,6 +728,14 @@
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
+    
+    <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="modal-nav-btn nav-next" onclick="navegarModal(1)" title="Siguiente">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
@@ -743,9 +786,11 @@ const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "
 let products = []; let EXTRA_DATA = {};
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
 window.currentShareFile = null;
+window.currentFilteredList = []; // Lista filtrada actual para navegar con flechas/swipe
 
 let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
 let currentSearch = safeGetLocal('searchQuery') || ''; 
+let currentModalCode = '';
 
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
@@ -793,17 +838,32 @@ function detenerCargadorInteractivo() {
     }
 }
 
-// LOGICA MODAL MÓVIL (NUEVA)
+// LOGICA MODAL MÓVIL (FILTROS)
 function toggleMobileFilters() {
     const wrapper = document.getElementById('filtersWrapper');
     if (!wrapper) return;
     wrapper.classList.toggle('open');
     if (wrapper.classList.contains('open')) {
-        document.body.style.overflow = 'hidden'; // Evita scrollear el fondo
+        document.body.style.overflow = 'hidden'; 
     } else {
         document.body.style.overflow = '';
     }
 }
+
+// LÓGICA DE NAVEGACIÓN GALERÍA (FLECHAS / SWIPE)
+window.navegarModal = function(direccion) {
+    if(event) event.stopPropagation(); // Evita que se cierre el modal
+    if (!window.currentFilteredList || window.currentFilteredList.length === 0) return;
+    
+    const currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
+    if (currentIndex === -1) return;
+
+    let nextIndex = currentIndex + direccion;
+    if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
+    if (nextIndex >= window.currentFilteredList.length) nextIndex = 0;
+
+    showModal(window.currentFilteredList[nextIndex]);
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
@@ -825,6 +885,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.value = currentSearch;
     searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
   }
+
+  // --- LECTURA DE TECLADO (PC) ---
+  document.addEventListener('keydown', e => {
+      if (currentModalCode !== '') {
+          if (e.key === 'ArrowLeft') window.navegarModal(-1);
+          else if (e.key === 'ArrowRight') window.navegarModal(1);
+          else if (e.key === 'Escape') closeModal();
+      }
+  });
+
+  // --- LECTURA DE SWIPE (MÓVIL) ---
+  const modalOverlay = document.getElementById('modalOverlay');
+  let touchstartX = 0;
+  let touchendX = 0;
+
+  modalOverlay.addEventListener('touchstart', e => {
+      touchstartX = e.changedTouches[0].screenX;
+  }, {passive: true});
+
+  modalOverlay.addEventListener('touchend', e => {
+      touchendX = e.changedTouches[0].screenX;
+      if (currentModalCode !== '') {
+          let diff = touchstartX - touchendX;
+          if (Math.abs(diff) > 50) { // Umbral de 50px de deslizamiento
+              if (diff > 0) window.navegarModal(1); // Deslizó hacia la izquierda -> Siguiente
+              else window.navegarModal(-1); // Deslizó hacia la derecha -> Anterior
+          }
+      }
+  }, {passive: true});
 
   window.addEventListener('scroll', () => {
     const topBtn = document.getElementById('backToTop');
@@ -1051,7 +1140,7 @@ window.copiarTexto = function(el) {
 };
 
 function renderGrid(append = false) {
-  updateFilterDot(); // Actualizar el punto rojo cada vez que se renderiza
+  updateFilterDot();
 
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
@@ -1092,7 +1181,10 @@ function renderGrid(append = false) {
   else if (sortVal === 'valorAsc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vA - vB; }); 
   else if (sortVal === 'valorDesc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vB - vA; });
 
+  // Guardamos la lista actual para poder navegarla en el modal
+  window.currentFilteredList = filtered;
   window.currentTotalItems = filtered.length;
+  
   const paginated = filtered.slice(append ? (currentPage-1)*ITEMS_PER_PAGE : 0, currentPage * ITEMS_PER_PAGE);
   if (window.currentTotalItems === 0 && !append) { grid.innerHTML = `<div class="empty-state">Ningún producto coincide con la búsqueda o el ERP no envió datos.</div>`; }
 
@@ -1127,7 +1219,6 @@ function renderGrid(append = false) {
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
 }
 
-let currentModalCode = '';
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
