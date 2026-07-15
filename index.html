@@ -514,6 +514,7 @@
     }
 
     /* --- NUEVOS ESTILOS: CARGADOR INTERACTIVO --- */
+/* --- NUEVOS ESTILOS: CARGADOR INTERACTIVO --- */
     .loading-overlay {
         position: fixed;
         top: 0;
@@ -532,39 +533,55 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
+        gap: 25px;
     }
 
-    .loader-spinner-new {
-        width: 50px;
-        height: 50px;
-        border: 3px solid rgba(0, 242, 155, 0.1);
+    /* Envoltura para centrar el anillo y la foto en el mismo eje */
+    .loader-image-wrapper {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* El anillo exterior que gira alrededor de la ánfora */
+    .loader-spinner-ring {
+        position: absolute;
+        width: 140px;
+        height: 140px;
+        border: 3px solid rgba(0, 242, 155, 0.08);
         border-radius: 50%;
         border-top-color: var(--neon-green);
-        animation: spin 1s ease-in-out infinite;
+        animation: spin 1.2s linear infinite;
+        z-index: 1;
     }
 
+    /* El círculo interior estático que contiene la foto */
     .loader-image-container {
-        width: 120px;
-        height: 120px;
+        position: absolute;
+        width: 115px;
+        height: 115px;
         border-radius: 50%;
-        border: 2px solid var(--neon-green);
+        border: 1px solid rgba(16, 185, 129, 0.15);
         overflow: hidden;
         background-color: var(--glass-bg);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
         backdrop-filter: blur(8px);
+        z-index: 2;
     }
 
     .loader-image-container img {
-        width: 90%;
-        height: 90%;
+        width: 80%;
+        height: 80%;
         object-fit: contain;
         transition: opacity 0.5s ease-in-out;
         opacity: 0;
-        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
     }
 
     .loader-img-fade-in {
@@ -573,9 +590,9 @@
 
     .loader-text-new {
         font-family: 'Cinzel', serif;
-        letter-spacing: 3px;
+        letter-spacing: 4px;
         color: var(--text-main);
-        font-size: 14px;
+        font-size: 13px;
         margin: 0;
         animation: pulse 1.5s infinite;
     }
