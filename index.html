@@ -459,7 +459,7 @@
     .modal-stock-info { text-align: left; margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border); }
     .modal-stock-status { font-size: 1rem; font-weight: 700; margin-top: 0; }
     
-    #modalExtraInfo { margin-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
+    #modalExtraInfo { margin-top: 24px; display: none; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
     .modal-extra-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
     .modal-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0; line-height: 1; }
     .modal-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
@@ -513,20 +513,87 @@
       .modal-extra-val { font-size: 1.2rem; margin: 0; text-align: right; }
     }
 
-    #loader-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease; }
-    .loader-spinner { width: 64px; height: 64px; border: 4px solid var(--glass-border); border-top: 4px solid var(--neon-green); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 24px; }
+    /* --- NUEVOS ESTILOS: CARGADOR INTERACTIVO --- */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-body);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .loader-spinner-new {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(0, 242, 155, 0.1);
+        border-radius: 50%;
+        border-top-color: var(--neon-green);
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    .loader-image-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 2px solid var(--neon-green);
+        overflow: hidden;
+        background-color: var(--glass-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        backdrop-filter: blur(8px);
+    }
+
+    .loader-image-container img {
+        width: 90%;
+        height: 90%;
+        object-fit: contain;
+        transition: opacity 0.5s ease-in-out;
+        opacity: 0;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .loader-img-fade-in {
+        opacity: 1 !important;
+    }
+
+    .loader-text-new {
+        font-family: 'Cinzel', serif;
+        letter-spacing: 3px;
+        color: var(--text-main);
+        font-size: 14px;
+        margin: 0;
+        animation: pulse 1.5s infinite;
+    }
+
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .loader-text { font-family: 'Nunito', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text-main); letter-spacing: 0.15em; text-transform: uppercase; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    /* --- PAUSA TEMPORAL DE MEDIDAS --- */
-#modalMedidasWrap { display: none !important; }
   </style>
 </head>
 <body>
 
-<div id="loader-screen">
-  <div class="loader-spinner"></div>
-  <div class="loader-text" id="loaderText">Sincronizando...</div>
+<div id="loading-screen" class="loading-overlay">
+    <div class="loader-content">
+        <div class="loader-spinner-new"></div>
+        <div class="loader-image-container">
+            <img id="loader-product-img" src="" alt="Cargando producto..." class="loader-img-fade">
+        </div>
+        <p class="loader-text-new" id="loaderText">SINCRONIZANDO...</p>
+    </div>
 </div>
 
 <header>
@@ -631,7 +698,7 @@
             <div class="modal-extra-title">Plan</div>
             <div id="modalPlan" class="modal-extra-val"></div>
           </div>
-          </div>
+        </div>
         
         <div class="modal-actions-bar">
           <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir a cualquier aplicación">
@@ -668,7 +735,56 @@ let currentSearch = safeGetLocal('searchQuery') || '';
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 
+// ========================================================
+// --- NUEVAS FUNCIONES: CARGADOR INTERACTIVO ---
+// ========================================================
+const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"]; // Aquí puedes agregar más códigos base
+let intervalLoader = null;
+
+function iniciarCargadorInteractivo() {
+    const imgElement = document.getElementById("loader-product-img");
+    if (!imgElement) return;
+
+    let index = 0;
+    const screen = document.getElementById("loading-screen");
+    if (screen) {
+        screen.style.display = "flex";
+        screen.style.opacity = "1";
+        screen.style.visibility = "visible";
+    }
+
+    const cambiarImagen = () => {
+        imgElement.classList.remove("loader-img-fade-in");
+        setTimeout(() => {
+            const codigo = fotosSincronizacion[index];
+            imgElement.src = `img_sin_fondo/${codigo}.png`;
+            imgElement.onload = () => { imgElement.classList.add("loader-img-fade-in"); };
+            imgElement.onerror = () => { imgElement.src = `img/${codigo}.jpg`; }; // Fallback
+            index = (index + 1) % fotosSincronizacion.length;
+        }, 500); 
+    };
+
+    cambiarImagen(); 
+    if (intervalLoader) clearInterval(intervalLoader);
+    intervalLoader = setInterval(cambiarImagen, 2500); 
+}
+
+function detenerCargadorInteractivo() {
+    if (intervalLoader) clearInterval(intervalLoader);
+    const screen = document.getElementById("loading-screen");
+    if (screen) {
+        screen.style.opacity = "0";
+        setTimeout(() => {
+            screen.style.visibility = 'hidden';
+            screen.style.display = "none";
+        }, 500);
+    }
+}
+// ========================================================
+
 document.addEventListener('DOMContentLoaded', async () => {
+  iniciarCargadorInteractivo(); // <-- Encendemos la animación enseguida
+
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
   document.querySelectorAll('.stock-tab').forEach(b => { 
@@ -698,12 +814,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   setupCustomDropdowns();
+  
   await sincronizarERP();
   renderLastUpdated(); 
   renderUFMultiSelect(); 
   renderGrid();
   
-  setTimeout(() => { const loader = document.getElementById('loader-screen'); if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.visibility = 'hidden'; loader.style.display = 'none'; }, 600); } }, 300);
+  // Apagamos la animación de carga interactiva al finalizar
+  setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
 function setupCustomDropdowns() {
@@ -844,30 +962,37 @@ async function sincronizarERP() {
     if (response.ok) {
        const datosERP = await response.json();
        if(Array.isArray(datosERP) && datosERP.length > 0) {
-           products = datosERP.map(item => {
-               const cod = String(item.codigo).toUpperCase().trim();
-               let finalQty = Math.max(0, (parseInt(item.cantidad) || 0) - (sheetData[cod] || 0)); 
-               return { codigo: cod, descripcion: item.descripcion || "Sin descripción", cantidad: finalQty };
+           // ==========================================================
+           // --- APLICACIÓN LÓGICA PLAN C: AGRUPAR Y SUMAR MOVIMIENTOS ---
+           // ==========================================================
+           const stockConsolidado = {};
+           datosERP.forEach(mov => {
+               const cod = String(mov.codigo).toUpperCase().trim();
+               if (!stockConsolidado[cod]) {
+                   stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" };
+               }
+               
+               // Suma o resta matemáticamente cada movimiento recibido
+               stockConsolidado[cod].cantidad += parseFloat(mov.cantidad || 0);
+               
+               // Si viene una descripción válida y aún no teníamos una, la guardamos
+               if (mov.descripcion && mov.descripcion.trim() !== "" && stockConsolidado[cod].descripcion === "Sin descripción") {
+                   stockConsolidado[cod].descripcion = mov.descripcion;
+               }
+           });
+
+           // Transformar de vuelta al formato "products" que necesita el catálogo visual
+           products = Object.keys(stockConsolidado).map(cod => {
+               // Aplicamos también el descuento de la hoja de Google Sheets si existe
+               let finalQty = Math.max(0, stockConsolidado[cod].cantidad - (sheetData[cod] || 0)); 
+               return { codigo: cod, descripcion: stockConsolidado[cod].descripcion, cantidad: finalQty };
            }).filter(p => isValidCode(p.codigo));
+           // ==========================================================
+
            sessionStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
            sessionStorage.setItem(cacheTimeKey, now.toString());
        }
     }
-    
-    // ==========================================
-    // NUEVO: LEER EL ARCHIVO JSON DEL ROBOT
-    // ==========================================
-    try {
-      const medidasRes = await fetch("medidas.json?t=" + new Date().getTime());
-      if (medidasRes.ok) {
-        const medidasJson = await medidasRes.json();
-        Object.keys(medidasJson).forEach(cod => {
-          if (!EXTRA_DATA[cod]) EXTRA_DATA[cod] = {};
-          EXTRA_DATA[cod].medidas = medidasJson[cod];
-        });
-      }
-    } catch(e) { console.log("Archivo de medidas no encontrado o en construcción..."); }
-
   } catch (err) {}
 }
 
@@ -883,6 +1008,9 @@ function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsW
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
+// ==========================================
+// FUNCIÓN PARA COPIAR TEXTO CON EFECTOS
+// ==========================================
 window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
@@ -960,7 +1088,7 @@ function renderGrid(append = false) {
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
-        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
+        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img_sin_fondo/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -982,33 +1110,15 @@ function showModal(p) {
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
-  document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan || ed.medidas) ? 'flex' : 'none';
+  document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan) ? 'flex' : 'none';
   document.getElementById('modalValorWrap').style.display = ed.valor ? 'flex' : 'none'; 
   document.getElementById('modalValor').textContent = ed.valor ? ed.valor + ' UF' : '';
   document.getElementById('modalPlanWrap').style.display = ed.plan ? 'flex' : 'none'; 
   document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
   
-  // ==========================================
-  // NUEVO: INSERTAR MEDIDAS SI EXISTEN
-  // ==========================================
-  let medWrap = document.getElementById('modalMedidasWrap');
-  if(!medWrap) {
-    medWrap = document.createElement('div');
-    medWrap.id = 'modalMedidasWrap';
-    medWrap.className = 'modal-extra-block';
-    medWrap.style.flexBasis = "100%";
-    medWrap.style.marginTop = "12px";
-    medWrap.style.borderTop = "1px solid var(--glass-border)";
-    medWrap.style.paddingTop = "16px";
-    medWrap.innerHTML = `<div class="modal-extra-title" style="margin-bottom: 8px;">Dimensiones</div><div id="modalMedidas" class="modal-extra-val" style="font-size:1rem; font-weight:600; color:var(--text-main); line-height:1.4;"></div>`;
-    document.getElementById('modalExtraInfo').appendChild(medWrap);
-  }
-  medWrap.style.display = ed.medidas ? 'flex' : 'none';
-  if(ed.medidas) document.getElementById('modalMedidas').textContent = ed.medidas;
-
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
-  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img/${p.codigo}.png';"/>`;
+  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img_sin_fondo/${p.codigo}.png';"/>`;
   
   window.currentShareFile = null;
   fetch(`img_sin_fondo/${p.codigo}.png`)
@@ -1039,7 +1149,6 @@ window.compartirProducto = async function() {
   let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK: ${p.cantidad || 0}`;
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
-  if (ed.medidas) textToShare += `\n📏 MEDIDAS: ${ed.medidas}`; 
 
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
 
