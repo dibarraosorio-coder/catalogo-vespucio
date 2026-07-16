@@ -640,6 +640,7 @@
   <div class="controls-container">
     <div class="controls-main-bar">
       
+      <!-- CONTROLES VISIBLES EN MÓVIL Y PC -->
       <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
@@ -654,6 +655,7 @@
           </button>
       </div>
 
+      <!-- FILTROS (MODAL EN MÓVIL, BARRA EN PC) -->
       <div class="filters-wrapper" id="filtersWrapper">
         <div class="filters-overlay" onclick="toggleMobileFilters()"></div>
         <div class="filters-panel">
@@ -729,6 +731,7 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
     
+    <!-- FLECHAS DE NAVEGACIÓN (VISIBLES EN PC) -->
     <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
@@ -786,7 +789,11 @@ const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "
 let products = []; let EXTRA_DATA = {};
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
 window.currentShareFile = null;
-window.currentFilteredList = []; // Lista filtrada actual para navegar con flechas/swipe
+
+// SISTEMA DE PURGA DE PRODUCTOS SIN FOTO
+window.currentFilteredList = []; 
+window.invalidImageCodes = new Set();
+window.lastNavDirection = 1;
 
 let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
 let currentSearch = safeGetLocal('searchQuery') || ''; 
@@ -801,15 +808,9 @@ let intervalLoader = null;
 function iniciarCargadorInteractivo() {
     const imgElement = document.getElementById("loader-product-img");
     if (!imgElement) return;
-
     let index = 0;
     const screen = document.getElementById("loading-screen");
-    if (screen) {
-        screen.style.display = "flex";
-        screen.style.opacity = "1";
-        screen.style.visibility = "visible";
-    }
-
+    if (screen) { screen.style.display = "flex"; screen.style.opacity = "1"; screen.style.visibility = "visible"; }
     const cambiarImagen = () => {
         imgElement.classList.remove("loader-img-fade-in");
         setTimeout(() => {
@@ -820,7 +821,6 @@ function iniciarCargadorInteractivo() {
             index = (index + 1) % fotosSincronizacion.length;
         }, 500); 
     };
-
     cambiarImagen(); 
     if (intervalLoader) clearInterval(intervalLoader);
     intervalLoader = setInterval(cambiarImagen, 2500); 
@@ -829,34 +829,81 @@ function iniciarCargadorInteractivo() {
 function detenerCargadorInteractivo() {
     if (intervalLoader) clearInterval(intervalLoader);
     const screen = document.getElementById("loading-screen");
-    if (screen) {
-        screen.style.opacity = "0";
-        setTimeout(() => {
-            screen.style.visibility = 'hidden';
-            screen.style.display = "none";
-        }, 500);
-    }
+    if (screen) { screen.style.opacity = "0"; setTimeout(() => { screen.style.visibility = 'hidden'; screen.style.display = "none"; }, 500); }
 }
 
-// LOGICA MODAL MÓVIL (FILTROS)
 function toggleMobileFilters() {
     const wrapper = document.getElementById('filtersWrapper');
     if (!wrapper) return;
     wrapper.classList.toggle('open');
-    if (wrapper.classList.contains('open')) {
-        document.body.style.overflow = 'hidden'; 
-    } else {
-        document.body.style.overflow = '';
-    }
+    if (wrapper.classList.contains('open')) { document.body.style.overflow = 'hidden'; } 
+    else { document.body.style.overflow = ''; }
 }
 
-// LÓGICA DE NAVEGACIÓN GALERÍA (FLECHAS / SWIPE)
+// LOGICA DE AUTO-SALTO Y PURGA DE IMÁGENES
+window.handleImageFallback = function(imgEl, codigo) {
+    if (!imgEl.dataset.fallbackState) {
+        imgEl.dataset.fallbackState = '1';
+        imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') {
+        imgEl.dataset.fallbackState = '2';
+        imgEl.src = `img/${codigo}.jpg`;
+    } else {
+        // No existe en ningún formato. Lo añadimos a la lista negra.
+        window.invalidImageCodes.add(codigo);
+        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
+        if (card) card.remove();
+        
+        if (window.currentFilteredList) {
+            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
+            window.currentTotalItems = window.currentFilteredList.length;
+            const resCount = document.getElementById('resultsCount');
+            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
+        }
+    }
+};
+
+window.handleModalImageFallback = function(imgEl, codigo) {
+    if (!imgEl.dataset.fallbackState) {
+        imgEl.dataset.fallbackState = '1';
+        imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') {
+        imgEl.dataset.fallbackState = '2';
+        imgEl.src = `img/${codigo}.jpg`;
+    } else {
+        // Se detectó sin imagen estando en el modal. Se elimina y se auto-salta.
+        window.invalidImageCodes.add(codigo);
+        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
+        if (card) card.remove();
+        
+        if (window.currentFilteredList) {
+            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
+            window.currentTotalItems = window.currentFilteredList.length;
+            const resCount = document.getElementById('resultsCount');
+            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
+            
+            if (window.currentFilteredList.length > 0) {
+                setTimeout(() => window.navegarModal(window.lastNavDirection), 50);
+            } else {
+                closeModal();
+            }
+        } else {
+            closeModal();
+        }
+    }
+};
+
 window.navegarModal = function(direccion) {
-    if(event) event.stopPropagation(); // Evita que se cierre el modal
+    if(event) event.stopPropagation();
+    window.lastNavDirection = direccion;
     if (!window.currentFilteredList || window.currentFilteredList.length === 0) return;
     
-    const currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
-    if (currentIndex === -1) return;
+    let currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
+    
+    // Si fue eliminado por la purga, compensamos el índice para no saltarnos ningún producto válido
+    if (currentIndex === -1) {
+        currentIndex = direccion === 1 ? -1 : window.currentFilteredList.length;
+    }
 
     let nextIndex = currentIndex + direccion;
     if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
@@ -867,7 +914,6 @@ window.navegarModal = function(direccion) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
-
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
   document.querySelectorAll('.stock-tab').forEach(b => { 
@@ -886,7 +932,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
   }
 
-  // --- LECTURA DE TECLADO (PC) ---
+  // LECTURA DE TECLADO (PC)
   document.addEventListener('keydown', e => {
       if (currentModalCode !== '') {
           if (e.key === 'ArrowLeft') window.navegarModal(-1);
@@ -895,22 +941,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
-  // --- LECTURA DE SWIPE (MÓVIL) ---
+  // LECTURA DE SWIPE (MÓVIL)
   const modalOverlay = document.getElementById('modalOverlay');
-  let touchstartX = 0;
-  let touchendX = 0;
+  let touchstartX = 0; let touchendX = 0;
 
-  modalOverlay.addEventListener('touchstart', e => {
-      touchstartX = e.changedTouches[0].screenX;
-  }, {passive: true});
-
+  modalOverlay.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
   modalOverlay.addEventListener('touchend', e => {
       touchendX = e.changedTouches[0].screenX;
       if (currentModalCode !== '') {
           let diff = touchstartX - touchendX;
-          if (Math.abs(diff) > 50) { // Umbral de 50px de deslizamiento
-              if (diff > 0) window.navegarModal(1); // Deslizó hacia la izquierda -> Siguiente
-              else window.navegarModal(-1); // Deslizó hacia la derecha -> Anterior
+          if (Math.abs(diff) > 50) { 
+              if (diff > 0) window.navegarModal(1); 
+              else window.navegarModal(-1); 
           }
       }
   }, {passive: true});
@@ -954,10 +996,7 @@ function setupCustomDropdowns() {
       });
     });
   });
-
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.custom-dropdown').forEach(dd => dd.classList.remove('open'));
-  });
+  document.addEventListener('click', () => { document.querySelectorAll('.custom-dropdown').forEach(dd => dd.classList.remove('open')); });
 }
 
 function updateUFHeader() {
@@ -975,58 +1014,40 @@ function renderUFMultiSelect() {
     let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
     if (valStr) { let val = parseFloat(valStr.replace(',', '.')); if (!isNaN(val)) ufSet.add(val); }
   });
-  
   const ufArr = Array.from(ufSet).sort((a, b) => a - b);
   const list = document.getElementById('ufOptionsList');
   list.innerHTML = '';
-  
-  ufArr.forEach(uf => {
-    list.innerHTML += `<label class="dropdown-item" onclick="event.stopPropagation()"><input type="checkbox" value="${uf}" class="uf-cb"> ${uf} UF</label>`;
-  });
-
-  document.querySelectorAll('.uf-cb').forEach(cb => {
-    cb.addEventListener('change', () => { updateUFHeader(); renderGrid(); });
-  });
+  ufArr.forEach(uf => { list.innerHTML += `<label class="dropdown-item" onclick="event.stopPropagation()"><input type="checkbox" value="${uf}" class="uf-cb"> ${uf} UF</label>`; });
+  document.querySelectorAll('.uf-cb').forEach(cb => { cb.addEventListener('change', () => { updateUFHeader(); renderGrid(); }); });
 }
 
-// LOGICA PUNTO ROJO DE FILTRO ACTIVO
 function updateFilterDot() {
     const catVal = document.querySelector('input[name="catFilter"]:checked').value;
     const planVal = document.querySelector('input[name="planFilter"]:checked').value;
     const ufSelected = document.querySelectorAll('.uf-cb:checked').length > 0;
-    
     const isFilterActive = catVal !== 'all' || planVal !== 'all' || ufSelected || currentStockFilter !== 'all';
     const dot = document.getElementById('filterActiveDot');
-    if (dot) {
-        dot.style.display = isFilterActive ? 'block' : 'none';
-    }
+    if (dot) dot.style.display = isFilterActive ? 'block' : 'none';
 }
 
 window.clearFilters = function() {
   currentStockFilter = 'all'; currentSearch = '';
   safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
-  
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.stock-tab').forEach(b => { 
     b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
     if(b.dataset.stock === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
   }); 
-
   document.querySelector('input[name="catFilter"][value="all"]').checked = true;
   document.querySelector('#ddCat .dropdown-header .text').textContent = 'Categoría: Todas';
-  
   document.querySelector('input[name="planFilter"][value="all"]').checked = true;
   document.querySelector('#ddPlan .dropdown-header .text').textContent = 'Todos los Planes';
-  
   document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
   document.querySelector('#ddSort .dropdown-header .text').textContent = 'A - Z (Por defecto)';
-
   document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
   updateUFHeader();
-
   const wrapper = document.getElementById('filtersWrapper');
   if(wrapper && wrapper.classList.contains('open')) { toggleMobileFilters(); }
-
   renderGrid();
 };
 
@@ -1153,6 +1174,9 @@ function renderGrid(append = false) {
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
     
+    // REGLA DE ORO: Si está en la lista negra por no tener foto, se oculta del filtro
+    if(window.invalidImageCodes.has(p.codigo)) return false;
+    
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
@@ -1181,7 +1205,6 @@ function renderGrid(append = false) {
   else if (sortVal === 'valorAsc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vA - vB; }); 
   else if (sortVal === 'valorDesc') filtered.sort((a,b) => { let vA = parseFloat(((EXTRA_DATA[a.codigo]||{}).valor||"").replace(',','.'))||0; let vB = parseFloat(((EXTRA_DATA[b.codigo]||{}).valor||"").replace(',','.'))||0; return vB - vA; });
 
-  // Guardamos la lista actual para poder navegarla en el modal
   window.currentFilteredList = filtered;
   window.currentTotalItems = filtered.length;
   
@@ -1192,7 +1215,10 @@ function renderGrid(append = false) {
     const qty = p.cantidad || 0; const badge = getStockBadge(qty); const ed = EXTRA_DATA[p.codigo] || {}; let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const statusObj = getStockStatus(qty, isDesc);
     let ribbon = ''; if (qty === 0) { if(isDesc) ribbon = `<div class="badge-ribbon badge-desc">Agotado<br>Descont.</div>`; else ribbon = `<div class="badge-ribbon badge-out">Agotado</div>`; } else if (qty <= 3) ribbon = `<div class="badge-ribbon badge-low">Últimas<br>Unidades</div>`;
 
-    const card = document.createElement('div'); card.className = `product-card card-${badge.cls}`; card.onclick = () => showModal(p);
+    const card = document.createElement('div'); 
+    card.className = `product-card card-${badge.cls}`; 
+    card.dataset.code = p.codigo; // Identificador para la purga
+    card.onclick = () => showModal(p);
     
     let extraHTML = '';
     if (ed.valor || ed.plan) {
@@ -1206,7 +1232,7 @@ function renderGrid(append = false) {
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap">
-        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){ var c = this.closest('.product-card'); if(c) c.style.display='none'; }; }; this.src='img_sin_fondo/${p.codigo}.png';" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
+        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded')" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -1235,7 +1261,7 @@ function showModal(p) {
   
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
-  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="this.onerror=function(){ this.onerror=null; this.src='img/${p.codigo}.jpg'; this.onerror=function(){this.parentElement.innerHTML='<div style=\\'color:#94a3b8; font-weight:700; text-transform:uppercase;\\'>Sin Imagen Disponible</div>';}; }; this.src='img_sin_fondo/${p.codigo}.png';"/>`;
+  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')"/>`;
   
   window.currentShareFile = null;
   fetch(`img_sin_fondo/${p.codigo}.png`)
