@@ -94,21 +94,15 @@
     
     body { 
       font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
-      background: var(--bg-gradient); 
-      min-height: 100vh; 
-      color: var(--text-main); 
-      position: relative; 
-      transition: background 0.3s ease, color 0.3s ease; 
+      background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
+      position: relative; transition: background 0.3s ease, color 0.3s ease; 
     }
     
     body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(ellipse at 15% 20%, rgba(16,185,129,.04) 0%, transparent 40%),
                   radial-gradient(ellipse at 85% 80%, rgba(253,224,71,.02) 0%, transparent 40%);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
     header { 
@@ -162,6 +156,25 @@
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
+    /* --- INYECCIÓN: BÚSQUEDA POR VOZ ESTILOS --- */
+    .mic-btn {
+        position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+        width: 32px; height: 32px; border-radius: 6px;
+        background: transparent; border: none; color: var(--text-muted); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;
+    }
+    .mic-btn:hover { color: var(--neon-green); background: rgba(255,255,255,0.05); }
+    .mic-btn.listening {
+        color: var(--neon-red); animation: pulse-mic 1.5s infinite;
+        background: rgba(239,68,68,0.1);
+    }
+    .search-wrap .mic-btn svg {
+        position: static; left: auto; top: auto; transform: none; color: inherit; pointer-events: auto;
+    }
+    #searchInput { padding-right: 44px !important; }
+    @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+    /* ------------------------------------------- */
+
     /* FILTROS Y DROPDOWNS */
     .mobile-filter-toggle { display: none; }
     .mobile-filter-header { display: none; }
@@ -190,7 +203,6 @@
     .dropdown-item input:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
     .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: #000; transform: none; }
 
-    /* PESTAÑAS DE STOCK */
     .stock-tabs { display: flex; gap: 4px; background: var(--tab-bg); border: 1px solid var(--input-border); padding: 4px; border-radius: 8px; align-items: center; flex: 0 1 auto; }
     .stock-tab { height: 34px; padding: 0 14px; border: 1px solid transparent; border-radius: 6px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all .2s ease; color: var(--text-muted); background: transparent; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
     .stock-tab.active { background: var(--tab-active-bg); color: var(--tab-active-color); border-color: var(--tab-active-border); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -468,6 +480,10 @@
           <div class="search-wrap" style="flex:1 1 auto;">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
+            <!-- NUEVO: BOTÓN DE MICRÓFONO -->
+            <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="Búsqueda por voz" style="display: none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            </button>
           </div>
 
           <button class="mobile-filter-toggle" onclick="toggleMobileFilters()" title="Filtros">
@@ -727,10 +743,58 @@ window.navegarModal = function(direccion) {
     showModal(window.currentFilteredList[nextIndex]);
 };
 
+// --- INYECCIÓN: LÓGICA DE VOZ ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(event) {
+        const result = event.results[0][0].transcript;
+        const input = document.getElementById('searchInput');
+        input.value = result;
+        currentSearch = result;
+        safeSetLocal('searchQuery', currentSearch);
+        renderGrid();
+        stopVoiceSearch();
+    };
+    recognition.onerror = function() { stopVoiceSearch(); };
+    recognition.onend = function() { stopVoiceSearch(); };
+}
+
+function startVoiceSearch() {
+    if (!recognition) return alert("Tu navegador no soporta búsqueda por voz.");
+    const micBtn = document.getElementById('micBtn');
+    if (micBtn.classList.contains('listening')) {
+        recognition.stop();
+        stopVoiceSearch();
+    } else {
+        recognition.start();
+        micBtn.classList.add('listening');
+        document.getElementById('searchInput').placeholder = "Escuchando...";
+    }
+}
+
+function stopVoiceSearch() {
+    const micBtn = document.getElementById('micBtn');
+    if (micBtn) micBtn.classList.remove('listening');
+    const input = document.getElementById('searchInput');
+    if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
+}
+// --------------------------------
+
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
+  if (SpeechRecognition) {
+      const micBtn = document.getElementById('micBtn');
+      if (micBtn) micBtn.style.display = 'flex';
+  }
+
   document.querySelectorAll('.stock-tab').forEach(b => { 
     if(b.dataset.stock === currentStockFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
     else { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }
