@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>STOCK ÁNFORAS, COFRES Y RELICARIOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <!-- MEJORA 1: Tipografía Limpia (Reducida a 2 principales + 2 de acento) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet"/>
+  <!-- MEJORA 3: Librería robusta para parseo de CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <style>
     /* =========================================
        SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA NEÓN)
@@ -93,7 +96,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
-      font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
+      font-family: 'Nunito', -apple-system, Arial, sans-serif; /* Consolidado a Nunito y sistema base */
       background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
       position: relative; transition: background 0.3s ease, color 0.3s ease; 
     }
@@ -156,10 +159,7 @@
         display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
     .mic-btn:hover { color: var(--neon-green); background: rgba(255,255,255,0.05); }
-    .mic-btn.listening {
-        color: var(--neon-red); animation: pulse-mic 1.5s infinite;
-        background: rgba(239,68,68,0.1);
-    }
+    .mic-btn.listening { color: var(--neon-red); animation: pulse-mic 1.5s infinite; background: rgba(239,68,68,0.1); }
     @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
 
     #searchInput { 
@@ -214,18 +214,19 @@
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
     /* =========================================
-       GRILLA, TARJETAS Y VIEW TRANSITIONS
+       MEJORA 2: GRID FLUIDO Y VIEW TRANSITIONS
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
     
     #catalogGrid { 
-        display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s;
+        display: grid; 
+        /* Auto-fill para adaptabilidad fluida sin usar media queries fijos */
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+        gap: 20px; transition: all 0.3s;
         view-transition-name: catalog-grid;
     }
     
-    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) {
-        animation-duration: 0.4s;
-    }
+    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) { animation-duration: 0.4s; }
 
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
@@ -271,6 +272,7 @@
     .card-stock-ok .card-img-wrap { background: transparent; }
 
     .card-img-wrap { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--card-img-border); flex-shrink: 0; }
+    
     .card-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform .4s ease, opacity .4s ease; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); opacity: 0; }
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
@@ -357,10 +359,8 @@
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
-    /* MEDIA QUERIES & OPTIMIZACIÓN MÓVIL */
-    @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
+    /* MEDIA QUERIES REDUCIDOS GRACIAS AL GRID FLUIDO */
     @media (max-width: 900px) {
-      #catalogGrid { grid-template-columns: repeat(4, 1fr); }
       .modal-box { flex-direction: column; max-width: 560px; height: 90vh; overflow-y: auto; padding-right: 8px;}
       .modal-box::-webkit-scrollbar { display: none; }
       .modal-img-section { height: 350px; flex: none; width: 100%; border-radius: 20px;}
@@ -371,6 +371,7 @@
     @media (max-width: 600px) {
       header { padding: 32px 20px 10px; }
       .controls-container { padding: 12px 16px; }
+      /* Override the auto grid specifically for very small mobiles if needed, or rely on minmax */
       #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
       .modal-wrapper { padding: 16px; }
       .modal-box { gap: 16px; margin: auto; height: 85vh; padding-bottom: 40px;}
@@ -574,8 +575,8 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
-      <div class="modal-img-section">
-          <img id="modalProductImg" src="" alt="Imagen de Producto"/>
+      <div class="modal-img-section" id="modalImgWrap">
+          <!-- MEJORA 4: Etiqueta picture para formatos modernos inyectada vía JS -->
       </div>
       
       <!-- DISEÑO BENTO BOX -->
@@ -741,9 +742,17 @@ function stopVoiceSearch() {
     document.getElementById('searchInput').placeholder = "Buscar código o descripción...";
 }
 
+// LÓGICA DE FALLBACK Y LIMPIEZA DE IMÁGENES ROTAS
 window.handleImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    const pic = imgEl.closest('picture');
+    if (pic) pic.querySelectorAll('source').forEach(s => s.remove());
+
+    if (!imgEl.dataset.fallbackState) { 
+        imgEl.dataset.fallbackState = '1'; 
+        imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { 
+        imgEl.dataset.fallbackState = '2'; 
+        imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
@@ -758,8 +767,15 @@ window.handleImageFallback = function(imgEl, codigo) {
 };
 
 window.handleModalImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    const pic = imgEl.closest('picture');
+    if (pic) pic.querySelectorAll('source').forEach(s => s.remove());
+
+    if (!imgEl.dataset.fallbackState) { 
+        imgEl.dataset.fallbackState = '1'; 
+        imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { 
+        imgEl.dataset.fallbackState = '2'; 
+        imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
@@ -936,43 +952,59 @@ async function sincronizarERP() {
     }
 
     let sheetData = {};
+    // MEJORA 3: LECTURA ROBUSTA CON PAPAPARSE (Hoja 1)
     try {
       const sheetRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
       if (sheetRes.ok) {
-        const rows = (await sheetRes.text()).split('\n');
-        rows.forEach(row => {
-          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-          let code = null; let qty = 0;
-          for(let i=0; i<cols.length; i++) {
-            let cell = cols[i].trim().replace(/^"|"$/g, '');
-            if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
-          }
-          if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
+        const csvText = await sheetRes.text();
+        Papa.parse(csvText, {
+            skipEmptyLines: true,
+            complete: function(results) {
+                results.data.forEach(cols => {
+                    let code = null; let qty = 0;
+                    for(let i=0; i<cols.length; i++) {
+                        let cell = cols[i] ? cols[i].trim() : '';
+                        if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } 
+                        else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
+                    }
+                    if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
+                });
+            }
         });
       }
-    } catch(e) {}
+    } catch(e) { console.error("Error CSV 1", e); }
 
+    // MEJORA 3: LECTURA ROBUSTA CON PAPAPARSE (Hoja 2)
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
-        const rows = (await valRes.text()).split(/\r?\n/); 
-        let planIdx = 3; let valorIdx = 4; 
-        rows.forEach((row, index) => {
-          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-          if (index === 0) {
-            const hp = cols.findIndex(c => c.toUpperCase().includes('PLAN')); const hv = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
-            if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv; return;
-          }
-          let codeIdx = cols.findIndex(c => isValidCode(c));
-          if(codeIdx !== -1) {
-            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
-            let valCol = cols[valorIdx]; let planCol = cols[planIdx];
-            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
-            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
-          }
+        const csvText = await valRes.text();
+        Papa.parse(csvText, {
+            skipEmptyLines: true,
+            complete: function(results) {
+                const rows = results.data;
+                if(rows.length === 0) return;
+                let planIdx = 3; let valorIdx = 4;
+                const headers = rows[0].map(c => c ? c.toString().toUpperCase() : '');
+                const hp = headers.findIndex(c => c.includes('PLAN'));
+                const hv = headers.findIndex(c => c.includes('VALOR'));
+                if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv;
+
+                for(let i=1; i<rows.length; i++) {
+                    const cols = rows[i].map(c => c ? c.toString().trim() : '');
+                    let codeIdx = cols.findIndex(c => isValidCode(c));
+                    if(codeIdx !== -1) {
+                        let code = cols[codeIdx].toUpperCase();
+                        if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
+                        let valCol = cols[valorIdx]; let planCol = cols[planIdx];
+                        if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
+                        if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
+                    }
+                }
+            }
         });
       }
-    } catch(e) {}
+    } catch(e) { console.error("Error CSV 2", e); }
 
     const response = await fetch(URL_POWER_AUTOMATE);
     if (response.ok) {
@@ -1100,9 +1132,19 @@ function updateGridDOM(append) {
     }
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // MEJORA 4: ETIQUETA PICTURE CON SIZES Y FORMATOS MODERNOS
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
-        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
+        <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <source srcset="img_sin_fondo/${p.codigo}.avif" type="image/avif">
+            <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
+            <img src="img_sin_fondo/${p.codigo}.png" 
+                 onload="this.classList.add('loaded'); this.closest('.skeleton').classList.remove('skeleton');" 
+                 onerror="handleImageFallback(this, '${p.codigo}')" 
+                 loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"
+                 sizes="(max-width: 600px) 150px, 220px"
+                 style="width: 100%; height: 100%; object-fit: contain;"/>
+        </picture>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -1133,10 +1175,17 @@ function showModal(p) {
   document.getElementById('modalPlanWrap').style.display = ed.plan ? 'flex' : 'none'; 
   document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
   
-  const imgEl = document.getElementById('modalProductImg');
-  delete imgEl.dataset.fallbackState;
-  imgEl.src = `img_sin_fondo/${p.codigo}.png`;
-  imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+  let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
+  const imgWrap = document.getElementById('modalImgWrap');
+  
+  // MEJORA 4: PICTURE TAG EN MODAL
+  imgWrap.innerHTML = `
+      <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+          <source srcset="img_sin_fondo/${p.codigo}.avif" type="image/avif">
+          <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
+          <img id="modalProductImg" src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8));"/>
+      </picture>
+  `;
   
   window.currentShareFile = null;
   fetch(`img_sin_fondo/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.jpg`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'})).catch(()=> {}); }); });
