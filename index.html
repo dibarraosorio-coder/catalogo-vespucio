@@ -138,18 +138,18 @@
     }
     .controls-main-bar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; align-items: center; justify-content: center; }
     
-    .icon-btn { 
+    .icon-btn, .theme-toggle-btn { 
       flex: 0 0 44px; height: 44px; width: 44px; padding: 0 !important; display: flex; 
       justify-content: center; align-items: center; color: var(--text-main); 
       border: 1px solid var(--input-border); border-radius: 8px; background: var(--btn-bg); cursor: pointer; transition: all 0.2s;
     }
-    .icon-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
-    .icon-btn svg { width: 22px; height: 22px; }
+    .icon-btn:hover, .theme-toggle-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+    .icon-btn svg, .theme-toggle-btn svg { width: 22px; height: 22px; }
     
     .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; display: flex; align-items: center; }
     .search-wrap .search-icon { position: absolute; left: 16px; color: var(--text-muted); pointer-events: none; }
     
-    /* MEJORA 2: BÚSQUEDA POR VOZ */
+    /* BÚSQUEDA POR VOZ */
     .mic-btn {
         position: absolute; right: 8px; width: 32px; height: 32px; border-radius: 6px;
         background: transparent; border: none; color: var(--text-muted); cursor: pointer;
@@ -165,7 +165,7 @@
     #searchInput { 
       height: 44px; width: 100%; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); 
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
-      outline: none; transition: all .2s; padding: 0 44px 0 46px; /* Espacio extra a la derecha para el mic */
+      outline: none; transition: all .2s; padding: 0 44px 0 46px;
     }
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
@@ -218,7 +218,6 @@
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
     
-    /* MEJORA 4: VIEW TRANSITIONS (Animaciones fluidas nativas) */
     #catalogGrid { 
         display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s;
         view-transition-name: catalog-grid;
@@ -248,7 +247,7 @@
       .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; }
     }
 
-    /* MEJORA 1: VISTA DE LISTA (LIST TOGGLE) */
+    /* VISTA DE LISTA (LIST TOGGLE) */
     .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
     .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; }
     .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; }
@@ -298,7 +297,7 @@
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
-       MEJORA: MODAL BENTO BOX
+       MODAL BENTO BOX
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -312,7 +311,6 @@
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
     @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
-    /* Estructura Bento Grid para el Contenido */
     .modal-content-bento { flex: 1; width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: center; }
     
     .bento-card { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: center; position: relative; }
@@ -340,6 +338,7 @@
     .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 100%; max-width: 250px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
+    /* --- ESTILOS FLECHAS DE NAVEGACIÓN MODAL --- */
     .modal-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
     .modal-nav-btn:hover { background: var(--btn-hover); color: var(--neon-green); border-color: var(--neon-green); transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 24px; } .nav-next { right: 24px; }
@@ -470,9 +469,9 @@
     <div class="controls-main-bar">
       
       <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
+          
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
-          <!-- BOTÓN VISTA LISTA / GRID -->
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
           </button>
@@ -480,7 +479,6 @@
           <div class="search-wrap" style="flex:1 1 auto;">
             <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
-            <!-- BOTÓN MICRÓFONO -->
             <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="Búsqueda por voz" style="display: none;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
@@ -1023,7 +1021,6 @@ window.copiarTexto = function(el) {
 };
 
 function renderGrid(append = false) {
-  // USO DE VIEW TRANSITIONS API SI ESTÁ DISPONIBLE
   if (!append && document.startViewTransition) {
       document.startViewTransition(() => updateGridDOM(append));
   } else {
@@ -1121,10 +1118,12 @@ function updateGridDOM(append) {
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
+  
   document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   document.getElementById('modalStock').textContent = (p.cantidad || 0); 
+  
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
