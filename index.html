@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>STOCK ÁNFORAS, COFRES Y RELICARIOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <!-- Tipografía Limpia y Optimizada -->
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet"/>
-  <!-- PapaParse para procesamiento robusto de CSV -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA NEÓN)
+       SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA ORIGINAL RESTAURADA)
        ========================================= */
     :root {
       --bg-body: #020d08;
@@ -97,16 +93,22 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
-      font-family: 'Nunito', -apple-system, Arial, sans-serif; 
-      background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
-      position: relative; transition: background 0.3s ease, color 0.3s ease; 
+      font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
+      background: var(--bg-gradient); 
+      min-height: 100vh; 
+      color: var(--text-main); 
+      position: relative; 
+      transition: background 0.3s ease, color 0.3s ease; 
     }
     
     body::before {
-      content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(ellipse at 15% 20%, rgba(16,185,129,.04) 0%, transparent 40%),
                   radial-gradient(ellipse at 85% 80%, rgba(253,224,71,.02) 0%, transparent 40%);
-      pointer-events: none; z-index: 0;
+      pointer-events: none;
+      z-index: 0;
     }
 
     header { 
@@ -138,66 +140,40 @@
     .controls-container {
       position: sticky; top: 0; z-index: 900; background: var(--header-bg-solid);
       backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4); padding: 16px 24px 8px; margin-bottom: 24px; transition: background 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4); padding: 16px 24px; margin-bottom: 24px; transition: background 0.3s ease;
     }
     .controls-main-bar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; align-items: center; justify-content: center; }
     
-    .icon-btn, .theme-toggle-btn { 
+    .theme-toggle-btn { 
       flex: 0 0 44px; height: 44px; width: 44px; padding: 0 !important; display: flex; 
       justify-content: center; align-items: center; color: var(--text-main); 
       border: 1px solid var(--input-border); border-radius: 8px; background: var(--btn-bg); cursor: pointer; transition: all 0.2s;
     }
-    .icon-btn:hover, .theme-toggle-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
-    .icon-btn svg, .theme-toggle-btn svg { width: 22px; height: 22px; }
+    .theme-toggle-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+    .theme-toggle-btn svg { width: 22px; height: 22px; }
     
-    .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; display: flex; align-items: center; }
-    .search-wrap .search-icon { position: absolute; left: 16px; color: var(--text-muted); pointer-events: none; }
-    
-    /* BÚSQUEDA POR VOZ */
-    .mic-btn {
-        position: absolute; right: 8px; width: 32px; height: 32px; border-radius: 6px;
-        background: transparent; border: none; color: var(--text-muted); cursor: pointer;
-        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-    }
-    .mic-btn:hover { color: var(--neon-green); background: rgba(255,255,255,0.05); }
-    .mic-btn.listening { color: var(--neon-red); animation: pulse-mic 1.5s infinite; background: rgba(239,68,68,0.1); }
-    @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
-
+    .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; }
+    .search-wrap svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
     #searchInput { 
       height: 44px; width: 100%; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); 
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
-      outline: none; transition: all .2s; padding: 0 44px 0 46px;
+      outline: none; transition: all .2s; padding: 0 16px 0 46px; 
     }
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
-
-    /* FILTROS RÁPIDOS DESLIZABLES (PILLS) */
-    .category-pills-wrapper {
-        display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 8px 0; margin-top: 4px;
-        scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth;
-        max-width: 1400px; margin-left: auto; margin-right: auto;
-    }
-    .category-pills-wrapper::-webkit-scrollbar { display: none; }
-    .category-pill {
-        flex: 0 0 auto; padding: 6px 18px; border-radius: 20px; background: var(--input-bg);
-        border: 1px solid var(--input-border); color: var(--text-main); font-size: 0.82rem;
-        font-weight: 700; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
-        font-family: 'Nunito', sans-serif;
-    }
-    .category-pill:hover { border-color: var(--neon-green); color: var(--text-main); }
-    .category-pill.active { background: rgba(16,185,129,0.15); color: var(--neon-green); border-color: rgba(16,185,129,0.4); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
     /* FILTROS Y DROPDOWNS */
     .mobile-filter-toggle { display: none; }
     .mobile-filter-header { display: none; }
     .filters-overlay { display: none; }
-    .filters-wrapper, .filters-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto; margin-top: 4px; }
+    .filters-wrapper, .filters-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto; }
     #filterActiveDot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--neon-red); border-radius: 50%; display: none; }
 
     .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 180px; max-width: 220px; }
     .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
     .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;}
     .dropdown-header span.arrow { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.3s; }
+    
     .dropdown-header:hover, .custom-dropdown.open .dropdown-header { border-color: var(--neon-green); background: var(--btn-hover); }
     .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--neon-green); }
@@ -214,6 +190,7 @@
     .dropdown-item input:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
     .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: #000; transform: none; }
 
+    /* PESTAÑAS DE STOCK */
     .stock-tabs { display: flex; gap: 4px; background: var(--tab-bg); border: 1px solid var(--input-border); padding: 4px; border-radius: 8px; align-items: center; flex: 0 1 auto; }
     .stock-tab { height: 34px; padding: 0 14px; border: 1px solid transparent; border-radius: 6px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all .2s ease; color: var(--text-muted); background: transparent; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
     .stock-tab.active { background: var(--tab-active-bg); color: var(--tab-active-color); border-color: var(--tab-active-border); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -230,20 +207,10 @@
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
-    /* =========================================
-       GRILLA FLUIDA Y VIEW TRANSITIONS
-       ========================================= */
+    /* GRILLA Y TARJETAS CON SPOTLIGHT */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
+    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; }
     
-    #catalogGrid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-        gap: 20px; transition: all 0.3s;
-        view-transition-name: catalog-grid;
-    }
-    
-    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) { animation-duration: 0.4s; }
-
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
@@ -254,6 +221,7 @@
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .product-card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow-hover); border-color: var(--card-border-hover); }
 
+    /* EFECTO SPOTLIGHT LINTERNA MOUSE */
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -263,16 +231,6 @@
       .product-card:hover::before { opacity: 1; }
       .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; }
     }
-
-    /* VISTA DE LISTA (LIST TOGGLE) */
-    .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
-    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; }
-    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; }
-    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; }
-    .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
-    .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
-    .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
-    .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
 
     .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
     .badge-out { background: var(--neon-red); color: white; }
@@ -288,12 +246,16 @@
     .card-stock-ok .card-img-wrap { background: transparent; }
 
     .card-img-wrap { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--card-img-border); flex-shrink: 0; }
-    
     .card-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform .4s ease, opacity .4s ease; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); opacity: 0; }
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
-    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
+    /* EFECTO SKELETON LOADER */
+    .skeleton {
+        background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%);
+        background-size: 400% 100%;
+        animation: shimmer 1.5s infinite;
+    }
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -306,54 +268,56 @@
     .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; transition: color 0.2s; }
     
-    @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--neon-green); } }
+    @media (hover: hover) and (pointer: fine) {
+      .card-desc { cursor: copy; }
+      .card-desc:hover { color: var(--neon-green); }
+    }
 
     .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; }
+    
     .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
     .card-stock-row { background: rgba(253,224,71,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(253,224,71,0.2); display: flex; align-items: center; justify-content: center; }
     .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
-    /* =========================================
-       MODAL BENTO BOX
-       ========================================= */
+    /* MODAL */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     
     .modal-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px; }
-    .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 1000px; gap: 24px; animation: modalIn .3s ease; }
+    .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; max-width: 960px; gap: 32px; animation: modalIn .3s ease; }
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    .modal-img-section { flex: 1; width: 100%; max-width: 500px; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); padding: 20px; }
+    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; }
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
-    @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
-
-    .modal-content-bento { flex: 1; width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: center; }
     
-    .bento-card { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: center; position: relative; }
-    .bento-header { grid-column: 1 / -1; align-items: flex-start; }
-    .bento-stock { grid-column: 1 / -1; align-items: center; flex-direction: row; justify-content: space-between; background: var(--modal-info-bg); border-color: rgba(16,185,129,0.3); }
-    .bento-extra { align-items: center; text-align: center; background: var(--modal-info-bg); }
-    .bento-actions { grid-column: 1 / -1; align-items: center; padding: 16px; background: transparent; border: none; box-shadow: none; flex-direction: row; gap: 16px;}
+    @media (hover: hover) and (pointer: fine) {
+       .modal-img-section img { pointer-events: auto; }
+       .modal-img-section img:hover { transform: scale(1.6); z-index: 150; }
+    }
 
+    .modal-content { position: relative; flex: 1; width: 100%; max-width: 500px; padding: 32px 24px; overflow: hidden; text-align: center; font-family: 'Nunito', sans-serif; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); margin-top: 0; z-index: 10; }
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
-    .modal-code { font-size: 2rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.1; }
-    .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin: 0; }
+    .modal-code { font-size: 1.6rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 12px; }
+    .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin-bottom: 24px; padding: 0 10px; }
+    .modal-stock-section { display: inline-flex; align-items: center; justify-content: center; gap: 0; padding: 16px 28px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
+    .modal-stock-number { font-size: 1.8rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
+    .modal-stock-info { text-align: left; margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border); }
+    .modal-stock-status { font-size: 1rem; font-weight: 700; margin-top: 0; }
     
-    .modal-stock-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
-    .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
-    .modal-stock-status { font-size: 1rem; font-weight: 700; text-align: right; }
-    
-    .bento-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0 0 8px 0; line-height: 1; }
-    .bento-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
+    #modalExtraInfo { margin-top: 24px; display: none; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
+    .modal-extra-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+    .modal-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0; line-height: 1; }
+    .modal-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
     #modalValor { color: var(--accent-gold); }
     #modalPlan { color: var(--neon-green); }
     
     .modal-close { position: fixed; top: 24px; right: 28px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
     .modal-close:hover { transform: scale(1.1); background: var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red); }
     
-    .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 100%; max-width: 250px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+    .modal-actions-bar { display: flex; justify-content: center; margin-top: 24px; border: none; }
+    .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
     /* --- ESTILOS FLECHAS DE NAVEGACIÓN MODAL --- */
@@ -361,7 +325,16 @@
     .modal-nav-btn:hover { background: var(--btn-hover); color: var(--neon-green); border-color: var(--neon-green); transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 24px; } .nav-next { right: 24px; }
 
-    .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
+    /* --- ESTILOS NOTIFICACIÓN TOAST --- */
+    .toast-notification {
+        position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
+        background: var(--header-bg-solid); border: 1px solid var(--neon-green);
+        color: var(--neon-green); padding: 12px 24px; border-radius: 30px;
+        font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem;
+        z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        pointer-events: none; display: flex; align-items: center; gap: 8px;
+    }
     .toast-notification.show { bottom: 30px; }
 
     .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
@@ -375,12 +348,12 @@
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
-    /* MEDIA QUERIES REDUCIDOS GRACIAS AL GRID FLUIDO */
+    /* MEDIA QUERIES & OPTIMIZACIÓN MÓVIL */
+    @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
     @media (max-width: 900px) {
-      .modal-box { flex-direction: column; max-width: 560px; height: 90vh; overflow-y: auto; padding-right: 8px;}
-      .modal-box::-webkit-scrollbar { display: none; }
-      .modal-img-section { height: 350px; flex: none; width: 100%; border-radius: 20px;}
-      .modal-content-bento { flex: none; width: 100%; }
+      #catalogGrid { grid-template-columns: repeat(4, 1fr); }
+      .modal-box { flex-direction: column-reverse; max-width: 560px; }
+      .modal-img-section { height: 300px; }
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
     }
     
@@ -389,12 +362,19 @@
       .controls-container { padding: 12px 16px; }
       #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
       .modal-wrapper { padding: 16px; }
-      .modal-box { gap: 16px; margin: auto; height: 85vh; padding-bottom: 40px;}
-      .modal-img-section { height: 260px; padding: 10px; border-radius: 16px;} 
-      .bento-card { padding: 16px; border-radius: 16px;}
-      .modal-code { font-size: 1.6rem; margin-bottom: 4px; }
-      .modal-desc { font-size: 0.95rem; }
-      .modal-stock-number { font-size: 2rem; }
+      .modal-box { gap: 12px; margin: auto; }
+      .modal-img-section { height: 160px; } 
+      .modal-content { padding: 20px 16px; border-radius: 20px; }
+      .modal-code { font-size: 1.4rem; margin-bottom: 8px; }
+      .modal-desc { font-size: 0.95rem; margin-bottom: 16px; line-height: 1.4; }
+      .modal-stock-section { padding: 10px 20px; }
+      .modal-stock-number { font-size: 1.5rem; }
+      #modalExtraInfo { margin-top: 16px; padding: 16px; flex-direction: column; gap: 12px; justify-content: center; align-items: stretch; }
+      .modal-extra-block { display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
+      .modal-extra-block:last-child { border-bottom: none; padding-bottom: 0; }
+      .modal-extra-title { font-size: 0.75rem; margin: 0; text-align: left; }
+      .modal-extra-val { font-size: 1.2rem; margin: 0; text-align: right; }
+
       .modal-nav-btn { display: none; } 
       
       .controls-main-bar { flex-direction: column; gap: 0; }
@@ -410,6 +390,7 @@
 
       .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; pointer-events: none; }
       .filters-wrapper.open { pointer-events: auto; }
+      
       .filters-overlay { display: block; position: absolute; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
       .filters-wrapper.open .filters-overlay { opacity: 1; }
       
@@ -434,14 +415,9 @@
       .stock-tabs { width: 100%; justify-content: space-between; }
       .stock-tab { flex: 1; justify-content: center; }
       .action-btn.clean-btn { margin-top: 12px; height: 50px; justify-content: center; font-size: 1.05rem; }
-      
-      /* Ajuste vista de lista en celular */
-      .catalog-wrap.list-view .card-img-wrap { width: 90px; }
-      .catalog-wrap.list-view .product-card { height: 110px; }
-      .catalog-wrap.list-view .card-code { font-size: 1rem; }
-      .catalog-wrap.list-view .card-body { padding: 10px; }
     }
 
+    /* --- ESTILOS: CARGADOR INTERACTIVO --- */
     .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease; }
     .loader-content { display: flex; flex-direction: column; align-items: center; gap: 25px; }
     .loader-image-wrapper { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
@@ -456,6 +432,7 @@
 </head>
 <body>
 
+<!-- TOAST NOTIFICACIÓN -->
 <div id="toast" class="toast-notification">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
   Descripción copiada
@@ -484,21 +461,13 @@
   <div class="controls-container">
     <div class="controls-main-bar">
       
+      <!-- CONTROLES VISIBLES EN MÓVIL Y PC -->
       <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
-          
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
-          <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          </button>
-
           <div class="search-wrap" style="flex:1 1 auto;">
-            <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
-            <!-- MEJORA 2: BÚSQUEDA POR VOZ -->
-            <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="Búsqueda por voz" style="display: none;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-            </button>
           </div>
 
           <button class="mobile-filter-toggle" onclick="toggleMobileFilters()" title="Filtros">
@@ -507,15 +476,7 @@
           </button>
       </div>
 
-      <!-- MEJORA 3: FILTROS RÁPIDOS DESLIZABLES (PILLS) -->
-      <div class="category-pills-wrapper">
-         <button class="category-pill active" data-cat="all">Todas las Categorías</button>
-         <button class="category-pill" data-cat="ánfora">Ánforas</button>
-         <button class="category-pill" data-cat="cofre">Cofres</button>
-         <button class="category-pill" data-cat="relicario">Relicarios</button>
-         <button class="category-pill" data-cat="pulsera">Pulseras</button>
-      </div>
-
+      <!-- FILTROS (MODAL EN MÓVIL, BARRA EN PC) -->
       <div class="filters-wrapper" id="filtersWrapper">
         <div class="filters-overlay" onclick="toggleMobileFilters()"></div>
         <div class="filters-panel">
@@ -524,7 +485,16 @@
                 <button class="close-filters-btn" onclick="toggleMobileFilters()">✕</button>
             </div>
 
-            <!-- Menú antiguo de categorías eliminado aquí, reemplazado por los pills arriba -->
+            <div class="custom-dropdown" id="ddCat">
+              <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list">
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="all" checked> Todas</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="ánfora"> Ánforas</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="cofre"> Cofres</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="relicario"> Relicarios</label>
+                <label class="dropdown-item"><input type="radio" name="catFilter" value="pulsera"> Pulseras</label>
+              </div>
+            </div>
 
             <div class="stock-tabs" role="tablist">
               <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
@@ -574,13 +544,15 @@
     <div class="results-count" id="resultsCount"></div>
   </div>
 
-  <div class="catalog-wrap" id="catalogWrapper">
+  <div class="catalog-wrap">
     <div id="catalogGrid"></div>
   </div>
 </main>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
+    
+    <!-- FLECHAS DE NAVEGACIÓN (VISIBLES EN PC) -->
     <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
@@ -591,43 +563,34 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
-      <div class="modal-img-section" id="modalImgWrap">
-          <!-- Picture element injected by JS -->
+      <div class="modal-content">
+        <div class="modal-category" id="modalCat"></div>
+        <div class="modal-code" id="modalCode"></div>
+        <div class="modal-desc" id="modalDesc"></div>
+        <div class="modal-stock-section" id="modalStockWrap">
+          <div class="modal-stock-number" id="modalStock" style="font-size: 1.8rem;"></div>
+          <div class="modal-stock-info" style="margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border);"><div id="modalStatus" class="modal-stock-status" style="font-size: 1rem; margin-top: 0;"></div></div>
+        </div>
+        
+        <div id="modalExtraInfo">
+          <div id="modalValorWrap" class="modal-extra-block">
+            <div class="modal-extra-title">Valor Referencia</div>
+            <div id="modalValor" class="modal-extra-val"></div>
+          </div>
+          <div id="modalPlanWrap" class="modal-extra-block">
+            <div class="modal-extra-title">Plan</div>
+            <div id="modalPlan" class="modal-extra-val"></div>
+          </div>
+        </div>
+        
+        <div class="modal-actions-bar">
+          <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir a cualquier aplicación">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </button>
+        </div>
       </div>
       
-      <!-- MEJORA 1: DISEÑO BENTO BOX -->
-      <div class="modal-content-bento">
-          <div class="bento-card bento-header">
-              <span class="modal-category" id="modalCat"></span>
-              <h2 class="modal-code" id="modalCode"></h2>
-              <p class="modal-desc" id="modalDesc"></p>
-          </div>
-          
-          <div class="bento-card bento-stock" id="modalStockWrap">
-              <div>
-                  <div class="modal-stock-label">Stock Actual</div>
-                  <div class="modal-stock-number" id="modalStock"></div>
-              </div>
-              <div id="modalStatus" class="modal-stock-status"></div>
-          </div>
-          
-          <div class="bento-card bento-extra" id="modalValorWrap">
-              <h3 class="bento-extra-title">Valor Ref.</h3>
-              <p class="bento-extra-val" id="modalValor"></p>
-          </div>
-          
-          <div class="bento-card bento-extra" id="modalPlanWrap">
-              <h3 class="bento-extra-title">Plan Contrato</h3>
-              <p class="bento-extra-val" id="modalPlan"></p>
-          </div>
-
-          <div class="bento-card bento-actions">
-              <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                  Compartir
-              </button>
-          </div>
-      </div>
+      <div class="modal-img-section" id="modalImgWrap"></div>
     </div>
   </div>
 </div>
@@ -647,6 +610,8 @@ const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "
 let products = []; let EXTRA_DATA = {};
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
 window.currentShareFile = null;
+
+// SISTEMA DE PURGA DE PRODUCTOS SIN FOTO
 window.currentFilteredList = []; 
 window.invalidImageCodes = new Set();
 window.lastNavDirection = 1;
@@ -654,13 +619,9 @@ window.lastNavDirection = 1;
 let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
 let currentSearch = safeGetLocal('searchQuery') || ''; 
 let currentModalCode = '';
-let isListView = safeGetLocal('viewMode') === 'list';
-let currentCategory = 'all'; // Variable global para el nuevo filtro de pastillas
 
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-const svgGrid = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`;
-const svgList = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`;
 
 const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"];
 let intervalLoader = null;
@@ -700,80 +661,19 @@ function toggleMobileFilters() {
     else { document.body.style.overflow = ''; }
 }
 
-function toggleViewMode() {
-    isListView = !isListView;
-    safeSetLocal('viewMode', isListView ? 'list' : 'grid');
-    applyViewMode();
-}
-
-function applyViewMode() {
-    const wrapper = document.getElementById('catalogWrapper');
-    const btn = document.getElementById('viewToggleBtn');
-    if(isListView) {
-        wrapper.classList.add('list-view');
-        btn.innerHTML = svgList;
-    } else {
-        wrapper.classList.remove('list-view');
-        btn.innerHTML = svgGrid;
-    }
-}
-
-// INICIALIZACIÓN BÚSQUEDA POR VOZ
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition;
-if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = 'es-ES';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onresult = function(event) {
-        const result = event.results[0][0].transcript;
-        const input = document.getElementById('searchInput');
-        input.value = result;
-        currentSearch = result;
-        safeSetLocal('searchQuery', currentSearch);
-        renderGrid();
-        stopVoiceSearch();
-    };
-    recognition.onerror = function() { stopVoiceSearch(); };
-    recognition.onend = function() { stopVoiceSearch(); };
-}
-
-function startVoiceSearch() {
-    if (!recognition) return alert("Tu navegador no soporta búsqueda por voz.");
-    const micBtn = document.getElementById('micBtn');
-    if (micBtn.classList.contains('listening')) {
-        recognition.stop();
-        stopVoiceSearch();
-    } else {
-        recognition.start();
-        micBtn.classList.add('listening');
-        document.getElementById('searchInput').placeholder = "Escuchando...";
-    }
-}
-
-function stopVoiceSearch() {
-    const micBtn = document.getElementById('micBtn');
-    micBtn.classList.remove('listening');
-    document.getElementById('searchInput').placeholder = "Buscar código o descripción...";
-}
-
-// LÓGICA DE FALLBACK Y LIMPIEZA DE IMÁGENES ROTAS
+// LOGICA DE AUTO-SALTO Y PURGA DE IMÁGENES
 window.handleImageFallback = function(imgEl, codigo) {
-    const pic = imgEl.closest('picture');
-    if (pic) pic.querySelectorAll('source').forEach(s => s.remove());
-
-    if (!imgEl.dataset.fallbackState) { 
-        imgEl.dataset.fallbackState = '1'; 
+    if (!imgEl.dataset.fallbackState) {
+        imgEl.dataset.fallbackState = '1';
         imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { 
-        imgEl.dataset.fallbackState = '2'; 
+    } else if (imgEl.dataset.fallbackState === '1') {
+        imgEl.dataset.fallbackState = '2';
         imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
         if (card) card.remove();
+        
         if (window.currentFilteredList) {
             window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
             window.currentTotalItems = window.currentFilteredList.length;
@@ -784,26 +684,31 @@ window.handleImageFallback = function(imgEl, codigo) {
 };
 
 window.handleModalImageFallback = function(imgEl, codigo) {
-    const pic = imgEl.closest('picture');
-    if (pic) pic.querySelectorAll('source').forEach(s => s.remove());
-
-    if (!imgEl.dataset.fallbackState) { 
-        imgEl.dataset.fallbackState = '1'; 
+    if (!imgEl.dataset.fallbackState) {
+        imgEl.dataset.fallbackState = '1';
         imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { 
-        imgEl.dataset.fallbackState = '2'; 
+    } else if (imgEl.dataset.fallbackState === '1') {
+        imgEl.dataset.fallbackState = '2';
         imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
         if (card) card.remove();
+        
         if (window.currentFilteredList) {
             window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
             window.currentTotalItems = window.currentFilteredList.length;
             const resCount = document.getElementById('resultsCount');
             if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-            if (window.currentFilteredList.length > 0) { setTimeout(() => window.navegarModal(window.lastNavDirection), 50); } else { closeModal(); }
-        } else { closeModal(); }
+            
+            if (window.currentFilteredList.length > 0) {
+                setTimeout(() => window.navegarModal(window.lastNavDirection), 50);
+            } else {
+                closeModal();
+            }
+        } else {
+            closeModal();
+        }
     }
 };
 
@@ -811,11 +716,14 @@ window.navegarModal = function(direccion) {
     if(event) event.stopPropagation();
     window.lastNavDirection = direccion;
     if (!window.currentFilteredList || window.currentFilteredList.length === 0) return;
+    
     let currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
     if (currentIndex === -1) { currentIndex = direccion === 1 ? -1 : window.currentFilteredList.length; }
+
     let nextIndex = currentIndex + direccion;
     if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
     if (nextIndex >= window.currentFilteredList.length) nextIndex = 0;
+
     showModal(window.currentFilteredList[nextIndex]);
 };
 
@@ -823,19 +731,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
-  applyViewMode();
-  if (SpeechRecognition) document.getElementById('micBtn').style.display = 'flex';
-
-  // Lógica para Pills de Categorías (MEJORA 3)
-  document.querySelectorAll('.category-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-          document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          currentCategory = pill.dataset.cat;
-          renderGrid();
-      });
-  });
-
   document.querySelectorAll('.stock-tab').forEach(b => { 
     if(b.dataset.stock === currentStockFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
     else { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); }
@@ -852,6 +747,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
   }
 
+  // LECTURA DE TECLADO (PC)
   document.addEventListener('keydown', e => {
       if (currentModalCode !== '') {
           if (e.key === 'ArrowLeft') window.navegarModal(-1);
@@ -860,14 +756,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
+  // LECTURA DE SWIPE (MÓVIL)
   const modalOverlay = document.getElementById('modalOverlay');
   let touchstartX = 0; let touchendX = 0;
+
   modalOverlay.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
   modalOverlay.addEventListener('touchend', e => {
       touchendX = e.changedTouches[0].screenX;
       if (currentModalCode !== '') {
           let diff = touchstartX - touchendX;
-          if (Math.abs(diff) > 50) { if (diff > 0) window.navegarModal(1); else window.navegarModal(-1); }
+          if (Math.abs(diff) > 50) { 
+              if (diff > 0) window.navegarModal(1); 
+              else window.navegarModal(-1); 
+          }
       }
   }, {passive: true});
 
@@ -886,6 +787,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderLastUpdated(); 
   renderUFMultiSelect(); 
   renderGrid();
+  
   setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
@@ -898,10 +800,12 @@ function setupCustomDropdowns() {
       document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open')); 
       if (!isOpen) dd.classList.add('open');
     });
+
     dd.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const textSpan = dd.querySelector('.dropdown-header .text');
-        textSpan.textContent = radio.parentNode.textContent.trim();
+        if(radio.name === 'catFilter') textSpan.textContent = radio.value === 'all' ? 'Categoría: Todas' : radio.parentNode.textContent.trim();
+        else textSpan.textContent = radio.parentNode.textContent.trim();
         dd.classList.remove('open');
         renderGrid();
       });
@@ -933,39 +837,32 @@ function renderUFMultiSelect() {
 }
 
 function updateFilterDot() {
+    const catVal = document.querySelector('input[name="catFilter"]:checked').value;
     const planVal = document.querySelector('input[name="planFilter"]:checked').value;
     const ufSelected = document.querySelectorAll('.uf-cb:checked').length > 0;
-    const isFilterActive = currentCategory !== 'all' || planVal !== 'all' || ufSelected || currentStockFilter !== 'all';
+    const isFilterActive = catVal !== 'all' || planVal !== 'all' || ufSelected || currentStockFilter !== 'all';
     const dot = document.getElementById('filterActiveDot');
     if (dot) dot.style.display = isFilterActive ? 'block' : 'none';
 }
 
 window.clearFilters = function() {
-  currentStockFilter = 'all'; currentSearch = ''; currentCategory = 'all';
+  currentStockFilter = 'all'; currentSearch = '';
   safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
-  
   document.getElementById('searchInput').value = '';
-  
   document.querySelectorAll('.stock-tab').forEach(b => { 
     b.classList.remove('active'); b.setAttribute('aria-selected', 'false');
     if(b.dataset.stock === 'all') { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
   }); 
-  
-  document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-  document.querySelector('.category-pill[data-cat="all"]').classList.add('active');
-  
+  document.querySelector('input[name="catFilter"][value="all"]').checked = true;
+  document.querySelector('#ddCat .dropdown-header .text').textContent = 'Categoría: Todas';
   document.querySelector('input[name="planFilter"][value="all"]').checked = true;
   document.querySelector('#ddPlan .dropdown-header .text').textContent = 'Todos los Planes';
-  
   document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
   document.querySelector('#ddSort .dropdown-header .text').textContent = 'A - Z (Por defecto)';
-  
   document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
   updateUFHeader();
-  
   const wrapper = document.getElementById('filtersWrapper');
   if(wrapper && wrapper.classList.contains('open')) { toggleMobileFilters(); }
-  
   renderGrid();
 };
 
@@ -988,20 +885,15 @@ async function sincronizarERP() {
     try {
       const sheetRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
       if (sheetRes.ok) {
-        const csvText = await sheetRes.text();
-        Papa.parse(csvText, {
-            skipEmptyLines: true,
-            complete: function(results) {
-                results.data.forEach(cols => {
-                    let code = null; let qty = 0;
-                    for(let i=0; i<cols.length; i++) {
-                        let cell = cols[i] ? cols[i].trim() : '';
-                        if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } 
-                        else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
-                    }
-                    if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
-                });
-            }
+        const rows = (await sheetRes.text()).split('\n');
+        rows.forEach(row => {
+          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+          let code = null; let qty = 0;
+          for(let i=0; i<cols.length; i++) {
+            let cell = cols[i].trim().replace(/^"|"$/g, '');
+            if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
+          }
+          if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
         });
       }
     } catch(e) {}
@@ -1009,30 +901,21 @@ async function sincronizarERP() {
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
-        const csvText = await valRes.text();
-        Papa.parse(csvText, {
-            skipEmptyLines: true,
-            complete: function(results) {
-                const rows = results.data;
-                if(rows.length === 0) return;
-                let planIdx = 3; let valorIdx = 4;
-                const headers = rows[0].map(c => c ? c.toString().toUpperCase() : '');
-                const hp = headers.findIndex(c => c.includes('PLAN'));
-                const hv = headers.findIndex(c => c.includes('VALOR'));
-                if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv;
-
-                for(let i=1; i<rows.length; i++) {
-                    const cols = rows[i].map(c => c ? c.toString().trim() : '');
-                    let codeIdx = cols.findIndex(c => isValidCode(c));
-                    if(codeIdx !== -1) {
-                        let code = cols[codeIdx].toUpperCase();
-                        if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
-                        let valCol = cols[valorIdx]; let planCol = cols[planIdx];
-                        if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
-                        if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
-                    }
-                }
-            }
+        const rows = (await valRes.text()).split(/\r?\n/); 
+        let planIdx = 3; let valorIdx = 4; 
+        rows.forEach((row, index) => {
+          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+          if (index === 0) {
+            const hp = cols.findIndex(c => c.toUpperCase().includes('PLAN')); const hv = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
+            if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv; return;
+          }
+          let codeIdx = cols.findIndex(c => isValidCode(c));
+          if(codeIdx !== -1) {
+            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
+            let valCol = cols[valorIdx]; let planCol = cols[planIdx];
+            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
+            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
+          }
         });
       }
     } catch(e) {}
@@ -1044,7 +927,9 @@ async function sincronizarERP() {
            const stockConsolidado = {};
            datosERP.forEach(mov => {
                const cod = String(mov.codigo).toUpperCase().trim();
-               if (!stockConsolidado[cod]) { stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" }; }
+               if (!stockConsolidado[cod]) {
+                   stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" };
+               }
                stockConsolidado[cod].cantidad += parseFloat(mov.cantidad || 0);
                if (mov.descripcion && mov.descripcion.trim() !== "" && stockConsolidado[cod].descripcion === "Sin descripción") {
                    stockConsolidado[cod].descripcion = mov.descripcion;
@@ -1075,39 +960,37 @@ function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsW
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
+// FUNCIÓN DE COPIAR CON TOAST
 window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
     const toast = document.getElementById('toast');
-    if(toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
+    if(toast) {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
   }).catch(err => console.error("Error al copiar:", err));
 };
 
 function renderGrid(append = false) {
-  // MEJORA 4: VIEW TRANSITIONS API
-  if (!append && document.startViewTransition) {
-      document.startViewTransition(() => updateGridDOM(append));
-  } else {
-      updateGridDOM(append);
-  }
-}
-
-function updateGridDOM(append) {
   updateFilterDot();
+
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
   
+  const catVal = document.querySelector('input[name="catFilter"]:checked').value;
   const planVal = document.querySelector('input[name="planFilter"]:checked').value;
   const sortVal = document.querySelector('input[name="sortOrder"]:checked').value;
   const ufSelected = Array.from(document.querySelectorAll('.uf-cb:checked')).map(cb => parseFloat(cb.value));
 
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
+    
+    // REGLA DE ORO: Si está en la lista negra por no tener foto, se oculta del filtro
     if(window.invalidImageCodes.has(p.codigo)) return false;
     
-    // MEJORA 3: Lógica conectada al nuevo sistema de Pills
-    let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(currentCategory);
-    if (currentCategory !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
+    let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
+    if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); let codeNorm = normalizeStr(p.codigo); let descNorm = p.descripcion ? normalizeStr(p.descripcion) : ""; 
@@ -1149,10 +1032,13 @@ function updateGridDOM(append) {
     card.dataset.code = p.codigo; 
     card.onclick = () => showModal(p);
     
+    // LOGICA SPOTLIGHT
     card.onmousemove = e => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`); card.style.setProperty('--mouse-y', `${y}px`);
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
     };
     
     let extraHTML = '';
@@ -1162,19 +1048,13 @@ function updateGridDOM(append) {
           ${ed.plan ? `<div class="card-plan">${ed.plan}</div>` : ``}
         </div>`;
     }
+
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // INTEGRADO EL SKELETON
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
-        <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-            <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
-            <img src="img_sin_fondo/${p.codigo}.png" 
-                 onload="this.classList.add('loaded'); this.closest('.skeleton')?.classList.remove('skeleton');" 
-                 onerror="handleImageFallback(this, '${p.codigo}')" 
-                 loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"
-                 sizes="(max-width: 600px) 150px, 220px"
-                 style="width: 100%; height: 100%; object-fit: contain;"/>
-        </picture>
+        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
       <div class="card-body">
@@ -1190,12 +1070,8 @@ function updateGridDOM(append) {
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
-  
-  document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
-  document.getElementById('modalCode').textContent = p.codigo; 
-  document.getElementById('modalDesc').textContent = p.descripcion || "";
-  document.getElementById('modalStock').textContent = (p.cantidad || 0); 
-  
+  document.getElementById('modalCat').textContent = getCategory(p.codigo).label; document.getElementById('modalCode').textContent = p.codigo; document.getElementById('modalDesc').textContent = p.descripcion || "";
+  document.getElementById('modalStock').textContent = "Stock: " + (p.cantidad || 0); 
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
@@ -1207,16 +1083,23 @@ function showModal(p) {
   
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
-  
-  imgWrap.innerHTML = `
-      <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-          <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
-          <img id="modalProductImg" src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8));"/>
-      </picture>
-  `;
+  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')"/>`;
   
   window.currentShareFile = null;
-  fetch(`img_sin_fondo/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.jpg`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'})).catch(()=> {}); }); });
+  fetch(`img_sin_fondo/${p.codigo}.png`)
+    .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+    .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
+    .catch(() => {
+       fetch(`img/${p.codigo}.png`)
+         .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+         .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
+         .catch(() => {
+            fetch(`img/${p.codigo}.jpg`)
+              .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+              .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
+              .catch(()=> {});
+         });
+    });
 
   overlay.classList.add('open');
 }
@@ -1227,11 +1110,17 @@ window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0};
   const ed = EXTRA_DATA[currentModalCode] || {};
+  
   let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK: ${p.cantidad || 0}`;
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
+
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
-  if (window.currentShareFile && navigator.canShare) { const shareData = { files: [window.currentShareFile], text: textToShare }; if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } } }
+
+  if (window.currentShareFile && navigator.canShare) {
+    const shareData = { files: [window.currentShareFile], text: textToShare };
+    if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } }
+  }
   try { await navigator.share({ text: textToShare }); } catch (err) {}
 };
 </script>
