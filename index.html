@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>STOCK ÁNFORAS, COFRES Y RELICARIOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <!-- MEJORA 1: Tipografía Limpia (Reducida a 2 principales + 2 de acento) -->
+  <!-- Tipografía Limpia y Optimizada -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet"/>
-  <!-- MEJORA 3: Librería robusta para parseo de CSV -->
+  <!-- PapaParse para procesamiento robusto de CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  
   <style>
     /* =========================================
        SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA NEÓN)
@@ -96,7 +97,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
-      font-family: 'Nunito', -apple-system, Arial, sans-serif; /* Consolidado a Nunito y sistema base */
+      font-family: 'Nunito', -apple-system, Arial, sans-serif; 
       background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
       position: relative; transition: background 0.3s ease, color 0.3s ease; 
     }
@@ -214,13 +215,13 @@
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
     /* =========================================
-       MEJORA 2: GRID FLUIDO Y VIEW TRANSITIONS
+       GRILLA FLUIDA, TARJETAS Y VIEW TRANSITIONS
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
     
     #catalogGrid { 
         display: grid; 
-        /* Auto-fill para adaptabilidad fluida sin usar media queries fijos */
+        /* GRID FLUIDO: Se adapta a cualquier pantalla automáticamente */
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
         gap: 20px; transition: all 0.3s;
         view-transition-name: catalog-grid;
@@ -359,7 +360,7 @@
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
-    /* MEDIA QUERIES REDUCIDOS GRACIAS AL GRID FLUIDO */
+    /* MEDIA QUERIES */
     @media (max-width: 900px) {
       .modal-box { flex-direction: column; max-width: 560px; height: 90vh; overflow-y: auto; padding-right: 8px;}
       .modal-box::-webkit-scrollbar { display: none; }
@@ -371,8 +372,7 @@
     @media (max-width: 600px) {
       header { padding: 32px 20px 10px; }
       .controls-container { padding: 12px 16px; }
-      /* Override the auto grid specifically for very small mobiles if needed, or rely on minmax */
-      #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
+      #catalogGrid { gap: 12px; padding: 0 16px 80px; }
       .modal-wrapper { padding: 16px; }
       .modal-box { gap: 16px; margin: auto; height: 85vh; padding-bottom: 40px;}
       .modal-img-section { height: 260px; padding: 10px; border-radius: 16px;} 
@@ -575,11 +575,11 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
+      <!-- CONTENEDOR DE IMAGEN CORREGIDO -->
       <div class="modal-img-section" id="modalImgWrap">
-          <!-- MEJORA 4: Etiqueta picture para formatos modernos inyectada vía JS -->
+          <!-- Picture element injected by JS -->
       </div>
       
-      <!-- DISEÑO BENTO BOX -->
       <div class="modal-content-bento">
           <div class="bento-card bento-header">
               <span class="modal-category" id="modalCat"></span>
@@ -952,7 +952,6 @@ async function sincronizarERP() {
     }
 
     let sheetData = {};
-    // MEJORA 3: LECTURA ROBUSTA CON PAPAPARSE (Hoja 1)
     try {
       const sheetRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
       if (sheetRes.ok) {
@@ -972,9 +971,8 @@ async function sincronizarERP() {
             }
         });
       }
-    } catch(e) { console.error("Error CSV 1", e); }
+    } catch(e) {}
 
-    // MEJORA 3: LECTURA ROBUSTA CON PAPAPARSE (Hoja 2)
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
@@ -1004,7 +1002,7 @@ async function sincronizarERP() {
             }
         });
       }
-    } catch(e) { console.error("Error CSV 2", e); }
+    } catch(e) {}
 
     const response = await fetch(URL_POWER_AUTOMATE);
     if (response.ok) {
@@ -1132,14 +1130,12 @@ function updateGridDOM(append) {
     }
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // MEJORA 4: ETIQUETA PICTURE CON SIZES Y FORMATOS MODERNOS
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
         <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-            <source srcset="img_sin_fondo/${p.codigo}.avif" type="image/avif">
             <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
             <img src="img_sin_fondo/${p.codigo}.png" 
-                 onload="this.classList.add('loaded'); this.closest('.skeleton').classList.remove('skeleton');" 
+                 onload="this.classList.add('loaded'); this.closest('.skeleton')?.classList.remove('skeleton');" 
                  onerror="handleImageFallback(this, '${p.codigo}')" 
                  loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"
                  sizes="(max-width: 600px) 150px, 220px"
@@ -1178,10 +1174,8 @@ function showModal(p) {
   let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
   const imgWrap = document.getElementById('modalImgWrap');
   
-  // MEJORA 4: PICTURE TAG EN MODAL
   imgWrap.innerHTML = `
       <picture style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-          <source srcset="img_sin_fondo/${p.codigo}.avif" type="image/avif">
           <source srcset="img_sin_fondo/${p.codigo}.webp" type="image/webp">
           <img id="modalProductImg" src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8));"/>
       </picture>
