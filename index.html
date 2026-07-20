@@ -269,6 +269,10 @@
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
+    /* --- TAMAÑOS PROPORCIONALES (MINI / PÁRVULO) --- */
+    .card-img-wrap.size-parvulo img, .modal-img-section.size-parvulo img { max-width: 75%; max-height: 75%; }
+    .card-img-wrap.size-mini img, .modal-img-section.size-mini img { max-width: 55%; max-height: 55%; }
+
     .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -1022,10 +1026,7 @@ window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
     const toast = document.getElementById('toast');
-    if(toast) {
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
-    }
+    if(toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
   }).catch(err => console.error("Error al copiar:", err));
 };
 
@@ -1109,8 +1110,14 @@ function updateGridDOM(append) {
     }
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // LOGICA DE TAMAÑOS
+    let descUpper = (p.descripcion || "").toUpperCase();
+    let sizeClass = "";
+    if (descUpper.includes("MINI")) sizeClass = "size-mini";
+    else if (descUpper.includes("PARVULO") || descUpper.includes("PÁRVULO")) sizeClass = "size-parvulo";
+
     card.innerHTML = `${ribbon}
-      <div class="card-img-wrap skeleton">
+      <div class="card-img-wrap skeleton ${sizeClass}">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
       </div>
@@ -1150,6 +1157,18 @@ function showModal(p) {
   const modalPlan = document.getElementById('modalPlan');
   if (modalPlan) modalPlan.textContent = ed.plan ? ed.plan : '';
   
+  // LOGICA DE TAMAÑOS EN MODAL
+  let descUpper = (p.descripcion || "").toUpperCase();
+  let sizeClass = "";
+  if (descUpper.includes("MINI")) sizeClass = "size-mini";
+  else if (descUpper.includes("PARVULO") || descUpper.includes("PÁRVULO")) sizeClass = "size-parvulo";
+
+  const modalImgSection = document.querySelector('.modal-img-section');
+  if (modalImgSection) {
+      modalImgSection.classList.remove('size-mini', 'size-parvulo');
+      if (sizeClass) modalImgSection.classList.add(sizeClass);
+  }
+
   const imgEl = document.getElementById('modalProductImg');
   if (imgEl) {
       delete imgEl.dataset.fallbackState;
