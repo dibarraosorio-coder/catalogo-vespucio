@@ -138,42 +138,37 @@
     }
     .controls-main-bar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; align-items: center; justify-content: center; }
     
-    .theme-toggle-btn { 
+    .icon-btn { 
       flex: 0 0 44px; height: 44px; width: 44px; padding: 0 !important; display: flex; 
       justify-content: center; align-items: center; color: var(--text-main); 
       border: 1px solid var(--input-border); border-radius: 8px; background: var(--btn-bg); cursor: pointer; transition: all 0.2s;
     }
-    .theme-toggle-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
-    .theme-toggle-btn svg { width: 22px; height: 22px; }
+    .icon-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+    .icon-btn svg { width: 22px; height: 22px; }
     
-    .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; }
-    .search-wrap svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
-    #searchInput { 
-      height: 44px; width: 100%; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); 
-      font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
-      outline: none; transition: all .2s; padding: 0 16px 0 46px; 
-    }
-    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
-    #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
-
-    /* --- INYECCIÓN: BÚSQUEDA POR VOZ ESTILOS --- */
+    .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; display: flex; align-items: center; }
+    .search-wrap .search-icon { position: absolute; left: 16px; color: var(--text-muted); pointer-events: none; }
+    
+    /* MEJORA 2: BÚSQUEDA POR VOZ */
     .mic-btn {
-        position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-        width: 32px; height: 32px; border-radius: 6px;
+        position: absolute; right: 8px; width: 32px; height: 32px; border-radius: 6px;
         background: transparent; border: none; color: var(--text-muted); cursor: pointer;
-        display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;
+        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
     .mic-btn:hover { color: var(--neon-green); background: rgba(255,255,255,0.05); }
     .mic-btn.listening {
         color: var(--neon-red); animation: pulse-mic 1.5s infinite;
         background: rgba(239,68,68,0.1);
     }
-    .search-wrap .mic-btn svg {
-        position: static; left: auto; top: auto; transform: none; color: inherit; pointer-events: auto;
-    }
-    #searchInput { padding-right: 44px !important; }
     @keyframes pulse-mic { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
-    /* ------------------------------------------- */
+
+    #searchInput { 
+      height: 44px; width: 100%; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); 
+      font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
+      outline: none; transition: all .2s; padding: 0 44px 0 46px; /* Espacio extra a la derecha para el mic */
+    }
+    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
     /* FILTROS Y DROPDOWNS */
     .mobile-filter-toggle { display: none; }
@@ -219,10 +214,20 @@
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
-    /* GRILLA Y TARJETAS CON SPOTLIGHT */
+    /* =========================================
+       GRILLA, TARJETAS Y VIEW TRANSITIONS
+       ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
-    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; }
     
+    #catalogGrid { 
+        display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s;
+        view-transition-name: catalog-grid;
+    }
+    
+    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) {
+        animation-duration: 0.4s;
+    }
+
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
@@ -233,7 +238,6 @@
     @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .product-card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow-hover); border-color: var(--card-border-hover); }
 
-    /* EFECTO SPOTLIGHT LINTERNA MOUSE */
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -243,6 +247,16 @@
       .product-card:hover::before { opacity: 1; }
       .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; }
     }
+
+    /* VISTA DE LISTA (LIST TOGGLE) */
+    .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
+    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; }
+    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; }
+    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+    .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
+    .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
+    .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
+    .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
 
     .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
     .badge-out { background: var(--neon-red); color: white; }
@@ -262,12 +276,7 @@
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
-    /* EFECTO SKELETON LOADER */
-    .skeleton {
-        background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%);
-        background-size: 400% 100%;
-        animation: shimmer 1.5s infinite;
-    }
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -280,73 +289,62 @@
     .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; transition: color 0.2s; }
     
-    @media (hover: hover) and (pointer: fine) {
-      .card-desc { cursor: copy; }
-      .card-desc:hover { color: var(--neon-green); }
-    }
+    @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--neon-green); } }
 
     .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; }
-    
     .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
     .card-stock-row { background: rgba(253,224,71,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(253,224,71,0.2); display: flex; align-items: center; justify-content: center; }
     .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
-    /* MODAL */
+    /* =========================================
+       MODAL BENTO BOX REPARADO
+       ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     
-    .modal-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px; }
-    .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; max-width: 960px; gap: 32px; animation: modalIn .3s ease; }
+    .modal-wrapper { position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px; overflow-y: auto; }
+    .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 1000px; gap: 24px; animation: modalIn .3s ease; margin: auto; }
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; }
+    .modal-img-section { flex: 1; width: 100%; max-width: 500px; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); padding: 20px; }
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
-    
-    @media (hover: hover) and (pointer: fine) {
-       .modal-img-section img { pointer-events: auto; }
-       .modal-img-section img:hover { transform: scale(1.6); z-index: 150; }
-    }
+    @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
-    .modal-content { position: relative; flex: 1; width: 100%; max-width: 500px; padding: 32px 24px; overflow: hidden; text-align: center; font-family: 'Nunito', sans-serif; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); margin-top: 0; z-index: 10; }
-    .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
-    .modal-code { font-size: 1.6rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 12px; }
-    .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin-bottom: 24px; padding: 0 10px; }
-    .modal-stock-section { display: inline-flex; align-items: center; justify-content: center; gap: 0; padding: 16px 28px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
-    .modal-stock-number { font-size: 1.8rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
-    .modal-stock-info { text-align: left; margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border); }
-    .modal-stock-status { font-size: 1rem; font-weight: 700; margin-top: 0; }
+    /* Estructura Bento Grid para el Contenido */
+    .modal-content-bento { flex: 1; width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: flex-start; }
     
-    #modalExtraInfo { margin-top: 24px; display: none; justify-content: space-evenly; align-items: center; padding: 20px; border-radius: 16px; background: var(--modal-info-bg); border: 1px solid var(--glass-border); gap: 16px; }
-    .modal-extra-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-    .modal-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0; line-height: 1; }
-    .modal-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
+    .bento-card { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: center; position: relative; }
+    .bento-header { grid-column: 1 / -1; align-items: flex-start; }
+    .bento-stock { grid-column: 1 / -1; align-items: center; flex-direction: row; justify-content: space-between; background: var(--modal-info-bg); border-color: rgba(16,185,129,0.3); }
+    .bento-extra { align-items: center; text-align: center; background: var(--modal-info-bg); }
+    .bento-actions { grid-column: 1 / -1; align-items: center; padding: 16px; background: transparent; border: none; box-shadow: none; flex-direction: row; gap: 16px;}
+
+    .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
+    .modal-code { font-size: 2rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.1; }
+    .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin: 0; }
+    
+    .modal-stock-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+    .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
+    .modal-stock-status { font-size: 1rem; font-weight: 700; text-align: right; }
+    
+    .bento-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0 0 8px 0; line-height: 1; }
+    .bento-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
     #modalValor { color: var(--accent-gold); }
     #modalPlan { color: var(--neon-green); }
     
     .modal-close { position: fixed; top: 24px; right: 28px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
     .modal-close:hover { transform: scale(1.1); background: var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red); }
     
-    .modal-actions-bar { display: flex; justify-content: center; margin-top: 24px; border: none; }
-    .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; flex: none !important; cursor: pointer; transition: all 0.2s; }
+    .btn-share-modal { background: rgba(148, 163, 184, 0.1); color: var(--text-main); border: 1px solid var(--glass-border); width: 100%; max-width: 250px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
     .btn-share-modal:hover { background: var(--text-code); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52,211,153,0.3); border-color: var(--text-code); }
 
-    /* --- ESTILOS FLECHAS DE NAVEGACIÓN MODAL --- */
     .modal-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
     .modal-nav-btn:hover { background: var(--btn-hover); color: var(--neon-green); border-color: var(--neon-green); transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 24px; } .nav-next { right: 24px; }
 
-    /* --- ESTILOS NOTIFICACIÓN TOAST --- */
-    .toast-notification {
-        position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
-        background: var(--header-bg-solid); border: 1px solid var(--neon-green);
-        color: var(--neon-green); padding: 12px 24px; border-radius: 30px;
-        font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem;
-        z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        pointer-events: none; display: flex; align-items: center; gap: 8px;
-    }
+    .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
     .toast-notification.show { bottom: 30px; }
 
     .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
@@ -362,10 +360,14 @@
 
     /* MEDIA QUERIES & OPTIMIZACIÓN MÓVIL */
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
+    
     @media (max-width: 900px) {
       #catalogGrid { grid-template-columns: repeat(4, 1fr); }
-      .modal-box { flex-direction: column-reverse; max-width: 560px; }
-      .modal-img-section { height: 300px; }
+      .modal-wrapper { padding-top: 80px; justify-content: flex-start; }
+      .modal-box { flex-direction: column; max-width: 560px; height: auto; overflow-y: visible; padding-right: 0;}
+      .modal-box::-webkit-scrollbar { display: none; }
+      .modal-img-section { height: 35vh; min-height: 250px; max-height: 350px; flex: none; width: 100%; border-radius: 20px;}
+      .modal-content-bento { flex: none; width: 100%; }
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
     }
     
@@ -373,20 +375,16 @@
       header { padding: 32px 20px 10px; }
       .controls-container { padding: 12px 16px; }
       #catalogGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 80px; }
-      .modal-wrapper { padding: 16px; }
-      .modal-box { gap: 12px; margin: auto; }
-      .modal-img-section { height: 160px; } 
-      .modal-content { padding: 20px 16px; border-radius: 20px; }
-      .modal-code { font-size: 1.4rem; margin-bottom: 8px; }
-      .modal-desc { font-size: 0.95rem; margin-bottom: 16px; line-height: 1.4; }
-      .modal-stock-section { padding: 10px 20px; }
-      .modal-stock-number { font-size: 1.5rem; }
-      #modalExtraInfo { margin-top: 16px; padding: 16px; flex-direction: column; gap: 12px; justify-content: center; align-items: stretch; }
-      .modal-extra-block { display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
-      .modal-extra-block:last-child { border-bottom: none; padding-bottom: 0; }
-      .modal-extra-title { font-size: 0.75rem; margin: 0; text-align: left; }
-      .modal-extra-val { font-size: 1.2rem; margin: 0; text-align: right; }
-
+      
+      .modal-wrapper { padding: 70px 16px 24px; justify-content: flex-start; }
+      .modal-box { gap: 16px; margin: auto; height: auto; overflow-y: visible; padding-bottom: 0;}
+      .modal-img-section { height: 30vh; min-height: 200px; max-height: 280px; padding: 16px; border-radius: 16px;} 
+      .modal-close { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 1.2rem; }
+      .bento-card { padding: 16px; border-radius: 16px;}
+      
+      .modal-code { font-size: 1.6rem; margin-bottom: 4px; }
+      .modal-desc { font-size: 0.95rem; }
+      .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
       .controls-main-bar { flex-direction: column; gap: 0; }
@@ -402,7 +400,6 @@
 
       .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; pointer-events: none; }
       .filters-wrapper.open { pointer-events: auto; }
-      
       .filters-overlay { display: block; position: absolute; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
       .filters-wrapper.open .filters-overlay { opacity: 1; }
       
@@ -427,9 +424,14 @@
       .stock-tabs { width: 100%; justify-content: space-between; }
       .stock-tab { flex: 1; justify-content: center; }
       .action-btn.clean-btn { margin-top: 12px; height: 50px; justify-content: center; font-size: 1.05rem; }
+      
+      /* Ajuste vista de lista en celular */
+      .catalog-wrap.list-view .card-img-wrap { width: 90px; }
+      .catalog-wrap.list-view .product-card { height: 110px; }
+      .catalog-wrap.list-view .card-code { font-size: 1rem; }
+      .catalog-wrap.list-view .card-body { padding: 10px; }
     }
 
-    /* --- ESTILOS: CARGADOR INTERACTIVO --- */
     .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease; }
     .loader-content { display: flex; flex-direction: column; align-items: center; gap: 25px; }
     .loader-image-wrapper { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
@@ -444,7 +446,6 @@
 </head>
 <body>
 
-<!-- TOAST NOTIFICACIÓN -->
 <div id="toast" class="toast-notification">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
   Descripción copiada
@@ -473,14 +474,16 @@
   <div class="controls-container">
     <div class="controls-main-bar">
       
-      <!-- CONTROLES VISIBLES EN MÓVIL Y PC -->
       <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
+          <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </button>
+
           <div class="search-wrap" style="flex:1 1 auto;">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+            <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
-            <!-- NUEVO: BOTÓN DE MICRÓFONO -->
             <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="Búsqueda por voz" style="display: none;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
@@ -492,7 +495,6 @@
           </button>
       </div>
 
-      <!-- FILTROS (MODAL EN MÓVIL, BARRA EN PC) -->
       <div class="filters-wrapper" id="filtersWrapper">
         <div class="filters-overlay" onclick="toggleMobileFilters()"></div>
         <div class="filters-panel">
@@ -560,7 +562,7 @@
     <div class="results-count" id="resultsCount"></div>
   </div>
 
-  <div class="catalog-wrap">
+  <div class="catalog-wrap" id="catalogWrapper">
     <div id="catalogGrid"></div>
   </div>
 </main>
@@ -568,7 +570,6 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
     
-    <!-- FLECHAS DE NAVEGACIÓN (VISIBLES EN PC) -->
     <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
@@ -579,34 +580,42 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
-      <div class="modal-content">
-        <div class="modal-category" id="modalCat"></div>
-        <div class="modal-code" id="modalCode"></div>
-        <div class="modal-desc" id="modalDesc"></div>
-        <div class="modal-stock-section" id="modalStockWrap">
-          <div class="modal-stock-number" id="modalStock" style="font-size: 1.8rem;"></div>
-          <div class="modal-stock-info" style="margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--glass-border);"><div id="modalStatus" class="modal-stock-status" style="font-size: 1rem; margin-top: 0;"></div></div>
-        </div>
-        
-        <div id="modalExtraInfo">
-          <div id="modalValorWrap" class="modal-extra-block">
-            <div class="modal-extra-title">Valor Referencia</div>
-            <div id="modalValor" class="modal-extra-val"></div>
-          </div>
-          <div id="modalPlanWrap" class="modal-extra-block">
-            <div class="modal-extra-title">Plan</div>
-            <div id="modalPlan" class="modal-extra-val"></div>
-          </div>
-        </div>
-        
-        <div class="modal-actions-bar">
-          <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir a cualquier aplicación">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-          </button>
-        </div>
+      <div class="modal-img-section">
+          <img id="modalProductImg" src="" alt="Imagen de Producto"/>
       </div>
       
-      <div class="modal-img-section" id="modalImgWrap"></div>
+      <div class="modal-content-bento">
+          <div class="bento-card bento-header">
+              <span class="modal-category" id="modalCat"></span>
+              <h2 class="modal-code" id="modalCode"></h2>
+              <p class="modal-desc" id="modalDesc"></p>
+          </div>
+          
+          <div class="bento-card bento-stock" id="modalStockWrap">
+              <div>
+                  <div class="modal-stock-label">Stock Actual</div>
+                  <div class="modal-stock-number" id="modalStock"></div>
+              </div>
+              <div id="modalStatus" class="modal-stock-status"></div>
+          </div>
+          
+          <div class="bento-card bento-extra" id="modalValorWrap">
+              <h3 class="bento-extra-title">Valor Ref.</h3>
+              <p class="bento-extra-val" id="modalValor"></p>
+          </div>
+          
+          <div class="bento-card bento-extra" id="modalPlanWrap">
+              <h3 class="bento-extra-title">Plan Contrato</h3>
+              <p class="bento-extra-val" id="modalPlan"></p>
+          </div>
+
+          <div class="bento-card bento-actions">
+              <button class="btn-share-modal" onclick="compartirProducto()" title="Compartir">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                  Compartir
+              </button>
+          </div>
+      </div>
     </div>
   </div>
 </div>
@@ -626,8 +635,6 @@ const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "
 let products = []; let EXTRA_DATA = {};
 let currentPage = 1; const ITEMS_PER_PAGE = 24; 
 window.currentShareFile = null;
-
-// SISTEMA DE PURGA DE PRODUCTOS SIN FOTO
 window.currentFilteredList = []; 
 window.invalidImageCodes = new Set();
 window.lastNavDirection = 1;
@@ -635,9 +642,12 @@ window.lastNavDirection = 1;
 let currentStockFilter = safeGetLocal('stockFilter') || 'all'; 
 let currentSearch = safeGetLocal('searchQuery') || ''; 
 let currentModalCode = '';
+let isListView = safeGetLocal('viewMode') === 'list';
 
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+const svgGrid = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`;
+const svgList = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`;
 
 const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"];
 let intervalLoader = null;
@@ -677,73 +687,24 @@ function toggleMobileFilters() {
     else { document.body.style.overflow = ''; }
 }
 
-// LOGICA DE AUTO-SALTO Y PURGA DE IMÁGENES
-window.handleImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) {
-        imgEl.dataset.fallbackState = '1';
-        imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') {
-        imgEl.dataset.fallbackState = '2';
-        imgEl.src = `img/${codigo}.jpg`;
+function toggleViewMode() {
+    isListView = !isListView;
+    safeSetLocal('viewMode', isListView ? 'list' : 'grid');
+    applyViewMode();
+}
+
+function applyViewMode() {
+    const wrapper = document.getElementById('catalogWrapper');
+    const btn = document.getElementById('viewToggleBtn');
+    if(isListView) {
+        wrapper.classList.add('list-view');
+        btn.innerHTML = svgList;
     } else {
-        window.invalidImageCodes.add(codigo);
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-        }
+        wrapper.classList.remove('list-view');
+        btn.innerHTML = svgGrid;
     }
-};
+}
 
-window.handleModalImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) {
-        imgEl.dataset.fallbackState = '1';
-        imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') {
-        imgEl.dataset.fallbackState = '2';
-        imgEl.src = `img/${codigo}.jpg`;
-    } else {
-        window.invalidImageCodes.add(codigo);
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-            
-            if (window.currentFilteredList.length > 0) {
-                setTimeout(() => window.navegarModal(window.lastNavDirection), 50);
-            } else {
-                closeModal();
-            }
-        } else {
-            closeModal();
-        }
-    }
-};
-
-window.navegarModal = function(direccion) {
-    if(event) event.stopPropagation();
-    window.lastNavDirection = direccion;
-    if (!window.currentFilteredList || window.currentFilteredList.length === 0) return;
-    
-    let currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
-    if (currentIndex === -1) { currentIndex = direccion === 1 ? -1 : window.currentFilteredList.length; }
-
-    let nextIndex = currentIndex + direccion;
-    if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
-    if (nextIndex >= window.currentFilteredList.length) nextIndex = 0;
-
-    showModal(window.currentFilteredList[nextIndex]);
-};
-
-// --- INYECCIÓN: LÓGICA DE VOZ ---
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 if (SpeechRecognition) {
@@ -784,12 +745,57 @@ function stopVoiceSearch() {
     const input = document.getElementById('searchInput');
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
-// --------------------------------
+
+window.handleImageFallback = function(imgEl, codigo) {
+    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    } else {
+        window.invalidImageCodes.add(codigo);
+        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
+        if (card) card.remove();
+        if (window.currentFilteredList) {
+            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
+            window.currentTotalItems = window.currentFilteredList.length;
+            const resCount = document.getElementById('resultsCount');
+            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
+        }
+    }
+};
+
+window.handleModalImageFallback = function(imgEl, codigo) {
+    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    } else {
+        window.invalidImageCodes.add(codigo);
+        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
+        if (card) card.remove();
+        if (window.currentFilteredList) {
+            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
+            window.currentTotalItems = window.currentFilteredList.length;
+            const resCount = document.getElementById('resultsCount');
+            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
+            if (window.currentFilteredList.length > 0) { setTimeout(() => window.navegarModal(window.lastNavDirection), 50); } else { closeModal(); }
+        } else { closeModal(); }
+    }
+};
+
+window.navegarModal = function(direccion) {
+    if(event) event.stopPropagation();
+    window.lastNavDirection = direccion;
+    if (!window.currentFilteredList || window.currentFilteredList.length === 0) return;
+    let currentIndex = window.currentFilteredList.findIndex(p => p.codigo === currentModalCode);
+    if (currentIndex === -1) { currentIndex = direccion === 1 ? -1 : window.currentFilteredList.length; }
+    let nextIndex = currentIndex + direccion;
+    if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
+    if (nextIndex >= window.currentFilteredList.length) nextIndex = 0;
+    showModal(window.currentFilteredList[nextIndex]);
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
+  applyViewMode();
   if (SpeechRecognition) {
       const micBtn = document.getElementById('micBtn');
       if (micBtn) micBtn.style.display = 'flex';
@@ -811,7 +817,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     searchInput.addEventListener('input', e => { currentSearch = e.target.value; safeSetLocal('searchQuery', currentSearch); renderGrid(); });
   }
 
-  // LECTURA DE TECLADO (PC)
   document.addEventListener('keydown', e => {
       if (currentModalCode !== '') {
           if (e.key === 'ArrowLeft') window.navegarModal(-1);
@@ -820,19 +825,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
-  // LECTURA DE SWIPE (MÓVIL)
   const modalOverlay = document.getElementById('modalOverlay');
   let touchstartX = 0; let touchendX = 0;
-
   modalOverlay.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
   modalOverlay.addEventListener('touchend', e => {
       touchendX = e.changedTouches[0].screenX;
       if (currentModalCode !== '') {
           let diff = touchstartX - touchendX;
-          if (Math.abs(diff) > 50) { 
-              if (diff > 0) window.navegarModal(1); 
-              else window.navegarModal(-1); 
-          }
+          if (Math.abs(diff) > 50) { if (diff > 0) window.navegarModal(1); else window.navegarModal(-1); }
       }
   }, {passive: true});
 
@@ -851,7 +851,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderLastUpdated(); 
   renderUFMultiSelect(); 
   renderGrid();
-  
   setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
@@ -864,7 +863,6 @@ function setupCustomDropdowns() {
       document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open')); 
       if (!isOpen) dd.classList.add('open');
     });
-
     dd.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const textSpan = dd.querySelector('.dropdown-header .text');
@@ -1024,21 +1022,24 @@ function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsW
 function getStockBadge(qty) { return qty === 0 ? {cls:'stock-zero'} : (qty <= 3 ? {cls:'stock-low'} : {cls:'stock-ok'}); }
 function getStockStatus(qty, isDesc) { if (qty === 0) return {cls:'status-red', text: isDesc ? 'Agotado / Descontinuado' : 'Agotado'}; if (qty <= 3) return {cls:'status-yellow', text:'Últimas Unidades'}; return {cls:'status-green',text:'Disponible'}; }
 
-// FUNCIÓN DE COPIAR CON TOAST
 window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
     const toast = document.getElementById('toast');
-    if(toast) {
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
-    }
+    if(toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
   }).catch(err => console.error("Error al copiar:", err));
 };
 
 function renderGrid(append = false) {
-  updateFilterDot();
+  if (!append && document.startViewTransition) {
+      document.startViewTransition(() => updateGridDOM(append));
+  } else {
+      updateGridDOM(append);
+  }
+}
 
+function updateGridDOM(append) {
+  updateFilterDot();
   const grid = document.getElementById('catalogGrid'); if(!grid) return;
   if(!append) { grid.innerHTML = ''; currentPage = 1; }
   
@@ -1049,8 +1050,6 @@ function renderGrid(append = false) {
 
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
-    
-    // REGLA DE ORO: Si está en la lista negra por no tener foto, se oculta del filtro
     if(window.invalidImageCodes.has(p.codigo)) return false;
     
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
@@ -1096,13 +1095,10 @@ function renderGrid(append = false) {
     card.dataset.code = p.codigo; 
     card.onclick = () => showModal(p);
     
-    // LOGICA SPOTLIGHT
     card.onmousemove = e => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+      const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`); card.style.setProperty('--mouse-y', `${y}px`);
     };
     
     let extraHTML = '';
@@ -1112,10 +1108,8 @@ function renderGrid(append = false) {
           ${ed.plan ? `<div class="card-plan">${ed.plan}</div>` : ``}
         </div>`;
     }
-
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // INTEGRADO EL SKELETON
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
@@ -1134,8 +1128,10 @@ function renderGrid(append = false) {
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
-  document.getElementById('modalCat').textContent = getCategory(p.codigo).label; document.getElementById('modalCode').textContent = p.codigo; document.getElementById('modalDesc').textContent = p.descripcion || "";
-  document.getElementById('modalStock').textContent = "Stock: " + (p.cantidad || 0); 
+  document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
+  document.getElementById('modalCode').textContent = p.codigo; 
+  document.getElementById('modalDesc').textContent = p.descripcion || "";
+  document.getElementById('modalStock').textContent = (p.cantidad || 0); 
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
   document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
@@ -1145,25 +1141,13 @@ function showModal(p) {
   document.getElementById('modalPlanWrap').style.display = ed.plan ? 'flex' : 'none'; 
   document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
   
-  let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
-  const imgWrap = document.getElementById('modalImgWrap');
-  imgWrap.innerHTML = `<img src="img_sin_fondo/${p.codigo}.png" alt="Vista ampliada de ${cleanDesc}" onerror="handleModalImageFallback(this, '${p.codigo}')"/>`;
+  const imgEl = document.getElementById('modalProductImg');
+  delete imgEl.dataset.fallbackState;
+  imgEl.src = `img_sin_fondo/${p.codigo}.png`;
+  imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
   
   window.currentShareFile = null;
-  fetch(`img_sin_fondo/${p.codigo}.png`)
-    .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
-    .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
-    .catch(() => {
-       fetch(`img/${p.codigo}.png`)
-         .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
-         .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
-         .catch(() => {
-            fetch(`img/${p.codigo}.jpg`)
-              .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
-              .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
-              .catch(()=> {});
-         });
-    });
+  fetch(`img_sin_fondo/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.jpg`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'})).catch(()=> {}); }); });
 
   overlay.classList.add('open');
 }
@@ -1174,17 +1158,11 @@ window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0};
   const ed = EXTRA_DATA[currentModalCode] || {};
-  
   let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK: ${p.cantidad || 0}`;
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
-
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
-
-  if (window.currentShareFile && navigator.canShare) {
-    const shareData = { files: [window.currentShareFile], text: textToShare };
-    if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } }
-  }
+  if (window.currentShareFile && navigator.canShare) { const shareData = { files: [window.currentShareFile], text: textToShare }; if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } } }
   try { await navigator.share({ text: textToShare }); } catch (err) {}
 };
 </script>
