@@ -138,6 +138,8 @@
     }
     .controls-main-bar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; align-items: center; justify-content: center; }
     
+    .search-header-mobile { display: flex; gap: 12px; flex: 1 1 auto; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%; }
+
     .icon-btn { 
       flex: 0 0 44px; height: 44px; width: 44px; padding: 0 !important; display: flex; 
       justify-content: center; align-items: center; color: var(--text-main); 
@@ -216,7 +218,8 @@
 
     /* GRILLA Y TARJETAS CON SPOTLIGHT */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
-    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; }
+    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; view-transition-name: catalog-grid; }
+    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) { animation-duration: 0.4s; }
     
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
@@ -288,7 +291,7 @@
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
-       MODAL BENTO BOX
+       MODAL BENTO BOX (IMAGEN LIBERADA)
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -298,7 +301,8 @@
     .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 1000px; gap: 24px; animation: modalIn .3s ease; margin: auto; }
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    .modal-img-section { flex: 1; width: 100%; max-width: 500px; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,.8); padding: 20px; }
+    /* IMAGEN DE VUELTA A SU ESTADO FLOTANTE Y LIMPIO */
+    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; padding: 0; }
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
     @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
@@ -347,7 +351,9 @@
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
-    /* MEDIA QUERIES & OPTIMIZACIÓN MÓVIL */
+    /* =========================================
+       MEDIA QUERIES & OPTIMIZACIÓN MÓVIL
+       ========================================= */
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
     
     @media (max-width: 900px) {
@@ -355,7 +361,7 @@
       .modal-wrapper { padding-top: 80px; justify-content: flex-start; }
       .modal-box { flex-direction: column; max-width: 560px; height: auto; overflow-y: visible; padding-right: 0;}
       .modal-box::-webkit-scrollbar { display: none; }
-      .modal-img-section { height: 35vh; min-height: 250px; max-height: 350px; flex: none; width: 100%; border-radius: 20px;}
+      .modal-img-section { height: 350px; flex: none; width: 100%; border-radius: 20px; background: transparent; border: none; box-shadow: none; padding: 0;}
       .modal-content-bento { flex: none; width: 100%; }
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
     }
@@ -367,7 +373,7 @@
       
       .modal-wrapper { padding: 70px 16px 24px; justify-content: flex-start; }
       .modal-box { gap: 16px; margin: auto; height: auto; overflow-y: visible; padding-bottom: 0;}
-      .modal-img-section { height: 30vh; min-height: 200px; max-height: 280px; padding: 16px; border-radius: 16px;} 
+      .modal-img-section { height: 30vh; min-height: 200px; max-height: 280px; padding: 0; border-radius: 16px; background: transparent; border: none; box-shadow: none;} 
       .modal-close { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 1.2rem; }
       .bento-card { padding: 16px; border-radius: 16px;}
       
@@ -376,46 +382,49 @@
       .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
-      /* --- RESTAURANDO DISTRIBUCIÓN DE BOTONES --- */
-      .controls-main-bar { flex-direction: column; gap: 0; }
-      .search-header-mobile { flex-wrap: nowrap !important; }
-      .search-wrap { flex: 1 1 auto; max-width: none; }
-      
-      .mobile-filter-toggle { 
-          display: flex; flex: 0 0 44px; height: 44px; width: 44px; position: relative;
-          align-items: center; justify-content: center; background: var(--btn-bg); border: 1px solid var(--input-border); 
-          border-radius: 8px; color: var(--text-main); cursor: pointer; transition: all .2s;
+      /* --- ORDEN PERFECTO DE BARRA SUPERIOR MÓVIL --- */
+      .search-header-mobile { 
+          display: grid !important; 
+          grid-template-columns: 44px 44px 1fr 44px; 
+          grid-template-rows: auto auto; 
+          gap: 12px; 
+          width: 100%; 
       }
-      .mobile-filter-toggle:active { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+      #themeToggleBtn { grid-column: 1; grid-row: 1; margin: 0; }
+      #viewToggleBtn { grid-column: 2; grid-row: 1; margin: 0; }
+      .mobile-filter-toggle { grid-column: 4; grid-row: 1; display: flex !important; margin: 0; }
+      .search-wrap { grid-column: 1 / 5; grid-row: 2; width: 100%; max-width: none; }
 
       .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; pointer-events: none; }
       .filters-wrapper.open { pointer-events: auto; }
       .filters-overlay { display: block; position: absolute; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
       .filters-wrapper.open .filters-overlay { opacity: 1; }
       
+      /* --- FILTROS A 2 COLUMNAS (MÁS COMPACTO) --- */
       .filters-panel {
           position: absolute; bottom: 0; left: 0; width: 100%; max-height: 85vh; overflow-y: auto;
           background: var(--modal-bg); border-radius: 24px 24px 0 0; padding: 24px 20px 40px;
-          display: flex; flex-direction: column; gap: 16px; align-items: stretch; justify-content: flex-start;
+          display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; justify-content: stretch;
           transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           box-shadow: 0 -10px 40px rgba(0,0,0,0.5); border-top: 1px solid var(--glass-border);
       }
       .filters-wrapper.open .filters-panel { transform: translateY(0); }
       
-      .mobile-filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 16px; }
+      .mobile-filter-header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; }
       .mobile-filter-header h3 { font-size: 1.1rem; color: var(--text-main); font-family: 'Nunito', sans-serif; margin: 0; font-weight: 800; }
       .close-filters-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--btn-bg); color: var(--text-main); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
       
-      .custom-dropdown { max-width: 100%; min-width: 100%; }
+      .custom-dropdown { max-width: 100%; min-width: 0; width: 100%; }
+      .dropdown-header { font-size: 0.75rem; padding: 0 10px; height: 40px; }
+      .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 4px; }
       .dropdown-list { position: static; box-shadow: none; border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 8px 8px; margin-top: -4px; max-height: 200px; }
       .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--neon-green); background: var(--btn-hover); }
       .custom-dropdown.open .dropdown-list { border-color: var(--neon-green); }
 
-      .stock-tabs { width: 100%; justify-content: space-between; }
+      .stock-tabs { grid-column: 1 / -1; width: 100%; justify-content: space-between; }
       .stock-tab { flex: 1; justify-content: center; }
-      .action-btn.clean-btn { margin-top: 12px; height: 50px; justify-content: center; font-size: 1.05rem; }
+      .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
-      /* Ajuste vista de lista en celular */
       .catalog-wrap.list-view .card-img-wrap { width: 90px; }
       .catalog-wrap.list-view .product-card { height: 110px; }
       .catalog-wrap.list-view .card-code { font-size: 1rem; }
@@ -462,21 +471,16 @@
 
 <main id="main-content">
   <div class="controls-container">
-    
     <div class="controls-main-bar">
       
-      <!-- BOTONES SUPERIORES (Tema y Vista) -->
-      <div class="top-controls-group" style="display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 8px;">
+      <div class="search-header-mobile">
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
           </button>
-      </div>
 
-      <!-- BÚSQUEDA Y FILTROS -->
-      <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; width:100%;">
-          <div class="search-wrap" style="flex:1 1 auto;">
+          <div class="search-wrap">
             <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
             <button class="mic-btn" id="micBtn" onclick="startVoiceSearch()" title="Búsqueda por voz" style="display: none;">
@@ -507,12 +511,6 @@
                 <label class="dropdown-item"><input type="radio" name="catFilter" value="relicario"> Relicarios</label>
                 <label class="dropdown-item"><input type="radio" name="catFilter" value="pulsera"> Pulseras</label>
               </div>
-            </div>
-
-            <div class="stock-tabs" role="tablist">
-              <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
-              <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
-              <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
             </div>
 
             <div class="custom-dropdown" id="ddUF">
@@ -546,6 +544,12 @@
                 <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorDesc"> Mayor a Menor Precio (UF)</label>
               </div>
             </div>
+            
+            <div class="stock-tabs" role="tablist">
+              <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
+              <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
+              <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
+            </div>
 
             <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar Filtros
@@ -564,6 +568,7 @@
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
+    
     <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
@@ -1123,7 +1128,6 @@ function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
   
-  // Asignamos la información a los elementos del modal
   document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
@@ -1134,7 +1138,6 @@ function showModal(p) {
   document.getElementById('modalStatus').textContent = status.text; 
   document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
-  // VALIDACIONES DE SEGURIDAD (Evita error si el diseño Bento no incluye algún elemento)
   const valorWrap = document.getElementById('modalValorWrap');
   if (valorWrap) valorWrap.style.display = ed.valor ? 'flex' : 'none'; 
   
