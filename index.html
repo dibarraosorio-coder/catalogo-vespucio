@@ -301,7 +301,6 @@
     .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 1000px; gap: 24px; animation: modalIn .3s ease; margin: auto; }
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    /* IMAGEN DE VUELTA A SU ESTADO FLOTANTE Y LIMPIO */
     .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; padding: 0; }
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
     @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
@@ -361,7 +360,7 @@
       .modal-wrapper { padding-top: 80px; justify-content: flex-start; }
       .modal-box { flex-direction: column; max-width: 560px; height: auto; overflow-y: visible; padding-right: 0;}
       .modal-box::-webkit-scrollbar { display: none; }
-      .modal-img-section { height: 350px; flex: none; width: 100%; border-radius: 20px; background: transparent; border: none; box-shadow: none; padding: 0;}
+      .modal-img-section { height: 35vh; min-height: 250px; max-height: 350px; flex: none; width: 100%; border-radius: 20px; background: transparent; border: none; box-shadow: none; padding: 0;}
       .modal-content-bento { flex: none; width: 100%; }
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
     }
@@ -382,7 +381,6 @@
       .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
-      /* --- ORDEN PERFECTO DE BARRA SUPERIOR MÓVIL --- */
       .search-header-mobile { 
           display: grid !important; 
           grid-template-columns: 44px 44px 1fr 44px; 
@@ -400,7 +398,6 @@
       .filters-overlay { display: block; position: absolute; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
       .filters-wrapper.open .filters-overlay { opacity: 1; }
       
-      /* --- FILTROS A 2 COLUMNAS (MÁS COMPACTO) --- */
       .filters-panel {
           position: absolute; bottom: 0; left: 0; width: 100%; max-height: 85vh; overflow-y: auto;
           background: var(--modal-bg); border-radius: 24px 24px 0 0; padding: 24px 20px 40px;
@@ -474,7 +471,7 @@
     <div class="controls-main-bar">
       
       <div class="search-header-mobile">
-          <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
+          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -1025,7 +1022,10 @@ window.copiarTexto = function(el) {
   const texto = el.getAttribute('data-desc');
   navigator.clipboard.writeText(texto).then(() => {
     const toast = document.getElementById('toast');
-    if(toast) { toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); }
+    if(toast) {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
   }).catch(err => console.error("Error al copiar:", err));
 };
 
