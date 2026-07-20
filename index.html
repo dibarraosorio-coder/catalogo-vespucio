@@ -134,7 +134,7 @@
     .controls-container {
       position: sticky; top: 0; z-index: 900; background: var(--header-bg-solid);
       backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4); padding: 16px 24px; margin-bottom: 24px; transition: background 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4); padding: 16px 24px; margin-bottom: 0px; transition: background 0.3s ease;
     }
     .controls-main-bar { display: flex; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; align-items: center; justify-content: center; }
     
@@ -216,36 +216,62 @@
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
-    /* GRILLA Y TARJETAS CON SPOTLIGHT */
-    .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
+    /* =========================================
+       HISTORIAL RECIENTE
+       ========================================= */
+    .recent-history-wrapper { width: 100%; max-width: 100%; padding: 12px 24px 0; overflow-x: auto; display: flex; gap: 12px; align-items: center;  scrollbar-width: none; -ms-overflow-style: none; }
+    .recent-history-wrapper::-webkit-scrollbar { display: none; }
+    .recent-history-title { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; margin-right: 8px; }
+    .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .recent-item:hover { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(16,185,129,0.2); transform: translateY(-2px); }
+    .recent-item img { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; }
+    .recent-item span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+
+    /* =========================================
+       GRILLA, TARJETAS, CASCADA Y 3D TILT
+       ========================================= */
+    .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 20px 24px 100px; }
     #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; view-transition-name: catalog-grid; }
     ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) { animation-duration: 0.4s; }
     
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
-      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; 
-      box-shadow: var(--glass-shadow); position: relative; animation: cardIn .4s ease both; 
+      box-shadow: var(--glass-shadow); position: relative; 
+      animation: cardIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+      animation-delay: calc(var(--i, 0) * 0.04s);
+      transform-style: preserve-3d;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0);
+      transition: transform 0.15s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
       display: flex; flex-direction: column; 
     }
-    @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .product-card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow-hover); border-color: var(--card-border-hover); }
+    
+    @keyframes cardIn { 
+        0% { opacity: 0; transform: perspective(1000px) translateY(30px) scale(0.95); } 
+        100% { opacity: 1; transform: perspective(1000px) translateY(0) scale(1); } 
+    }
+    
+    .product-card:hover { 
+        transform: perspective(1000px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg)) translateY(-4px) scale(1.02); 
+        box-shadow: var(--glass-shadow-hover); border-color: var(--card-border-hover); z-index: 10;
+    }
 
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 185, 129, 0.12), transparent 40%);
+        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 185, 129, 0.15), transparent 40%);
         opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1;
       }
       .product-card:hover::before { opacity: 1; }
-      .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; }
+      .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; transform: translateZ(15px); } 
     }
 
     /* VISTA DE LISTA (LIST TOGGLE) */
     .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
-    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; }
-    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; }
-    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; transform-style: flat; }
+    .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
+    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
+    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
     .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
     .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
     .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
@@ -273,9 +299,15 @@
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; align-items: center; justify-content: center; opacity: 0; }
+    .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--neon-green); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: transform .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .view-btn { background: var(--neon-green); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+    .view-btn:hover { background: #fff; transform: scale(1.05); }
+    
+    .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
+    .compare-btn:hover { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
+    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+
     .product-card:hover .view-btn { transform: translateY(0); }
 
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -291,7 +323,7 @@
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
-       MODAL BENTO BOX (IMAGEN LIBERADA)
+       MODAL BENTO BOX
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -336,10 +368,39 @@
     .modal-nav-btn:hover { background: var(--btn-hover); color: var(--neon-green); border-color: var(--neon-green); transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 24px; } .nav-next { right: 24px; }
 
+    /* =========================================
+       BARRA DE COMPARACIÓN (FLOTANTE)
+       ========================================= */
+    .compare-floating-bar { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--modal-bg); border: 1px solid var(--neon-green); border-radius: 20px; padding: 12px 24px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 1500; transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(12px); width: 90%; max-width: 500px; justify-content: space-between;}
+    .compare-floating-bar.visible { bottom: 24px; }
+    .compare-info { display: flex; flex-direction: column; }
+    .compare-text { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .compare-codes { font-size: 1.1rem; color: var(--neon-green); font-weight: 800; margin-top: 2px;}
+    .compare-actions { display: flex; gap: 10px; }
+    .comp-btn { padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; border: none; }
+    .comp-clear { background: rgba(239,68,68,0.1); color: var(--neon-red); border: 1px solid rgba(239,68,68,0.3); }
+    .comp-clear:hover { background: var(--neon-red); color: white; }
+    .comp-run { background: var(--neon-green); color: #000; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+    .comp-run:hover { transform: scale(1.05); }
+    .comp-run:disabled { background: var(--glass-bg); color: var(--text-muted); cursor: not-allowed; box-shadow: none; border: 1px solid var(--glass-border);}
+
+    /* =========================================
+       MODAL DE COMPARACIÓN CARA A CARA
+       ========================================= */
+    .compare-modal-box { max-width: 1200px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; width: 100%; height: auto; align-items: start;}
+    .compare-col { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,.5); text-align: center; }
+    .compare-img-wrap { width: 100%; height: 250px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+    .compare-img-wrap img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,.6)); }
+    .compare-col .modal-code { font-size: 1.8rem; margin-bottom: 4px; }
+    .compare-col .modal-desc { font-size: 0.9rem; min-height: 40px; }
+    .compare-col .bento-stock { width: 100%; }
+    .compare-col .bento-extra { width: 100%; }
+
+    /* --- ESTILOS NOTIFICACIÓN TOAST --- */
     .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
     .toast-notification.show { bottom: 30px; }
 
-    .back-to-top { position: fixed; bottom: 24px; left: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
+    .back-to-top { position: fixed; bottom: 24px; right: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
     
@@ -363,6 +424,8 @@
       .modal-img-section { height: 35vh; min-height: 250px; max-height: 350px; flex: none; width: 100%; border-radius: 20px; background: transparent; border: none; box-shadow: none; padding: 0;}
       .modal-content-bento { flex: none; width: 100%; }
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
+      
+      .compare-modal-box { grid-template-columns: 1fr; }
     }
     
     @media (max-width: 600px) {
@@ -426,6 +489,12 @@
       .catalog-wrap.list-view .product-card { height: 110px; }
       .catalog-wrap.list-view .card-code { font-size: 1rem; }
       .catalog-wrap.list-view .card-body { padding: 10px; }
+
+      .compare-floating-bar { width: 95%; padding: 12px; gap: 10px; flex-direction: column; bottom: -150px; }
+      .compare-actions { width: 100%; display: flex; justify-content: space-between; }
+      .comp-btn { flex: 1; text-align: center; }
+      .compare-col { padding: 16px; }
+      .compare-img-wrap { height: 180px; }
     }
 
     .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease; }
@@ -442,6 +511,7 @@
 </head>
 <body>
 
+<!-- TOAST NOTIFICACIÓN -->
 <div id="toast" class="toast-notification">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
   Descripción copiada
@@ -468,6 +538,7 @@
 
 <main id="main-content">
   <div class="controls-container">
+    
     <div class="controls-main-bar">
       
       <div class="search-header-mobile">
@@ -510,6 +581,12 @@
               </div>
             </div>
 
+            <div class="stock-tabs" role="tablist">
+              <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
+              <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
+              <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
+            </div>
+
             <div class="custom-dropdown" id="ddUF">
               <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
               <div class="dropdown-list" id="ufOptionsList">
@@ -541,20 +618,20 @@
                 <label class="dropdown-item"><input type="radio" name="sortOrder" value="valorDesc"> Mayor a Menor Precio (UF)</label>
               </div>
             </div>
-            
-            <div class="stock-tabs" role="tablist">
-              <button class="stock-tab active" data-stock="all" role="tab" aria-selected="true"><span class="tab-dot"></span>Todos</button>
-              <button class="stock-tab" data-stock="with" role="tab" aria-selected="false"><span class="tab-dot"></span>Con Stock</button>
-              <button class="stock-tab" data-stock="without" role="tab" aria-selected="false"><span class="tab-dot"></span>Sin Stock</button>
-            </div>
 
             <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar Filtros
             </button>
         </div>
       </div>
-
     </div>
+    
+    <!-- HISTORIAL RECIENTE -->
+    <div class="recent-history-wrapper" id="recentHistoryWrapper">
+        <div class="recent-header recent-history-title">Vistos Recientemente:</div>
+        <div class="recent-list" id="recentList" style="display:flex; gap:8px;"></div>
+    </div>
+    
     <div class="results-count" id="resultsCount"></div>
   </div>
 
@@ -563,6 +640,19 @@
   </div>
 </main>
 
+<!-- BARRA FLOTANTE DE COMPARACIÓN -->
+<div class="compare-floating-bar" id="compareBar">
+    <div class="compare-info">
+        <span class="compare-text" id="compareCountText">0 seleccionados</span>
+        <span class="compare-codes" id="compareCodesText">Selecciona 2 para comparar</span>
+    </div>
+    <div class="compare-actions">
+        <button class="comp-btn comp-clear" onclick="clearCompare()">Limpiar</button>
+        <button class="comp-btn comp-run" id="btnRunCompare" onclick="openCompareModal()" disabled>Comparar</button>
+    </div>
+</div>
+
+<!-- MODAL PRINCIPAL BENTO BOX -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
     
@@ -616,6 +706,17 @@
   </div>
 </div>
 
+<!-- MODAL COMPARADOR -->
+<div class="modal-overlay" id="compareModalOverlay" onclick="closeCompareModal()">
+    <div class="modal-wrapper">
+        <div class="modal-box compare-modal-box" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeCompareModal()" title="Cerrar">✕</button>
+            <div id="compareCol1" class="compare-col"></div>
+            <div id="compareCol2" class="compare-col"></div>
+        </div>
+    </div>
+</div>
+
 <button id="backToTop" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Volver arriba">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
 </button>
@@ -639,6 +740,10 @@ let currentStockFilter = safeGetLocal('stockFilter') || 'all';
 let currentSearch = safeGetLocal('searchQuery') || ''; 
 let currentModalCode = '';
 let isListView = safeGetLocal('viewMode') === 'list';
+
+// Variables Historial y Comparador
+let recentHistory = JSON.parse(safeGetLocal('recentHistory') || '[]');
+let compareList = [];
 
 const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
@@ -787,11 +892,120 @@ window.navegarModal = function(direccion) {
     showModal(window.currentFilteredList[nextIndex]);
 };
 
+// LÓGICA DE HISTORIAL
+function renderRecentHistory() {
+    const wrapper = document.getElementById('recentHistoryWrapper');
+    const list = document.getElementById('recentList');
+    if (recentHistory.length === 0) { wrapper.style.display = 'none'; return; }
+    
+    wrapper.style.display = 'flex';
+    list.innerHTML = '';
+    recentHistory.forEach(code => {
+        const item = document.createElement('div');
+        item.className = 'recent-item';
+        item.innerHTML = `<img src="img_sin_fondo/${code}.png" onerror="this.src='img/${code}.png'; this.onerror=null;"/> <span>${code}</span>`;
+        item.onclick = () => {
+            const p = products.find(x => x.codigo === code);
+            if (p) showModal(p);
+        };
+        list.appendChild(item);
+    });
+}
+
+function addToHistory(code) {
+    recentHistory = recentHistory.filter(c => c !== code);
+    recentHistory.unshift(code);
+    if (recentHistory.length > 10) recentHistory = recentHistory.slice(0, 10);
+    safeSetLocal('recentHistory', JSON.stringify(recentHistory));
+    renderRecentHistory();
+}
+
+// LÓGICA DE COMPARADOR
+function toggleCompare(code, e) {
+    e.stopPropagation();
+    if (compareList.includes(code)) {
+        compareList = compareList.filter(c => c !== code);
+    } else {
+        if (compareList.length < 2) compareList.push(code);
+        else { showToast("Solo puedes comparar 2 productos a la vez"); return; }
+    }
+    updateCompareUI();
+}
+
+function clearCompare() { compareList = []; updateCompareUI(); }
+
+function updateCompareUI() {
+    const bar = document.getElementById('compareBar');
+    const countText = document.getElementById('compareCountText');
+    const codesText = document.getElementById('compareCodesText');
+    const btnRun = document.getElementById('btnRunCompare');
+    
+    document.querySelectorAll('.product-card').forEach(card => {
+        if (compareList.includes(card.dataset.code)) { card.classList.add('comparing'); card.querySelector('.compare-btn').textContent = 'Quitar'; } 
+        else { card.classList.remove('comparing'); card.querySelector('.compare-btn').textContent = '◨ Comparar';}
+    });
+
+    if (compareList.length === 0) { bar.classList.remove('visible'); return; }
+    
+    bar.classList.add('visible');
+    countText.textContent = `${compareList.length} producto${compareList.length > 1 ? 's' : ''} seleccionado${compareList.length > 1 ? 's' : ''}`;
+    
+    if (compareList.length === 1) {
+        codesText.textContent = `${compareList[0]} vs ...`;
+        btnRun.disabled = true;
+    } else {
+        codesText.textContent = `${compareList[0]} vs ${compareList[1]}`;
+        btnRun.disabled = false;
+    }
+}
+
+function generateCompareColumnHTML(code) {
+    const p = products.find(x => x.codigo === code) || {codigo: code, descripcion:'', cantidad: 0};
+    const ed = EXTRA_DATA[code] || {};
+    let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
+    const status = getStockStatus(p.cantidad || 0, isDesc);
+    const cat = getCategory(p.codigo).label;
+    
+    return `
+      <div class="compare-img-wrap"><img src="img_sin_fondo/${p.codigo}.png" onerror="this.src='img/${p.codigo}.png';"/></div>
+      <div class="modal-category">${cat}</div>
+      <h2 class="modal-code">${p.codigo}</h2>
+      <p class="modal-desc">${p.descripcion || "Sin descripción"}</p>
+      
+      <div class="bento-card bento-stock">
+          <div><div class="modal-stock-label">Stock Actual</div><div class="modal-stock-number">${p.cantidad || 0}</div></div>
+          <div class="modal-stock-status ${status.cls}">${status.text}</div>
+      </div>
+      
+      ${ed.valor || ed.plan ? `
+      <div style="display:flex; gap:16px; width:100%;">
+          ${ed.valor ? `<div class="bento-card bento-extra"><h3 class="bento-extra-title">Valor Ref.</h3><p class="bento-extra-val" style="color:var(--accent-gold)">${ed.valor} UF</p></div>` : ''}
+          ${ed.plan ? `<div class="bento-card bento-extra"><h3 class="bento-extra-title">Plan</h3><p class="bento-extra-val" style="color:var(--neon-green)">${ed.plan}</p></div>` : ''}
+      </div>` : ''}
+    `;
+}
+
+function openCompareModal() {
+    if (compareList.length !== 2) return;
+    document.getElementById('compareCol1').innerHTML = generateCompareColumnHTML(compareList[0]);
+    document.getElementById('compareCol2').innerHTML = generateCompareColumnHTML(compareList[1]);
+    document.getElementById('compareModalOverlay').classList.add('open');
+}
+function closeCompareModal() { document.getElementById('compareModalOverlay').classList.remove('open'); }
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ${msg}`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
   applyViewMode();
+  renderRecentHistory();
   if (SpeechRecognition) {
       const micBtn = document.getElementById('micBtn');
       if (micBtn) micBtn.style.display = 'flex';
@@ -818,6 +1032,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (e.key === 'ArrowLeft') window.navegarModal(-1);
           else if (e.key === 'ArrowRight') window.navegarModal(1);
           else if (e.key === 'Escape') closeModal();
+      }
+      if (document.getElementById('compareModalOverlay').classList.contains('open') && e.key === 'Escape') {
+          closeCompareModal();
       }
   });
 
@@ -930,8 +1147,8 @@ async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
     const cacheKey = 'erp_cache_data'; const cacheTimeKey = 'erp_cache_timestamp';
-    const cachedData = sessionStorage.getItem(cacheKey); const cachedTime = sessionStorage.getItem(cacheTimeKey);
-    const now = Date.now(); const CACHE_DURATION = 5 * 60 * 1000;
+    const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
+    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000; // 1 Hora de memoria persistente
 
     if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_DURATION)) {
       const parsedCache = JSON.parse(cachedData);
@@ -999,8 +1216,9 @@ async function sincronizarERP() {
                return { codigo: cod, descripcion: stockConsolidado[cod].descripcion, cantidad: finalQty };
            }).filter(p => isValidCode(p.codigo));
 
-           sessionStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
-           sessionStorage.setItem(cacheTimeKey, now.toString());
+           // GUARDANDO EN LOCALSTORAGE (MEMORIA PERSISTENTE)
+           localStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
+           localStorage.setItem(cacheTimeKey, now.toString());
        }
     }
   } catch (err) {}
@@ -1023,6 +1241,7 @@ window.copiarTexto = function(el) {
   navigator.clipboard.writeText(texto).then(() => {
     const toast = document.getElementById('toast');
     if(toast) {
+        toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Descripción copiada`;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2500);
     }
@@ -1085,20 +1304,27 @@ function updateGridDOM(append) {
   const paginated = filtered.slice(append ? (currentPage-1)*ITEMS_PER_PAGE : 0, currentPage * ITEMS_PER_PAGE);
   if (window.currentTotalItems === 0 && !append) { grid.innerHTML = `<div class="empty-state">Ningún producto coincide con la búsqueda o el ERP no envió datos.</div>`; }
 
-  paginated.forEach(p => {
+  paginated.forEach((p, index) => {
     const qty = p.cantidad || 0; const badge = getStockBadge(qty); const ed = EXTRA_DATA[p.codigo] || {}; let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const statusObj = getStockStatus(qty, isDesc);
     let ribbon = ''; if (qty === 0) { if(isDesc) ribbon = `<div class="badge-ribbon badge-desc">Agotado<br>Descont.</div>`; else ribbon = `<div class="badge-ribbon badge-out">Agotado</div>`; } else if (qty <= 3) ribbon = `<div class="badge-ribbon badge-low">Últimas<br>Unidades</div>`;
 
     const card = document.createElement('div'); 
-    card.className = `product-card card-${badge.cls}`; 
+    card.className = `product-card card-${badge.cls} ${compareList.includes(p.codigo) ? 'comparing' : ''}`; 
     card.dataset.code = p.codigo; 
+    card.style.setProperty('--i', index % 24); 
     card.onclick = () => showModal(p);
     
     card.onmousemove = e => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left; const y = e.clientY - rect.top;
       card.style.setProperty('--mouse-x', `${x}px`); card.style.setProperty('--mouse-y', `${y}px`);
+      if(!isListView && window.matchMedia("(min-width: 900px)").matches) {
+          const centerX = rect.width / 2; const centerY = rect.height / 2;
+          const tiltX = ((x - centerX) / centerX) * 5; const tiltY = ((centerY - y) / centerY) * 5;
+          card.style.setProperty('--tilt-x', `${tiltX}deg`); card.style.setProperty('--tilt-y', `${tiltY}deg`);
+      }
     };
+    card.onmouseleave = () => { card.style.setProperty('--tilt-x', `0deg`); card.style.setProperty('--tilt-y', `0deg`); };
     
     let extraHTML = '';
     if (ed.valor || ed.plan) {
@@ -1112,7 +1338,10 @@ function updateGridDOM(append) {
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
         <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
-        <div class="card-hover-overlay"><div class="view-btn">Ver Detalle</div></div>
+        <div class="card-hover-overlay">
+            <button class="view-btn">Ver Detalle</button>
+            <button class="view-btn compare-btn" onclick="toggleCompare('${p.codigo}', event)">${compareList.includes(p.codigo) ? 'Quitar' : '◨ Comparar'}</button>
+        </div>
       </div>
       <div class="card-body">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;"><div class="card-code">${p.codigo}</div><div class="status-text ${statusObj.cls}" style="text-align:right;">Stock: ${qty}</div></div>
@@ -1122,11 +1351,14 @@ function updateGridDOM(append) {
     grid.appendChild(card);
   });
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
+  updateCompareUI();
 }
 
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
+  
+  addToHistory(p.codigo);
   
   document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
   document.getElementById('modalCode').textContent = p.codigo; 
