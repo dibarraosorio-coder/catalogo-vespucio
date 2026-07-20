@@ -149,7 +149,7 @@
     .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; display: flex; align-items: center; }
     .search-wrap .search-icon { position: absolute; left: 16px; color: var(--text-muted); pointer-events: none; }
     
-    /* MEJORA 2: BÚSQUEDA POR VOZ */
+    /* BÚSQUEDA POR VOZ */
     .mic-btn {
         position: absolute; right: 8px; width: 32px; height: 32px; border-radius: 6px;
         background: transparent; border: none; color: var(--text-muted); cursor: pointer;
@@ -165,7 +165,7 @@
     #searchInput { 
       height: 44px; width: 100%; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); 
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
-      outline: none; transition: all .2s; padding: 0 44px 0 46px; /* Espacio extra a la derecha para el mic */
+      outline: none; transition: all .2s; padding: 0 44px 0 46px; 
     }
     #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
@@ -214,20 +214,10 @@
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
 
-    /* =========================================
-       GRILLA, TARJETAS Y VIEW TRANSITIONS
-       ========================================= */
+    /* GRILLA Y TARJETAS CON SPOTLIGHT */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 0 24px 80px; }
+    #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; }
     
-    #catalogGrid { 
-        display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s;
-        view-transition-name: catalog-grid;
-    }
-    
-    ::view-transition-old(catalog-grid), ::view-transition-new(catalog-grid) {
-        animation-duration: 0.4s;
-    }
-
     .product-card { 
       background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
@@ -298,7 +288,7 @@
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
-       MODAL BENTO BOX REPARADO
+       MODAL BENTO BOX
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -312,7 +302,6 @@
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
     @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
-    /* Estructura Bento Grid para el Contenido */
     .modal-content-bento { flex: 1; width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: flex-start; }
     
     .bento-card { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: center; position: relative; }
@@ -387,6 +376,7 @@
       .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
+      /* --- RESTAURANDO DISTRIBUCIÓN DE BOTONES --- */
       .controls-main-bar { flex-direction: column; gap: 0; }
       .search-header-mobile { flex-wrap: nowrap !important; }
       .search-wrap { flex: 1 1 auto; max-width: none; }
@@ -472,15 +462,20 @@
 
 <main id="main-content">
   <div class="controls-container">
+    
     <div class="controls-main-bar">
       
-      <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; flex-wrap:wrap; width:100%;">
+      <!-- BOTONES SUPERIORES (Tema y Vista) -->
+      <div class="top-controls-group" style="display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; margin-bottom: 8px;">
           <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
           </button>
+      </div>
 
+      <!-- BÚSQUEDA Y FILTROS -->
+      <div class="search-header-mobile" style="display:flex; gap:12px; flex:1 1 auto; align-items:center; justify-content:center; width:100%;">
           <div class="search-wrap" style="flex:1 1 auto;">
             <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
             <input type="text" id="searchInput" placeholder="Buscar código o descripción..."/>
@@ -569,7 +564,6 @@
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal-wrapper">
-    
     <button class="modal-nav-btn nav-prev" onclick="navegarModal(-1)" title="Anterior">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
@@ -1128,26 +1122,53 @@ function updateGridDOM(append) {
 function showModal(p) {
   const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
+  
+  // Asignamos la información a los elementos del modal
   document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   document.getElementById('modalStock').textContent = (p.cantidad || 0); 
-  let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const status = getStockStatus(p.cantidad || 0, isDesc);
-  document.getElementById('modalStatus').textContent = status.text; document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
-  document.getElementById('modalExtraInfo').style.display = (ed.valor || ed.plan) ? 'flex' : 'none';
-  document.getElementById('modalValorWrap').style.display = ed.valor ? 'flex' : 'none'; 
-  document.getElementById('modalValor').textContent = ed.valor ? ed.valor + ' UF' : '';
-  document.getElementById('modalPlanWrap').style.display = ed.plan ? 'flex' : 'none'; 
-  document.getElementById('modalPlan').textContent = ed.plan ? ed.plan : '';
+  let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
+  const status = getStockStatus(p.cantidad || 0, isDesc);
+  document.getElementById('modalStatus').textContent = status.text; 
+  document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
+  
+  // VALIDACIONES DE SEGURIDAD (Evita error si el diseño Bento no incluye algún elemento)
+  const valorWrap = document.getElementById('modalValorWrap');
+  if (valorWrap) valorWrap.style.display = ed.valor ? 'flex' : 'none'; 
+  
+  const modalValor = document.getElementById('modalValor');
+  if (modalValor) modalValor.textContent = ed.valor ? ed.valor + ' UF' : '';
+  
+  const planWrap = document.getElementById('modalPlanWrap');
+  if (planWrap) planWrap.style.display = ed.plan ? 'flex' : 'none'; 
+  
+  const modalPlan = document.getElementById('modalPlan');
+  if (modalPlan) modalPlan.textContent = ed.plan ? ed.plan : '';
   
   const imgEl = document.getElementById('modalProductImg');
-  delete imgEl.dataset.fallbackState;
-  imgEl.src = `img_sin_fondo/${p.codigo}.png`;
-  imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+  if (imgEl) {
+      delete imgEl.dataset.fallbackState;
+      imgEl.src = `img_sin_fondo/${p.codigo}.png`;
+      imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+  }
   
   window.currentShareFile = null;
-  fetch(`img_sin_fondo/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.png`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'})).catch(() => { fetch(`img/${p.codigo}.jpg`).then(r => { if(!r.ok) throw new Error(); return r.blob(); }).then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'})).catch(()=> {}); }); });
+  fetch(`img_sin_fondo/${p.codigo}.png`)
+    .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+    .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
+    .catch(() => {
+       fetch(`img/${p.codigo}.png`)
+         .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+         .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
+         .catch(() => {
+            fetch(`img/${p.codigo}.jpg`)
+              .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
+              .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
+              .catch(()=> {});
+         });
+    });
 
   overlay.classList.add('open');
 }
