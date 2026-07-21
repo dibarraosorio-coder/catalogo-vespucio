@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA ORIGINAL RESTAURADA)
+       SISTEMA DE TEMAS: OSCURO Y CLARO
        ========================================= */
     :root {
       --bg-body: #020d08;
@@ -91,7 +91,7 @@
     }
 
     /* =========================================
-       MODO CLIENTE (NUEVO)
+       MODO CLIENTE
        ========================================= */
     body.client-mode .card-stock-row,
     body.client-mode .status-text,
@@ -103,7 +103,7 @@
     body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--neon-green); }
 
     /* =========================================
-       MEJORAS ESCRITORIO (NUEVO - DRAG/DROP, ANIMACIONES)
+       MEJORAS ESCRITORIO (DRAG/DROP, ANIMACIONES)
        ========================================= */
     .desktop-only { display: none !important; }
     
@@ -113,12 +113,12 @@
         
         /* Animación Stock en Línea parpadeante */
         @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(16,185,129,0.4); padding-left: 12px; }
+        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(16,185,129,0.4) !important; padding-left: 12px !important; }
         .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--neon-green); }
         
-        /* Ajustes barra superior para los botones extra */
-        .search-header-mobile { flex-wrap: nowrap !important; }
-        .search-wrap { max-width: 320px !important; }
+        /* Ajustes barra superior para integrar botones extra e historial */
+        .search-header-mobile { flex-wrap: nowrap !important; justify-content: flex-start !important; }
+        .search-wrap { max-width: 280px !important; flex: 0 1 auto !important; }
         
         /* Botón Dropzone */
         .image-dropzone {
@@ -132,22 +132,26 @@
         .image-dropzone:hover { border-color: var(--neon-green); color: var(--text-main); background: var(--tab-hover-bg); }
         .image-dropzone.dragover { border-color: var(--neon-green); background: rgba(16,185,129,0.1); color: var(--neon-green); transform: scale(1.02); }
         
-        /* Vitrina Historial Reciente */
+        /* Vitrina Historial Reciente Moviéndose a la Derecha del botón limpiar */
         .recent-history-wrapper {
-            max-width: 700px; margin: 0 auto; overflow: hidden; position: relative;
+            flex: 1 1 auto;
+            margin: 0 0 0 12px; padding: 0; height: 44px;
+            align-items: center; overflow: hidden; position: relative;
             mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            padding: 12px 0 0;
         }
+        .recent-history-title { margin-right: 12px; font-size: 0.7rem; }
         .recent-list {
-            animation: marqueeTrain 25s linear infinite;
-            min-width: max-content;
+            animation: marqueeTrain 20s linear infinite;
+            display: flex; align-items: center; min-width: max-content;
         }
         .recent-history-wrapper:hover .recent-list { animation-play-state: paused; }
         @keyframes marqueeTrain {
-            0% { transform: translateX(50%); }
+            0% { transform: translateX(30%); }
             100% { transform: translateX(-100%); }
         }
+        .recent-item { height: 32px; padding: 2px 10px 2px 2px; }
+        .recent-item img { width: 24px; height: 24px; }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -174,11 +178,23 @@
       font-size: .85rem; color: var(--text-muted); opacity: 0.6; display: block; margin-top: 16px; 
     }
     
+    /* Contenedor para el estado y el botón de novedades */
+    .header-status-wrapper {
+      position: absolute; top: 18px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; z-index: 10;
+    }
     .last-updated { 
-      position: absolute; top: 18px; right: 24px; font-family: 'Nunito', sans-serif; 
+      position: relative; font-family: 'Nunito', sans-serif; 
       font-size: .68rem; color: var(--text-muted); letter-spacing: .10em; text-transform: uppercase; 
       font-weight: 700; background: var(--glass-bg); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--glass-border); 
     }
+    .changelog-btn {
+      background: transparent; border: none; color: var(--text-muted);
+      font-family: 'Nunito', sans-serif; font-size: 0.65rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;
+      text-decoration: underline; text-decoration-color: var(--glass-border); text-underline-offset: 3px; transition: all 0.2s;
+    }
+    .changelog-btn:hover { color: var(--neon-green); text-decoration-color: var(--neon-green); }
+
     .header-logo { max-height: 85px; width: auto; margin-bottom: 12px; cursor: default; }
     .header-title { 
       font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.8rem); 
@@ -279,12 +295,10 @@
     /* =========================================
        HISTORIAL RECIENTE
        ========================================= */
-    .recent-history-wrapper { width: 100%; max-width: 100%; padding: 12px 24px 0; overflow-x: auto; display: flex; gap: 12px; align-items: center;  scrollbar-width: none; -ms-overflow-style: none; }
-    .recent-history-wrapper::-webkit-scrollbar { display: none; }
-    .recent-history-title { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; margin-right: 8px; }
+    .recent-history-title { font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; }
     .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
     .recent-item:hover { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(16,185,129,0.2); transform: translateY(-2px); }
-    .recent-item img { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; }
+    .recent-item img { border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; }
     .recent-item span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
 
     /* =========================================
@@ -393,7 +407,7 @@
     .modal-box { background: transparent; border: none; box-shadow: none; display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 1000px; gap: 24px; animation: modalIn .3s ease; margin: auto; }
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
-    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; padding: 0; }
+    .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; padding: 0; position: relative; }
     .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
     @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; transition: transform .3s ease, opacity 0.3s ease !important; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
@@ -455,6 +469,14 @@
     .compare-col .modal-desc { font-size: 0.9rem; min-height: 40px; }
     .compare-col .bento-stock { width: 100%; }
     .compare-col .bento-extra { width: 100%; }
+    
+    /* =========================================
+       MODAL ÚLTIMAS ACTUALIZACIONES
+       ========================================= */
+    .changelog-modal-box { max-width: 650px; padding: 40px; display: block; text-align: left; }
+    .changelog-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+    .changelog-list li { font-size: 0.9rem; color: var(--text-main); line-height: 1.5; padding: 20px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
+    .changelog-list li strong { color: var(--neon-green); display: block; margin-bottom: 6px; font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
     /* --- ESTILOS NOTIFICACIÓN TOAST --- */
     .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
@@ -486,6 +508,7 @@
       .nav-prev { left: 10px; } .nav-next { right: 10px; }
       
       .compare-modal-box { grid-template-columns: 1fr; }
+      .changelog-modal-box { padding: 24px 16px; }
     }
     
     @media (max-width: 600px) {
@@ -580,7 +603,10 @@
 </div>
 
 <header>
-  <div class="last-updated" id="lastUpdatedBadge"></div>
+  <div class="header-status-wrapper">
+      <div class="last-updated" id="lastUpdatedBadge"></div>
+      <button class="changelog-btn" onclick="openChangelogModal()">Últimas Actualizaciones</button>
+  </div>
   <img class="header-logo" id="mainLogo" src="img/LOGO.png" onerror="this.style.display='none'" alt="Parque del Recuerdo" title="Logo"/>
   <div class="header-title" title="Catálogo">STOCK ÁNFORAS, COFRES Y RELICARIOS</div>
   <div class="header-subtitle">Catálogo Interno de Inventario — Parque Américo Vespucio</div>
@@ -611,7 +637,7 @@
           </div>
 
           <!-- DROPZONE ESCRITORIO -->
-          <div id="imageDropzone" class="image-dropzone desktop-only" title="Arrastra o pega una imagen para buscar">
+          <div id="imageDropzone" class="image-dropzone desktop-only" title="Arrastra un archivo original para buscar">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               <span>Soltar Imagen</span>
           </div>
@@ -620,6 +646,12 @@
           <button class="action-btn clean-btn desktop-clear-btn desktop-only" onclick="clearFilters()" title="Restablecer todos los filtros">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar
           </button>
+          
+          <!-- HISTORIAL RECIENTE EN CINTA (ESCRITORIO) -->
+          <div class="recent-history-wrapper desktop-only" id="recentHistoryWrapper">
+              <div class="recent-header recent-history-title">Vistos Recientemente:</div>
+              <div class="recent-list" id="recentList"></div>
+          </div>
 
           <button class="mobile-filter-toggle" onclick="toggleMobileFilters()" title="Filtros">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
@@ -690,12 +722,6 @@
             </button>
         </div>
       </div>
-    </div>
-    
-    <!-- HISTORIAL RECIENTE -->
-    <div class="recent-history-wrapper" id="recentHistoryWrapper">
-        <div class="recent-header recent-history-title">Vistos Recientemente:</div>
-        <div class="recent-list" id="recentList" style="display:flex; gap:8px;"></div>
     </div>
     
     <div class="results-count" id="resultsCount"></div>
@@ -779,6 +805,21 @@
             <button class="modal-close" onclick="closeCompareModal()" title="Cerrar">✕</button>
             <div id="compareCol1" class="compare-col"></div>
             <div id="compareCol2" class="compare-col"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ÚLTIMAS ACTUALIZACIONES -->
+<div class="modal-overlay" id="changelogModalOverlay" onclick="closeChangelogModal()">
+    <div class="modal-wrapper">
+        <div class="modal-box changelog-modal-box" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
+            <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Actualizaciones</h2>
+            <ul class="changelog-list">
+                <li><strong>v3.0 - Funciones de Escritorio</strong>Buscador por arrastre y pegado de imágenes (Dropzone). Corrección del zoom en galería inmersiva. Animación de "Stock en Línea" y Carrusel infinito de vistos recientemente.</li>
+                <li><strong>v2.5 - Productividad en Terreno</strong>Modo Cliente 👁️ para ocultar información interna (stock/precios). Búsqueda difusa anti-errores tipográficos. Galería deslizable nativa (Swipe).</li>
+                <li><strong>v2.0 - Rendimiento y Visual</strong>Caché inteligente de memoria en el navegador (carga ultrarrápida). Modo Comparador de productos cara a cara. Efectos 3D y carga de resultados en cascada.</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -1017,7 +1058,8 @@ function renderRecentHistory() {
     const list = document.getElementById('recentList');
     if (recentHistory.length === 0) { wrapper.style.display = 'none'; return; }
     
-    wrapper.style.display = 'flex';
+    // Solo forzar display si estamos en escritorio para no romper la regla mobile
+    if (window.innerWidth > 900) { wrapper.style.display = 'flex'; }
     list.innerHTML = '';
     recentHistory.forEach(code => {
         const item = document.createElement('div');
@@ -1112,6 +1154,9 @@ function openCompareModal() {
 }
 function closeCompareModal() { document.getElementById('compareModalOverlay').classList.remove('open'); }
 
+function openChangelogModal() { document.getElementById('changelogModalOverlay').classList.add('open'); }
+function closeChangelogModal() { document.getElementById('changelogModalOverlay').classList.remove('open'); }
+
 function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ${msg}`;
@@ -1125,10 +1170,19 @@ window.handleImageSearch = function(file) {
         showToast("Formato no válido. Por favor usa una imagen.");
         return;
     }
-    showToast("Analizando imagen... 🔍");
     
-    // Extracción simulada del código del producto desde el nombre del archivo
     let fileName = file.name.replace(/\.[^/.]+$/, ""); 
+    
+    // FILTRO DE SEGURIDAD: Evitar búsquedas con capturas de pantalla genéricas
+    const genericNames = ["captura", "screenshot", "image", "imagen", "whatsapp"];
+    const isGeneric = genericNames.some(gn => fileName.toLowerCase().includes(gn));
+
+    if (isGeneric) {
+        showToast("⚠️ Estás pegando una captura. El sistema busca leyendo el nombre del archivo original, no la forma de la foto.");
+        return;
+    }
+    
+    showToast("Buscando archivo original... 🔍");
     let cleanName = fileName.replace(/[-_]/g, " ").trim();
     
     const searchInput = document.getElementById('searchInput');
@@ -1137,7 +1191,7 @@ window.handleImageSearch = function(file) {
         currentSearch = cleanName;
         safeSetLocal('searchQuery', currentSearch);
         renderGrid();
-        showToast("Mostrando resultados para: " + cleanName);
+        showToast("Resultados para: " + cleanName);
     }
 };
 
@@ -1198,6 +1252,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       if (document.getElementById('compareModalOverlay').classList.contains('open') && e.key === 'Escape') {
           closeCompareModal();
+      }
+      if (document.getElementById('changelogModalOverlay').classList.contains('open') && e.key === 'Escape') {
+          closeChangelogModal();
       }
   });
 
@@ -1539,12 +1596,11 @@ function updateModalContent(p, direction = 0) {
             renderModalData(p);
             imgEl.style.transition = 'none';
             imgEl.style.transform = `translateX(${direction * 50}px) scale(0.95)`;
-            void imgEl.offsetWidth; // Forzar el repintado del navegador
+            void imgEl.offsetWidth; 
             imgEl.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease';
             imgEl.style.transform = `translateX(0) scale(1)`;
             imgEl.style.opacity = '1';
             
-            // FIX ZOOM: Eliminar transformaciones en línea para que actúe el CSS (:hover)
             setTimeout(() => {
                 imgEl.style.transform = '';
                 imgEl.style.transition = '';
@@ -1556,7 +1612,6 @@ function updateModalContent(p, direction = 0) {
             imgEl.style.transform = `translateX(0) scale(1)`;
             imgEl.style.opacity = '1';
             
-            // FIX ZOOM INICIAL
             setTimeout(() => {
                 imgEl.style.transform = '';
                 imgEl.style.transition = '';
