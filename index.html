@@ -103,7 +103,7 @@
     body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--neon-green); }
 
     /* =========================================
-       MEJORAS ESCRITORIO (ANIMACIONES)
+       MEJORAS ESCRITORIO (ANIMACIONES Y TREN DE HISTORIAL)
        ========================================= */
     .desktop-only { display: none !important; }
     
@@ -141,7 +141,7 @@
             0% { transform: translateX(30%); }
             100% { transform: translateX(-100%); }
         }
-        .recent-item { height: 32px; padding: 2px 10px 2px 2px; }
+        .recent-item { height: 32px; padding: 2px 10px 2px 2px; flex-shrink: 0; }
         .recent-item img { width: 24px; height: 24px; flex-shrink: 0; }
     }
 
@@ -282,14 +282,6 @@
     .action-btn.clean-btn:hover { background: var(--btn-hover); color: var(--neon-red); border-color: var(--neon-red); }
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
-
-    /* =========================================
-       HISTORIAL RECIENTE (CLASES GENERALES)
-       ========================================= */
-    .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
-    .recent-item:hover { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(16,185,129,0.2); transform: translateY(-2px); }
-    .recent-item img { border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; flex-shrink: 0; }
-    .recent-item span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); white-space: nowrap; }
 
     /* =========================================
        GRILLA, TARJETAS, CASCADA Y 3D TILT
@@ -468,7 +460,7 @@
     .changelog-list li { font-size: 0.9rem; color: var(--text-main); line-height: 1.5; padding: 20px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
     .changelog-list li strong { color: var(--neon-green); display: block; margin-bottom: 6px; font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
-    /* --- ESTILOS PANTALLA DE CARGA (CORREGIDA) --- */
+    /* --- ESTILOS PANTALLA DE CARGA CENTRADA (CORREGIDA) --- */
     .loading-overlay { position: fixed; inset: 0; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 999999; transition: opacity 0.5s ease, visibility 0.5s ease; }
     .loader-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; width: 100%; }
     .loader-image-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
@@ -1324,7 +1316,7 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data'; const cacheTimeKey = 'erp_cache_timestamp';
+    const cacheKey = 'erp_cache_data_v2'; const cacheTimeKey = 'erp_cache_timestamp_v2';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
     const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
@@ -1350,12 +1342,11 @@ async function sincronizarERP() {
         });
       }
     } catch(e) {}
-    
-    // NUEVA FUNCIONALIDAD: EXTRACCIÓN DEL STOCK DE PCO
+
+    // EXTRACCIÓN DEL STOCK DE PCO CON EL GID CORRESPONDIENTE
     let pcoData = {};
     try {
-        // NOTA: Se usa el parámetro sheet=stock%20pco. Si Google Sheets no lo reconoce, reemplaza esta URL con la que tenga el &gid= correspondiente a la hoja PCO.
-        const pcoRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?sheet=stock%20pco&output=csv");
+        const pcoRes = await fetch("https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0");
         if (pcoRes.ok) {
             const rows = (await pcoRes.text()).split(/\r?\n/);
             rows.forEach(row => {
@@ -1364,7 +1355,7 @@ async function sincronizarERP() {
                 for (let i=0; i<cols.length; i++) {
                     if (isValidCode(cols[i])) { code = cols[i].toUpperCase(); break; }
                 }
-                if (code && cols.length >= 6) { // Índice 5 corresponde a la Columna F
+                if (code && cols.length > 5) {
                     let val = parseInt(cols[5]);
                     if (!isNaN(val)) pcoData[code] = val;
                 }
