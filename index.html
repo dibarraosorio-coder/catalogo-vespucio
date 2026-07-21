@@ -1316,9 +1316,9 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data_v4'; const cacheTimeKey = 'erp_cache_timestamp_v4';
+    const cacheKey = 'erp_cache_data_v5'; const cacheTimeKey = 'erp_cache_timestamp_v5';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
-    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
+    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000; // 1 Hora de memoria persistente
 
     if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_DURATION)) {
       const parsedCache = JSON.parse(cachedData);
@@ -1326,7 +1326,7 @@ async function sincronizarERP() {
       return; 
     }
 
-    // EXTRACCIÓN DEL STOCK DE PCO
+    // EXTRACCIÓN DEL STOCK DE PCO DESDE GOOGLE SHEETS
     let pcoData = {};
     try {
         const pcoRes = await fetch("https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0");
@@ -1392,7 +1392,7 @@ async function sincronizarERP() {
                let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
                
-               // NUEVA LÓGICA DE CÁLCULO: (Total ERP) - (Stock PCO) = Stock PAV
+               // LÓGICA DE CÁLCULO: (Total ERP) - (Stock PCO) = Stock PAV
                let pavQty = Math.max(0, erpTotal - pcoQty);
                
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
@@ -1594,10 +1594,10 @@ function renderModalData(p) {
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   
-  // STOCK PAV Y PCO
-  document.getElementById('modalStock').innerHTML = `PAV: ${p.cantidad || 0}`; 
+  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO
+  document.getElementById('modalStock').innerHTML = p.cantidad || 0; 
   let pcoEl = document.getElementById('modalStockPCO');
-  if (pcoEl) { pcoEl.innerHTML = `PCO: ${p.cantidadPCO || 0}`; }
+  if (pcoEl) { pcoEl.innerHTML = p.cantidadPCO || 0; }
   
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
   const status = getStockStatus(p.cantidad || 0, isDesc);
