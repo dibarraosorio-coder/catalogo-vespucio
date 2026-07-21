@@ -90,6 +90,18 @@
       --accent-gold: #d97706;
     }
 
+    /* =========================================
+       MODO CLIENTE (NUEVO)
+       ========================================= */
+    body.client-mode .card-stock-row,
+    body.client-mode .status-text,
+    body.client-mode .badge-ribbon,
+    body.client-mode .modal-stock-section,
+    body.client-mode .card-code,
+    body.client-mode .modal-code,
+    body.client-mode .stock-tabs { display: none !important; }
+    body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--neon-green); }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
@@ -334,8 +346,8 @@
     @keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     
     .modal-img-section { flex: 1; width: 100%; max-width: 540px; height: 400px; background: transparent; border: none; box-shadow: none; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 20px; overflow: visible; padding: 0; }
-    .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); transition: transform .3s ease; cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
-    @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
+    .modal-img-section img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); cursor: zoom-in; position: relative; z-index: 50; transform-origin: center center; pointer-events: none; }
+    @media (hover: hover) and (pointer: fine) { .modal-img-section img { pointer-events: auto; transition: transform .3s ease, opacity 0.3s ease !important; } .modal-img-section img:hover { transform: scale(1.6); z-index: 150; } }
 
     .modal-content-bento { flex: 1; width: 100%; max-width: 480px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-content: flex-start; }
     
@@ -444,17 +456,19 @@
       .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
+      /* --- ORDEN PERFECTO DE BARRA SUPERIOR MÓVIL --- */
       .search-header-mobile { 
           display: grid !important; 
-          grid-template-columns: 44px 44px 1fr 44px; 
+          grid-template-columns: 44px 44px 44px 1fr 44px; 
           grid-template-rows: auto auto; 
           gap: 12px; 
           width: 100%; 
       }
       #themeToggleBtn { grid-column: 1; grid-row: 1; margin: 0; }
       #viewToggleBtn { grid-column: 2; grid-row: 1; margin: 0; }
-      .mobile-filter-toggle { grid-column: 4; grid-row: 1; display: flex !important; margin: 0; }
-      .search-wrap { grid-column: 1 / 5; grid-row: 2; width: 100%; max-width: none; }
+      #clientModeBtn { grid-column: 3; grid-row: 1; margin: 0; }
+      .mobile-filter-toggle { grid-column: 5; grid-row: 1; display: flex !important; margin: 0; }
+      .search-wrap { grid-column: 1 / 6; grid-row: 2; width: 100%; max-width: none; }
 
       .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; pointer-events: none; }
       .filters-wrapper.open { pointer-events: auto; }
@@ -546,6 +560,11 @@
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </button>
+
+          <!-- NUEVO: BOTÓN MODO CLIENTE -->
+          <button class="icon-btn" onclick="toggleClientMode()" id="clientModeBtn" title="Activar/Desactivar Modo Cliente">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </button>
 
           <div class="search-wrap">
@@ -666,7 +685,8 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
-      <div class="modal-img-section">
+      <!-- APLICAMOS EL ID AQUÍ PARA LA GALERÍA INMERSIVA SWIPE -->
+      <div class="modal-img-section" id="modalImgSection">
           <img id="modalProductImg" src="" alt="Imagen de Producto"/>
       </div>
       
@@ -740,6 +760,7 @@ let currentStockFilter = safeGetLocal('stockFilter') || 'all';
 let currentSearch = safeGetLocal('searchQuery') || ''; 
 let currentModalCode = '';
 let isListView = safeGetLocal('viewMode') === 'list';
+let isClientMode = safeGetLocal('clientMode') === 'true';
 
 // Variables Historial y Comparador
 let recentHistory = JSON.parse(safeGetLocal('recentHistory') || '[]');
@@ -749,6 +770,8 @@ const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" st
 const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 const svgGrid = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`;
 const svgList = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`;
+const svgEyeOn = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+const svgEyeOff = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
 
 const fotosSincronizacion = ["ANF0006", "ANF0115", "ANF0010", "REL0045", "COF0012"];
 let intervalLoader = null;
@@ -806,6 +829,24 @@ function applyViewMode() {
     }
 }
 
+function toggleClientMode() {
+    isClientMode = !isClientMode;
+    safeSetLocal('clientMode', isClientMode);
+    applyClientMode();
+    showToast(isClientMode ? "Modo Cliente Activado 👁️" : "Modo Cliente Desactivado 👁️‍🗨️");
+}
+
+function applyClientMode() {
+    const btn = document.getElementById('clientModeBtn');
+    if(isClientMode) {
+        document.body.classList.add('client-mode');
+        if(btn) { btn.style.color = 'var(--neon-green)'; btn.style.borderColor = 'var(--neon-green)'; btn.innerHTML = svgEyeOn; }
+    } else {
+        document.body.classList.remove('client-mode');
+        if(btn) { btn.style.color = ''; btn.style.borderColor = ''; btn.innerHTML = svgEyeOff; }
+    }
+}
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 if (SpeechRecognition) {
@@ -845,6 +886,37 @@ function stopVoiceSearch() {
     if (micBtn) micBtn.classList.remove('listening');
     const input = document.getElementById('searchInput');
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
+}
+
+// BÚSQUEDA DIFUSA (LEVENSHTEIN)
+function levenshtein(a, b) {
+    if(a.length === 0) return b.length;
+    if(b.length === 0) return a.length;
+    let matrix = [];
+    for(let i = 0; i <= b.length; i++) matrix[i] = [i];
+    for(let j = 0; j <= a.length; j++) matrix[0][j] = j;
+    for(let i = 1; i <= b.length; i++){
+        for(let j = 1; j <= a.length; j++){
+            if(b.charAt(i-1) === a.charAt(j-1)){
+                matrix[i][j] = matrix[i-1][j-1];
+            } else {
+                matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
+            }
+        }
+    }
+    return matrix[b.length][a.length];
+}
+
+function isFuzzyMatch(text, query) {
+    const tWords = text.split(/\s+/);
+    const qWords = query.split(/\s+/);
+    return qWords.every(qw => {
+        return tWords.some(tw => {
+            if (tw.includes(qw)) return true;
+            if (qw.length > 3 && levenshtein(qw, tw) <= 2) return true;
+            return false;
+        });
+    });
 }
 
 window.handleImageFallback = function(imgEl, codigo) {
@@ -889,7 +961,8 @@ window.navegarModal = function(direccion) {
     let nextIndex = currentIndex + direccion;
     if (nextIndex < 0) nextIndex = window.currentFilteredList.length - 1;
     if (nextIndex >= window.currentFilteredList.length) nextIndex = 0;
-    showModal(window.currentFilteredList[nextIndex]);
+    
+    updateModalContent(window.currentFilteredList[nextIndex], direccion);
 };
 
 // LÓGICA DE HISTORIAL
@@ -1005,6 +1078,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
   
   applyViewMode();
+  applyClientMode();
   renderRecentHistory();
   if (SpeechRecognition) {
       const micBtn = document.getElementById('micBtn');
@@ -1038,16 +1112,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
-  const modalOverlay = document.getElementById('modalOverlay');
+  // GALERÍA INMERSIVA (SWIPE GESTURE EN IMAGEN)
+  const modalImgSection = document.getElementById('modalImgSection');
   let touchstartX = 0; let touchendX = 0;
-  modalOverlay.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
-  modalOverlay.addEventListener('touchend', e => {
-      touchendX = e.changedTouches[0].screenX;
-      if (currentModalCode !== '') {
-          let diff = touchstartX - touchendX;
-          if (Math.abs(diff) > 50) { if (diff > 0) window.navegarModal(1); else window.navegarModal(-1); }
-      }
-  }, {passive: true});
+  if(modalImgSection) {
+      modalImgSection.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+      modalImgSection.addEventListener('touchend', e => {
+          touchendX = e.changedTouches[0].screenX;
+          if (currentModalCode !== '') {
+              let diff = touchstartX - touchendX;
+              if (Math.abs(diff) > 50) { if (diff > 0) window.navegarModal(1); else window.navegarModal(-1); }
+          }
+      }, {passive: true});
+  }
 
   window.addEventListener('scroll', () => {
     const topBtn = document.getElementById('backToTop');
@@ -1148,7 +1225,7 @@ async function sincronizarERP() {
   try {
     const cacheKey = 'erp_cache_data'; const cacheTimeKey = 'erp_cache_timestamp';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
-    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000; // 1 Hora de memoria persistente
+    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
     if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_DURATION)) {
       const parsedCache = JSON.parse(cachedData);
@@ -1216,7 +1293,6 @@ async function sincronizarERP() {
                return { codigo: cod, descripcion: stockConsolidado[cod].descripcion, cantidad: finalQty };
            }).filter(p => isValidCode(p.codigo));
 
-           // GUARDANDO EN LOCALSTORAGE (MEMORIA PERSISTENTE)
            localStorage.setItem(cacheKey, JSON.stringify({products, EXTRA_DATA}));
            localStorage.setItem(cacheTimeKey, now.toString());
        }
@@ -1273,9 +1349,11 @@ function updateGridDOM(append) {
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
+    // BÚSQUEDA DIFUSA
     if (currentSearch) { 
-      let q = normalizeStr(currentSearch); let codeNorm = normalizeStr(p.codigo); let descNorm = p.descripcion ? normalizeStr(p.descripcion) : ""; 
-      if (!codeNorm.includes(q) && !descNorm.includes(q)) return false; 
+      let q = normalizeStr(currentSearch); 
+      let fullText = normalizeStr(p.codigo) + " " + (p.descripcion ? normalizeStr(p.descripcion) : ""); 
+      if (!isFuzzyMatch(fullText, q)) return false; 
     }
 
     if (currentStockFilter === 'with' && p.cantidad === 0) return false; 
@@ -1355,9 +1433,40 @@ function updateGridDOM(append) {
 }
 
 function showModal(p) {
-  const overlay = document.getElementById('modalOverlay'); if(!overlay) return;
+    updateModalContent(p, 0);
+    document.getElementById('modalOverlay').classList.add('open');
+}
+
+function updateModalContent(p, direction = 0) {
+    const imgWrap = document.getElementById('modalImgSection');
+    const imgEl = document.getElementById('modalProductImg');
+    
+    if (direction !== 0 && imgWrap && imgEl) {
+        imgEl.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+        imgEl.style.transform = `translateX(${direction * -50}px) scale(0.95)`;
+        imgEl.style.opacity = '0';
+        
+        setTimeout(() => {
+            renderModalData(p);
+            imgEl.style.transition = 'none';
+            imgEl.style.transform = `translateX(${direction * 50}px) scale(0.95)`;
+            void imgEl.offsetWidth; // Force reflow
+            imgEl.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease';
+            imgEl.style.transform = `translateX(0) scale(1)`;
+            imgEl.style.opacity = '1';
+        }, 200);
+    } else {
+        if (imgEl) {
+            imgEl.style.transition = 'none';
+            imgEl.style.transform = `translateX(0) scale(1)`;
+            imgEl.style.opacity = '1';
+        }
+        renderModalData(p);
+    }
+}
+
+function renderModalData(p) {
   currentModalCode = p.codigo; const ed = EXTRA_DATA[p.codigo] || {}; 
-  
   addToHistory(p.codigo);
   
   document.getElementById('modalCat').textContent = getCategory(p.codigo).label; 
@@ -1404,8 +1513,6 @@ function showModal(p) {
               .catch(()=> {});
          });
     });
-
-  overlay.classList.add('open');
 }
 
 function closeModal() { document.getElementById('modalOverlay')?.classList.remove('open'); currentModalCode = ''; }
