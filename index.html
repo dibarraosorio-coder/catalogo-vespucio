@@ -102,6 +102,54 @@
     body.client-mode .stock-tabs { display: none !important; }
     body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--neon-green); }
 
+    /* =========================================
+       MEJORAS ESCRITORIO (NUEVO - DRAG/DROP, ANIMACIONES)
+       ========================================= */
+    .desktop-only { display: none !important; }
+    
+    @media (min-width: 901px) {
+        .desktop-only { display: flex !important; }
+        .mobile-clear-btn { display: none !important; }
+        
+        /* Animación Stock en Línea parpadeante */
+        @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(16,185,129,0.4); padding-left: 12px; }
+        .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--neon-green); }
+        
+        /* Ajustes barra superior para los botones extra */
+        .search-header-mobile { flex-wrap: nowrap !important; }
+        .search-wrap { max-width: 320px !important; }
+        
+        /* Botón Dropzone */
+        .image-dropzone {
+            align-items: center; justify-content: center; gap: 8px;
+            border: 1px dashed var(--glass-border); border-radius: 8px;
+            padding: 0 16px; height: 44px; color: var(--text-muted);
+            background: transparent; cursor: pointer; transition: all 0.2s;
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .image-dropzone:hover { border-color: var(--neon-green); color: var(--text-main); background: var(--tab-hover-bg); }
+        .image-dropzone.dragover { border-color: var(--neon-green); background: rgba(16,185,129,0.1); color: var(--neon-green); transform: scale(1.02); }
+        
+        /* Vitrina Historial Reciente */
+        .recent-history-wrapper {
+            max-width: 700px; margin: 0 auto; overflow: hidden; position: relative;
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            padding: 12px 0 0;
+        }
+        .recent-list {
+            animation: marqueeTrain 25s linear infinite;
+            min-width: max-content;
+        }
+        .recent-history-wrapper:hover .recent-list { animation-play-state: paused; }
+        @keyframes marqueeTrain {
+            0% { transform: translateX(50%); }
+            100% { transform: translateX(-100%); }
+        }
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
@@ -456,7 +504,6 @@
       .modal-stock-number { font-size: 2rem; }
       .modal-nav-btn { display: none; } 
       
-      /* --- ORDEN PERFECTO DE BARRA SUPERIOR MÓVIL --- */
       .search-header-mobile { 
           display: grid !important; 
           grid-template-columns: 44px 44px 44px 1fr 44px; 
@@ -510,17 +557,6 @@
       .compare-col { padding: 16px; }
       .compare-img-wrap { height: 180px; }
     }
-
-    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s ease; }
-    .loader-content { display: flex; flex-direction: column; align-items: center; gap: 25px; }
-    .loader-image-wrapper { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
-    .loader-spinner-ring { position: absolute; width: 140px; height: 140px; border: 3px solid rgba(16, 185, 129, 0.1); border-radius: 50%; border-top-color: var(--neon-green); animation: spin 1.2s linear infinite; z-index: 1; }
-    .loader-image-container { position: absolute; width: 115px; height: 115px; border-radius: 50%; border: 1px solid rgba(16, 185, 129, 0.15); overflow: hidden; background-color: var(--glass-bg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); backdrop-filter: blur(8px); z-index: 2; }
-    .loader-image-container img { width: 80%; height: 80%; object-fit: contain; transition: opacity 0.5s ease-in-out; opacity: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
-    .loader-img-fade-in { opacity: 1 !important; }
-    .loader-text-new { font-family: 'Cinzel', serif; letter-spacing: 4px; color: var(--text-main); font-size: 13px; margin: 0; animation: pulse 1.5s infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   </style>
 </head>
 <body>
@@ -562,7 +598,6 @@
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
           </button>
 
-          <!-- NUEVO: BOTÓN MODO CLIENTE -->
           <button class="icon-btn" onclick="toggleClientMode()" id="clientModeBtn" title="Activar/Desactivar Modo Cliente">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </button>
@@ -574,6 +609,17 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
           </div>
+
+          <!-- DROPZONE ESCRITORIO -->
+          <div id="imageDropzone" class="image-dropzone desktop-only" title="Arrastra o pega una imagen para buscar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Soltar Imagen</span>
+          </div>
+
+          <!-- LIMPIAR FILTROS ESCRITORIO -->
+          <button class="action-btn clean-btn desktop-clear-btn desktop-only" onclick="clearFilters()" title="Restablecer todos los filtros">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar
+          </button>
 
           <button class="mobile-filter-toggle" onclick="toggleMobileFilters()" title="Filtros">
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
@@ -638,7 +684,8 @@
               </div>
             </div>
 
-            <button class="action-btn clean-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
+            <!-- LIMPIAR FILTROS MÓVIL (Oculto en escritorio) -->
+            <button class="action-btn clean-btn mobile-clear-btn" onclick="clearFilters()" title="Restablecer todos los filtros">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 2.81-6.73L21 8"></path></svg> Limpiar Filtros
             </button>
         </div>
@@ -685,7 +732,6 @@
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
       
-      <!-- APLICAMOS EL ID AQUÍ PARA LA GALERÍA INMERSIVA SWIPE -->
       <div class="modal-img-section" id="modalImgSection">
           <img id="modalProductImg" src="" alt="Imagen de Producto"/>
       </div>
@@ -1073,6 +1119,28 @@ function showToast(msg) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// NUEVA FUNCIÓN: PROCESAR BÚSQUEDA POR IMAGEN (SOLTAR / PEGAR)
+window.handleImageSearch = function(file) {
+    if(!file || !file.type.startsWith('image/')) {
+        showToast("Formato no válido. Por favor usa una imagen.");
+        return;
+    }
+    showToast("Analizando imagen... 🔍");
+    
+    // Extracción simulada del código del producto desde el nombre del archivo
+    let fileName = file.name.replace(/\.[^/.]+$/, ""); 
+    let cleanName = fileName.replace(/[-_]/g, " ").trim();
+    
+    const searchInput = document.getElementById('searchInput');
+    if(searchInput) {
+        searchInput.value = cleanName;
+        currentSearch = cleanName;
+        safeSetLocal('searchQuery', currentSearch);
+        renderGrid();
+        showToast("Mostrando resultados para: " + cleanName);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   if (safeGetLocal('theme') === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeToggleBtn').innerHTML = svgMoon; } else { document.getElementById('themeToggleBtn').innerHTML = svgSun; }
@@ -1084,6 +1152,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       const micBtn = document.getElementById('micBtn');
       if (micBtn) micBtn.style.display = 'flex';
   }
+
+  // EVENTOS DROPZONE Y PEGAR (ESCRITORIO)
+  const dropzone = document.getElementById('imageDropzone');
+  if (dropzone) {
+      dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+      dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+      dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+          if(e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+              handleImageSearch(e.dataTransfer.files[0]);
+          }
+      });
+  }
+  
+  window.addEventListener('paste', (e) => {
+      if (document.activeElement === document.getElementById('searchInput')) return;
+      if(e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+          handleImageSearch(e.clipboardData.files[0]);
+      }
+  });
 
   document.querySelectorAll('.stock-tab').forEach(b => { 
     if(b.dataset.stock === currentStockFilter) { b.classList.add('active'); b.setAttribute('aria-selected', 'true'); }
@@ -1450,16 +1539,28 @@ function updateModalContent(p, direction = 0) {
             renderModalData(p);
             imgEl.style.transition = 'none';
             imgEl.style.transform = `translateX(${direction * 50}px) scale(0.95)`;
-            void imgEl.offsetWidth; // Force reflow
+            void imgEl.offsetWidth; // Forzar el repintado del navegador
             imgEl.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease';
             imgEl.style.transform = `translateX(0) scale(1)`;
             imgEl.style.opacity = '1';
+            
+            // FIX ZOOM: Eliminar transformaciones en línea para que actúe el CSS (:hover)
+            setTimeout(() => {
+                imgEl.style.transform = '';
+                imgEl.style.transition = '';
+            }, 300);
         }, 200);
     } else {
         if (imgEl) {
             imgEl.style.transition = 'none';
             imgEl.style.transform = `translateX(0) scale(1)`;
             imgEl.style.opacity = '1';
+            
+            // FIX ZOOM INICIAL
+            setTimeout(() => {
+                imgEl.style.transform = '';
+                imgEl.style.transition = '';
+            }, 50);
         }
         renderModalData(p);
     }
