@@ -141,8 +141,6 @@
             0% { transform: translateX(30%); }
             100% { transform: translateX(-100%); }
         }
-        .recent-item { height: 32px; padding: 2px 10px 2px 2px; flex-shrink: 0; }
-        .recent-item img { width: 24px; height: 24px; flex-shrink: 0; }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -282,6 +280,14 @@
     .action-btn.clean-btn:hover { background: var(--btn-hover); color: var(--neon-red); border-color: var(--neon-red); }
 
     .results-count { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-align: center; width: 100%; margin-top: 12px; }
+
+    /* =========================================
+       HISTORIAL RECIENTE (CLASES GENERALES Y ANTI-SUPERPOSICIÓN)
+       ========================================= */
+    .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .recent-item:hover { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(16,185,129,0.2); transform: translateY(-2px); }
+    .recent-item img { border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; flex-shrink: 0; }
+    .recent-item span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); white-space: nowrap; flex-shrink: 0; }
 
     /* =========================================
        GRILLA, TARJETAS, CASCADA Y 3D TILT
@@ -1316,9 +1322,9 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data_v5'; const cacheTimeKey = 'erp_cache_timestamp_v5';
+    const cacheKey = 'erp_cache_data_v6'; const cacheTimeKey = 'erp_cache_timestamp_v6';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
-    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000; // 1 Hora de memoria persistente
+    const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
     if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_DURATION)) {
       const parsedCache = JSON.parse(cachedData);
@@ -1326,25 +1332,40 @@ async function sincronizarERP() {
       return; 
     }
 
-    // EXTRACCIÓN DEL STOCK DE PCO DESDE GOOGLE SHEETS
+    // EXTRACCIÓN DEL STOCK DE PCO CON CASCADA DE URLS (BLINDADO)
     let pcoData = {};
-    try {
-        const pcoRes = await fetch("https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0");
-        if (pcoRes.ok) {
-            const rows = (await pcoRes.text()).split(/\r?\n/);
-            rows.forEach(row => {
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-                let code = null;
-                for (let i=0; i<cols.length; i++) {
-                    if (isValidCode(cols[i])) { code = cols[i].toUpperCase(); break; }
-                }
-                if (code && cols.length > 5) {
-                    let val = parseInt(cols[5]);
-                    if (!isNaN(val)) pcoData[code] = val;
-                }
-            });
-        }
-    } catch(e) {}
+    const pcoUrls = [
+        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
+        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0",
+        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/pub?gid=0&single=true&output=csv",
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv"
+    ];
+    
+    for (let url of pcoUrls) {
+        try {
+            let pcoRes = await fetch(url);
+            if (pcoRes.ok) {
+                const text = await pcoRes.text();
+                const rows = text.split(/\r?\n/);
+                let successCount = 0;
+                rows.forEach(row => {
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+                    let code = null;
+                    for (let i=0; i<cols.length; i++) {
+                        if (isValidCode(cols[i])) { code = cols[i].toUpperCase(); break; }
+                    }
+                    if (code && cols.length > 5) {
+                        let cellVal = cols[5] ? cols[5].replace(/[^\d.-]/g, '') : "";
+                        if (cellVal !== "") {
+                            let val = parseInt(cellVal);
+                            if (!isNaN(val)) { pcoData[code] = val; successCount++; }
+                        }
+                    }
+                });
+                if (successCount > 0) break; // Sale del loop si logró extraer al menos un dato
+            }
+        } catch(e) {}
+    }
 
     // EXTRACCIÓN DE VALORES Y PLANES
     try {
@@ -1392,7 +1413,7 @@ async function sincronizarERP() {
                let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
                
-               // LÓGICA DE CÁLCULO: (Total ERP) - (Stock PCO) = Stock PAV
+               // LÓGICA DE CÁLCULO ESTRICTA: (Total ERP) - (Stock PCO) = Stock PAV
                let pavQty = Math.max(0, erpTotal - pcoQty);
                
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
