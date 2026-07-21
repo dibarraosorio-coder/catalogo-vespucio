@@ -460,7 +460,7 @@
     .changelog-list li { font-size: 0.9rem; color: var(--text-main); line-height: 1.5; padding: 20px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
     .changelog-list li strong { color: var(--neon-green); display: block; margin-bottom: 6px; font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
-    /* --- ESTILOS PANTALLA DE CARGA CENTRADA (CORREGIDA) --- */
+    /* --- ESTILOS PANTALLA DE CARGA CENTRADA --- */
     .loading-overlay { position: fixed; inset: 0; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 999999; transition: opacity 0.5s ease, visibility 0.5s ease; }
     .loader-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; width: 100%; }
     .loader-image-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
@@ -813,7 +813,7 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Actualizaciones</h2>
             <ul class="changelog-list">
-                <li><strong>v3.0 - Doble Sucursal y Mejoras UI</strong>Corrección de la pantalla de sincronización. Adición de Stock PCO desde Google Sheets. Refinamiento en el diseño del historial reciente animado y reubicación de herramientas.</li>
+                <li><strong>v3.0 - Doble Sucursal y Mejoras UI</strong>Fórmula matemática ajustada para calcular el Stock Real de PAV. Conexión directa a Google Sheets para obtener Stock en vivo de PCO. Mejoras visuales en historial y pantalla de carga.</li>
                 <li><strong>v2.5 - Productividad en Terreno</strong>Modo Cliente 👁️ para ocultar información interna (stock/precios). Búsqueda difusa anti-errores tipográficos. Galería deslizable nativa (Swipe).</li>
                 <li><strong>v2.0 - Rendimiento y Visual</strong>Caché inteligente de memoria en el navegador (carga ultrarrápida). Modo Comparador de productos cara a cara. Efectos 3D y carga de resultados en cascada.</li>
             </ul>
@@ -1316,7 +1316,7 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data_v2'; const cacheTimeKey = 'erp_cache_timestamp_v2';
+    const cacheKey = 'erp_cache_data_v4'; const cacheTimeKey = 'erp_cache_timestamp_v4';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
     const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
@@ -1326,24 +1326,7 @@ async function sincronizarERP() {
       return; 
     }
 
-    let sheetData = {};
-    try {
-      const sheetRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
-      if (sheetRes.ok) {
-        const rows = (await sheetRes.text()).split('\n');
-        rows.forEach(row => {
-          const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-          let code = null; let qty = 0;
-          for(let i=0; i<cols.length; i++) {
-            let cell = cols[i].trim().replace(/^"|"$/g, '');
-            if(!code && isValidCode(cell)) { code = cell.toUpperCase(); } else if(code && !isNaN(parseInt(cell)) && cell !== "") { qty = parseInt(cell); break; }
-          }
-          if(code && qty > 0) sheetData[code] = (sheetData[code] || 0) + qty;
-        });
-      }
-    } catch(e) {}
-
-    // EXTRACCIÓN DEL STOCK DE PCO CON EL GID CORRESPONDIENTE
+    // EXTRACCIÓN DEL STOCK DE PCO
     let pcoData = {};
     try {
         const pcoRes = await fetch("https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0");
@@ -1363,6 +1346,7 @@ async function sincronizarERP() {
         }
     } catch(e) {}
 
+    // EXTRACCIÓN DE VALORES Y PLANES
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
@@ -1404,8 +1388,13 @@ async function sincronizarERP() {
            const allCodes = new Set([...Object.keys(stockConsolidado), ...Object.keys(pcoData)]);
            products = Array.from(allCodes).map(cod => {
                let desc = (stockConsolidado[cod] ? stockConsolidado[cod].descripcion : "Sin descripción") || "Sin descripción";
-               let pavQty = stockConsolidado[cod] ? Math.max(0, stockConsolidado[cod].cantidad - (sheetData[cod] || 0)) : 0;
+               
+               let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
+               
+               // NUEVA LÓGICA DE CÁLCULO: (Total ERP) - (Stock PCO) = Stock PAV
+               let pavQty = Math.max(0, erpTotal - pcoQty);
+               
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
            }).filter(p => isValidCode(p.codigo));
 
