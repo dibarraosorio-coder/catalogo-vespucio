@@ -284,9 +284,9 @@
     /* =========================================
        HISTORIAL RECIENTE (CLASES GENERALES Y ANTI-SUPERPOSICIÓN)
        ========================================= */
-    .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .recent-item { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4px 12px 4px 4px; border-radius: 30px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; height: 32px; max-height: 32px; box-sizing: border-box; }
     .recent-item:hover { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(16,185,129,0.2); transform: translateY(-2px); }
-    .recent-item img { border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; flex-shrink: 0; }
+    .recent-item img { width: 24px !important; height: 24px !important; min-width: 24px; min-height: 24px; max-width: 24px; max-height: 24px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; flex-shrink: 0; display: block; }
     .recent-item span { font-size: 0.75rem; font-weight: 700; color: var(--text-main); white-space: nowrap; flex-shrink: 0; }
 
     /* =========================================
@@ -819,7 +819,7 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Actualizaciones</h2>
             <ul class="changelog-list">
-                <li><strong>v3.0 - Doble Sucursal y Mejoras UI</strong>Fórmula matemática ajustada para calcular el Stock Real de PAV. Conexión directa a Google Sheets para obtener Stock en vivo de PCO. Mejoras visuales en historial y pantalla de carga.</li>
+                <li><strong>v3.0 - Stock por Sucursal y Mejoras Visuales</strong>Visualización detallada de inventario en tiempo real para ambas sucursales (PAV y PCO). Pantalla de sincronización optimizada y nuevo diseño fluido para el historial de navegación.</li>
                 <li><strong>v2.5 - Productividad en Terreno</strong>Modo Cliente 👁️ para ocultar información interna (stock/precios). Búsqueda difusa anti-errores tipográficos. Galería deslizable nativa (Swipe).</li>
                 <li><strong>v2.0 - Rendimiento y Visual</strong>Caché inteligente de memoria en el navegador (carga ultrarrápida). Modo Comparador de productos cara a cara. Efectos 3D y carga de resultados en cascada.</li>
             </ul>
@@ -1322,7 +1322,7 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data_v6'; const cacheTimeKey = 'erp_cache_timestamp_v6';
+    const cacheKey = 'erp_cache_data_v7'; const cacheTimeKey = 'erp_cache_timestamp_v7';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
     const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
@@ -1362,7 +1362,7 @@ async function sincronizarERP() {
                         }
                     }
                 });
-                if (successCount > 0) break; // Sale del loop si logró extraer al menos un dato
+                if (successCount > 0) break; 
             }
         } catch(e) {}
     }
