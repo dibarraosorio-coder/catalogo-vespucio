@@ -52,42 +52,42 @@
     }
 
     body.light-mode {
-      --bg-body: #fdfbf7; /* Blanco Marfil Suave y elegante */
-      --bg-gradient: #fdfbf7;
-      --header-bg: #ffffff;
-      --header-bg-solid: rgba(255,255,255,0.95);
-      --header-title: #1f2937;
+      --bg-body: #E2D8C6;
+      --bg-gradient: linear-gradient(145deg, #E2D8C6 0%, #EAE2D2 100%);
+      --header-bg: #EAE2D2;
+      --header-bg-solid: rgba(234, 226, 210, 0.95);
+      --header-title: #2d2822;
       --header-shadow: none;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
+      --text-main: #2d2822;
+      --text-muted: #6b6357;
       --text-code: #059669;
-      --glass-bg: #ffffff;
-      --glass-border: #e5e7eb;
-      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-      --card-bg: #ffffff;
-      --card-border-hover: rgba(5,150,105,0.4);
-      --card-img-border: #e5e7eb;
-      --card-overlay: rgba(255,255,255,.6);
-      --input-bg: #ffffff;
-      --input-border: #d1d5db;
-      --tab-bg: #ffffff;
-      --tab-active-bg: #fdfbf7;
-      --tab-active-color: #1f2937;
-      --tab-active-border: #d1d5db;
-      --tab-hover-bg: #f9fafb;
-      --btn-bg: #ffffff;
-      --btn-hover: #fdfbf7;
-      --btn-text: #1f2937;
-      --modal-bg: #ffffff;
-      --modal-overlay: rgba(17, 24, 39, 0.75);
-      --modal-info-bg: #fdfbf7;
-      --modal-close-bg: #ffffff;
-      --modal-close-hover: #fee2e2;
+      --glass-bg: rgba(234, 226, 210, 0.6);
+      --glass-border: #BDB2A0;
+      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1);
+      --card-bg: #EAE2D2;
+      --card-border-hover: #AE8A77;
+      --card-img-border: #BDB2A0;
+      --card-overlay: rgba(234, 226, 210, 0.7);
+      --input-bg: #F5F0E6;
+      --input-border: #BDB2A0;
+      --tab-bg: #EAE2D2;
+      --tab-active-bg: #BDB2A0;
+      --tab-active-color: #2d2822;
+      --tab-active-border: #AE8A77;
+      --tab-hover-bg: #E2D8C6;
+      --btn-bg: #F5F0E6;
+      --btn-hover: #BDB2A0;
+      --btn-text: #2d2822;
+      --modal-bg: #EAE2D2;
+      --modal-overlay: rgba(45, 40, 34, 0.75);
+      --modal-info-bg: #E2D8C6;
+      --modal-close-bg: #F5F0E6;
+      --modal-close-hover: #ef4444;
       --neon-green: #059669;
       --neon-yellow: #d97706;
       --neon-red: #dc2626;
-      --accent-gold: #d97706;
+      --accent-gold: #AE8A77;
     }
 
     /* =========================================
@@ -1474,6 +1474,7 @@ function updateGridDOM(append) {
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
+    // BÚSQUEDA DIFUSA
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); 
       let fullText = normalizeStr(p.codigo) + " " + (p.descripcion ? normalizeStr(p.descripcion) : ""); 
