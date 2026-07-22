@@ -52,8 +52,8 @@
     }
 
     body.light-mode {
-      --bg-body: #f3f4f6;
-      --bg-gradient: #f3f4f6;
+      --bg-body: #fdfbf7; /* Blanco Marfil Suave y elegante */
+      --bg-gradient: #fdfbf7;
       --header-bg: #ffffff;
       --header-bg-solid: rgba(255,255,255,0.95);
       --header-title: #1f2937;
@@ -62,7 +62,7 @@
       --text-muted: #6b7280;
       --text-code: #059669;
       --glass-bg: #ffffff;
-      --glass-border: #d1d5db;
+      --glass-border: #e5e7eb;
       --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
       --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
       --card-bg: #ffffff;
@@ -72,16 +72,16 @@
       --input-bg: #ffffff;
       --input-border: #d1d5db;
       --tab-bg: #ffffff;
-      --tab-active-bg: #f3f4f6;
+      --tab-active-bg: #fdfbf7;
       --tab-active-color: #1f2937;
       --tab-active-border: #d1d5db;
       --tab-hover-bg: #f9fafb;
       --btn-bg: #ffffff;
-      --btn-hover: #f3f4f6;
+      --btn-hover: #fdfbf7;
       --btn-text: #1f2937;
       --modal-bg: #ffffff;
       --modal-overlay: rgba(17, 24, 39, 0.75);
-      --modal-info-bg: #f9fafb;
+      --modal-info-bg: #fdfbf7;
       --modal-close-bg: #ffffff;
       --modal-close-hover: #fee2e2;
       --neon-green: #059669;
@@ -141,6 +141,8 @@
             0% { transform: translateX(30%); }
             100% { transform: translateX(-100%); }
         }
+        .recent-item { height: 32px; padding: 2px 10px 2px 2px; flex-shrink: 0; }
+        .recent-item img { width: 24px; height: 24px; flex-shrink: 0; }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -772,7 +774,7 @@
                       <div class="modal-stock-label">Stock PAV</div>
                       <div class="modal-stock-number" id="modalStock"></div>
                   </div>
-                  <div>
+                  <div id="modalStockPcoContainer">
                       <div class="modal-stock-label">Stock PCO</div>
                       <div class="modal-stock-number" id="modalStockPCO" style="font-size: 1.6rem; color: var(--text-muted);"></div>
                   </div>
@@ -817,11 +819,11 @@
     <div class="modal-wrapper">
         <div class="modal-box changelog-modal-box" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
-            <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Actualizaciones</h2>
+            <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>v3.0 - Stock por Sucursal y Mejoras Visuales</strong>Visualización detallada de inventario en tiempo real para ambas sucursales (PAV y PCO). Pantalla de sincronización optimizada y nuevo diseño fluido para el historial de navegación.</li>
-                <li><strong>v2.5 - Productividad en Terreno</strong>Modo Cliente 👁️ para ocultar información interna (stock/precios). Búsqueda difusa anti-errores tipográficos. Galería deslizable nativa (Swipe).</li>
-                <li><strong>v2.0 - Rendimiento y Visual</strong>Caché inteligente de memoria en el navegador (carga ultrarrápida). Modo Comparador de productos cara a cara. Efectos 3D y carga de resultados en cascada.</li>
+                <li><strong>Visibilidad de Sucursales</strong>Ahora puedes visualizar al instante el stock disponible tanto para el Parque Américo Vespucio (PAV) como para PCO de forma automática y en tiempo real.</li>
+                <li><strong>Navegación Fluida</strong>Implementamos una nueva "Vitrina" animada en la parte superior que guarda los productos que has visto recientemente para que vuelvas a ellos con un solo clic.</li>
+                <li><strong>Modo Cliente y Anti-Errores</strong>Se agregó un "Modo Cliente" (icono de ojo) perfecto para ocultar stocks y precios al mostrar el celular a las familias. Además, el buscador ahora es tolerante a errores ortográficos rápidos.</li>
             </ul>
         </div>
     </div>
@@ -1138,7 +1140,7 @@ function generateCompareColumnHTML(code) {
       <div class="bento-card bento-stock">
           <div style="display:flex; flex-direction:column; gap:8px;">
               <div><div class="modal-stock-label">Stock PAV</div><div class="modal-stock-number">${p.cantidad || 0}</div></div>
-              <div><div class="modal-stock-label">Stock PCO</div><div class="modal-stock-number" style="font-size: 1.6rem; color: var(--text-muted);">${p.cantidadPCO || 0}</div></div>
+              ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div><div class="modal-stock-label">Stock PCO</div><div class="modal-stock-number" style="font-size: 1.6rem; color: var(--text-muted);">${p.cantidadPCO}</div></div>` : ''}
           </div>
           <div class="modal-stock-status ${status.cls}">${status.text}</div>
       </div>
@@ -1322,7 +1324,7 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    const cacheKey = 'erp_cache_data_v7'; const cacheTimeKey = 'erp_cache_timestamp_v7';
+    const cacheKey = 'erp_cache_data_v8'; const cacheTimeKey = 'erp_cache_timestamp_v8';
     const cachedData = localStorage.getItem(cacheKey); const cachedTime = localStorage.getItem(cacheTimeKey);
     const now = Date.now(); const CACHE_DURATION = 60 * 60 * 1000;
 
@@ -1332,7 +1334,6 @@ async function sincronizarERP() {
       return; 
     }
 
-    // EXTRACCIÓN DEL STOCK DE PCO CON CASCADA DE URLS (BLINDADO)
     let pcoData = {};
     const pcoUrls = [
         "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
@@ -1367,7 +1368,6 @@ async function sincronizarERP() {
         } catch(e) {}
     }
 
-    // EXTRACCIÓN DE VALORES Y PLANES
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
@@ -1413,7 +1413,6 @@ async function sincronizarERP() {
                let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
                
-               // LÓGICA DE CÁLCULO ESTRICTA: (Total ERP) - (Stock PCO) = Stock PAV
                let pavQty = Math.max(0, erpTotal - pcoQty);
                
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
@@ -1475,7 +1474,6 @@ function updateGridDOM(append) {
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
-    // BÚSQUEDA DIFUSA
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); 
       let fullText = normalizeStr(p.codigo) + " " + (p.descripcion ? normalizeStr(p.descripcion) : ""); 
@@ -1552,7 +1550,7 @@ function updateGridDOM(append) {
             <div class="card-code">${p.codigo}</div>
             <div class="status-text" style="text-align:right; display:flex; flex-direction:column; gap:2px;">
                 <span class="${statusObj.cls}">PAV: ${qty}</span>
-                <span style="color: var(--text-muted); font-size: 0.75rem;">PCO: ${p.cantidadPCO || 0}</span>
+                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span style="color: var(--text-muted); font-size: 0.75rem;">PCO: ${p.cantidadPCO}</span>` : ''}
             </div>
         </div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
@@ -1615,10 +1613,17 @@ function renderModalData(p) {
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   
-  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO
+  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO Y CONDICIONAL
   document.getElementById('modalStock').innerHTML = p.cantidad || 0; 
-  let pcoEl = document.getElementById('modalStockPCO');
-  if (pcoEl) { pcoEl.innerHTML = p.cantidadPCO || 0; }
+  let pcoWrap = document.getElementById('modalStockPcoContainer');
+  if (pcoWrap) {
+      if (p.cantidadPCO && p.cantidadPCO > 0) {
+          pcoWrap.style.display = 'block';
+          document.getElementById('modalStockPCO').innerHTML = p.cantidadPCO;
+      } else {
+          pcoWrap.style.display = 'none';
+      }
+  }
   
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
   const status = getStockStatus(p.cantidad || 0, isDesc);
@@ -1667,7 +1672,10 @@ window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0, cantidadPCO: 0};
   const ed = EXTRA_DATA[currentModalCode] || {};
-  let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK PAV: ${p.cantidad || 0}\n📦 STOCK PCO: ${p.cantidadPCO || 0}`;
+  let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK PAV: ${p.cantidad || 0}`;
+  if (p.cantidadPCO && p.cantidadPCO > 0) {
+      textToShare += `\n📦 STOCK PCO: ${p.cantidadPCO}`;
+  }
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
