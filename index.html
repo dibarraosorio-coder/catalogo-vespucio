@@ -49,6 +49,12 @@
       --accent-gold: #fde047;
       --radius: 12px;
       --radius-lg: 20px;
+      
+      /* Variables Píldoras por Defecto (Oscuro) */
+      --pill-uf-bg: rgba(253,224,71,0.1);
+      --pill-uf-border: rgba(253,224,71,0.2);
+      --pill-plan-bg: rgba(16,185,129,0.1);
+      --pill-plan-border: rgba(16,185,129,0.2);
     }
 
     body.light-mode {
@@ -56,11 +62,11 @@
       --bg-gradient: linear-gradient(145deg, #fdfbf7 0%, #EAE2D2 100%);
       --header-bg: #EAE2D2;
       --header-bg-solid: rgba(234, 226, 210, 0.95);
-      --header-title: #2d2822;
+      --header-title: #3E362E;
       --header-shadow: none;
-      --text-main: #2d2822;
-      --text-muted: #6b6357;
-      --text-code: #059669;
+      --text-main: #3E362E;
+      --text-muted: #7A7064;
+      --text-code: #2C5545;
       --glass-bg: rgba(234, 226, 210, 0.6);
       --glass-border: #BDB2A0;
       --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
@@ -73,21 +79,27 @@
       --input-border: #BDB2A0;
       --tab-bg: #EAE2D2;
       --tab-active-bg: #BDB2A0;
-      --tab-active-color: #2d2822;
+      --tab-active-color: #3E362E;
       --tab-active-border: #AE8A77;
       --tab-hover-bg: #E2D8C6;
       --btn-bg: #F5F0E6;
       --btn-hover: #BDB2A0;
-      --btn-text: #2d2822;
+      --btn-text: #3E362E;
       --modal-bg: #EAE2D2;
       --modal-overlay: rgba(45, 40, 34, 0.75);
       --modal-info-bg: #E2D8C6;
       --modal-close-bg: #F5F0E6;
       --modal-close-hover: #ef4444;
-      --neon-green: #059669;
-      --neon-yellow: #d97706;
+      --neon-green: #2C5545; 
+      --neon-yellow: #AE8A77; 
       --neon-red: #dc2626;
       --accent-gold: #AE8A77;
+      
+      /* Variables Píldoras Día */
+      --pill-uf-bg: rgba(189, 178, 160, 0.2);
+      --pill-uf-border: #BDB2A0;
+      --pill-plan-bg: rgba(44, 85, 69, 0.08);
+      --pill-plan-border: #BDB2A0;
     }
 
     /* =========================================
@@ -352,7 +364,7 @@
     .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
     .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
     .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
-    .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
+    .catalog-wrap.list-view .card-code { font-size: 1.2rem; }
     .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
     .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
     .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
@@ -391,16 +403,16 @@
     .product-card:hover .view-btn { transform: translateY(0); }
 
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
-    .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
+    .card-code { font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; margin-bottom: 4px; }
     .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; transition: color 0.2s; }
     
     @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--neon-green); } }
 
-    .status-text { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.02em; line-height: 1.3; }
+    .status-text { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; line-height: 1.3; }
     .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
-    .card-stock-row { background: rgba(253,224,71,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(253,224,71,0.2); display: flex; align-items: center; justify-content: center; }
-    .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
-    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(16,185,129,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
+    .card-stock-row { background: var(--pill-uf-bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--pill-uf-border); display: flex; align-items: center; justify-content: center; }
+    .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 700;}
+    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: var(--pill-plan-bg); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--pill-plan-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
        MODAL BENTO BOX
@@ -426,11 +438,11 @@
     .bento-actions { grid-column: 1 / -1; align-items: center; padding: 16px; background: transparent; border: none; box-shadow: none; flex-direction: row; gap: 16px;}
 
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
-    .modal-code { font-size: 2rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.1; }
+    .modal-code { font-size: 2.2rem; font-weight: 800; color: var(--text-code); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.1; }
     .modal-desc { font-size: 1.1rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin: 0; }
     
     .modal-stock-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
-    .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
+    .modal-stock-number { font-size: 3.5rem; font-weight: 600; color: var(--neon-green); line-height: 1; }
     .modal-stock-status { font-size: 1rem; font-weight: 700; text-align: right; }
     
     .bento-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0 0 8px 0; line-height: 1; }
@@ -607,7 +619,7 @@
           gap: 6px; 
           margin-bottom: 10px;
       }
-      .product-card .card-code { font-size: 1.2rem; text-align: center; }
+      .product-card .card-code { font-size: 1.3rem; text-align: center; }
       .product-card .status-text { 
           flex-direction: row !important; 
           justify-content: center !important; 
@@ -821,7 +833,7 @@
                   </div>
                   <div id="modalStockPcoContainer">
                       <div class="modal-stock-label">Stock PCO</div>
-                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 1.6rem; color: var(--text-muted);"></div>
+                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 2rem; font-weight: 500; color: var(--text-muted);"></div>
                   </div>
               </div>
               <div id="modalStatus" class="modal-stock-status"></div>
@@ -1219,7 +1231,8 @@ function showToast(msg) {
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
-  // LOGICA DE TEMA (MODO DÍA PREDETERMINADO)
+  // LÓGICA DE TEMA (MODO DÍA PREDETERMINADO)
+  // Si no hay preferencia guardada, o es light, forzamos light.
   let currentTheme = safeGetLocal('theme');
   if (currentTheme !== 'dark') { 
       document.body.classList.add('light-mode'); 
@@ -1379,9 +1392,8 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
-    // SE ELIMINÓ LA LECTURA DE CACHÉ LOCAL (localStorage)
-    // El sistema consultará Power Automate y Google Sheets EN VIVO cada vez que se cargue la página.
-    
+    // ELIMINADA LA CACHÉ DE MEMORIA PARA OBTENER DATOS 100% EN VIVO SIEMPRE
+
     let pcoData = {};
     const pcoUrls = [
         "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
@@ -1596,7 +1608,7 @@ function updateGridDOM(append) {
             <div class="card-code">${p.codigo}</div>
             <div class="status-text" style="text-align:right; display:flex; flex-direction:column; gap:2px;">
                 <span class="${statusObj.cls}">PAV: ${qty}</span>
-                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span style="color: var(--text-muted); font-size: 0.75rem;">PCO: ${p.cantidadPCO}</span>` : ''}
+                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span style="color: var(--text-muted); font-size: 0.75rem; font-weight: 500;">PCO: ${p.cantidadPCO}</span>` : ''}
             </div>
         </div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
