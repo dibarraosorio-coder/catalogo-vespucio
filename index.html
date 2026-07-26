@@ -8,20 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS: NUEVA PALETA NOCTURNA FTALO Y DÍA MARFIL
+       SISTEMA DE TEMAS: FTALO NOCTURNO Y MARFIL DIURNO
        ========================================= */
     :root {
-      /* MODO OSCURO (PREDETERMINADO DE RESPALDO, AUNQUE ARRANCA EN LUZ) */
-      --bg-body: #0b1613; /* Verde bosque casi negro */
-      --bg-gradient: linear-gradient(145deg, #0b1613 0%, #111d1a 100%);
-      --header-bg: linear-gradient(160deg, #0b1613 0%, #111d1a 50%, #0b1613 100%);
+      /* MODO OSCURO: PALETA VERDE FTALO DE LUJO */
+      --bg-body: #0b1210; 
+      --bg-gradient: linear-gradient(145deg, #0b1210 0%, #111d1a 100%);
+      --header-bg: linear-gradient(160deg, #0b1210 0%, #111d1a 50%, #0b1210 100%);
       --header-bg-solid: rgba(17, 29, 26, 0.95);
-      --header-title: #e6decb; /* Crema extraído de la paleta */
+      --header-title: #e6decb; 
       --header-shadow: 0 2px 10px rgba(0,0,0,0.8);
       --text-main: #e6decb;
       --text-muted: #8c9b96;
-      --text-code: #bca076; /* Taupe extraído de la paleta */
-      --glass-bg: rgba(42, 87, 79, 0.35); /* Verde ftalo translúcido */
+      --text-code: #bca076; 
+      --glass-bg: rgba(42, 87, 79, 0.35); 
       --glass-border: rgba(188, 160, 118, 0.2);
       --glass-shadow: 0 8px 32px rgba(0,0,0,0.5);
       --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(188, 160, 118, 0.1);
@@ -44,7 +44,7 @@
       --modal-info-bg: rgba(11, 22, 19, 0.5);
       --modal-close-bg: rgba(42, 87, 79, 0.8);
       --modal-close-hover: rgba(239,68,68,.8);
-      --neon-green: #1A6340; /* Verde brillante profundo extraído */
+      --neon-green: #2eb87c; 
       --neon-yellow: #bca076; 
       --neon-red: #ef4444;
       --accent-gold: #bca076;
@@ -53,10 +53,11 @@
       
       --pill-uf-bg: rgba(188, 160, 118, 0.1);
       --pill-uf-border: rgba(188, 160, 118, 0.2);
-      --pill-plan-bg: rgba(26, 99, 64, 0.15);
-      --pill-plan-border: rgba(26, 99, 64, 0.3);
+      --pill-plan-bg: rgba(46, 184, 124, 0.1);
+      --pill-plan-border: rgba(46, 184, 124, 0.3);
     }
 
+    /* MODO CLARO: PALETA BEIGE Y MARFIL */
     body.light-mode {
       --bg-body: #fdfbf7;
       --bg-gradient: linear-gradient(145deg, #fdfbf7 0%, #EAE2D2 100%);
@@ -104,9 +105,11 @@
     /* =========================================
        MODO CLIENTE
        ========================================= */
-    body.client-mode .card-stock-wrapper,
+    body.client-mode .card-stock-row,
+    body.client-mode .status-text,
     body.client-mode .badge-ribbon,
     body.client-mode .modal-stock-section,
+    body.client-mode .card-code,
     body.client-mode .modal-code-small,
     body.client-mode #ddStock,
     body.client-mode #ddBranch { display: none !important; }
@@ -122,7 +125,7 @@
         .mobile-clear-btn { display: none !important; }
         
         @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(16,185,129,0.4) !important; padding-left: 12px !important; }
+        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(44, 85, 69, 0.4) !important; padding-left: 12px !important; }
         .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--neon-green); }
         
         .search-header-mobile { flex-wrap: nowrap !important; justify-content: flex-start !important; }
@@ -160,8 +163,8 @@
     
     body::before {
       content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 15% 20%, rgba(16,185,129,.04) 0%, transparent 40%),
-                  radial-gradient(ellipse at 85% 80%, rgba(253,224,71,.02) 0%, transparent 40%);
+      background: radial-gradient(ellipse at 15% 20%, rgba(44,85,69,.06) 0%, transparent 40%),
+                  radial-gradient(ellipse at 85% 80%, rgba(188,160,118,.05) 0%, transparent 40%);
       pointer-events: none; z-index: 0;
     }
 
@@ -239,7 +242,7 @@
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
       outline: none; transition: all .2s; padding: 0 44px 0 46px; 
     }
-    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(44, 85, 69, 0.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
     /* FILTROS Y DROPDOWNS */
@@ -249,13 +252,13 @@
     .filters-wrapper, .filters-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto; }
     #filterActiveDot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--neon-red); border-radius: 50%; display: none; }
 
-    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 180px; max-width: 220px; }
-    .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
+    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 170px; max-width: 200px; }
+    .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
     .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;}
     .dropdown-header span.arrow { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.3s; }
     
     .dropdown-header:hover, .custom-dropdown.open .dropdown-header { border-color: var(--neon-green); background: var(--btn-hover); }
-    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(44, 85, 69, 0.2); }
     .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--neon-green); }
 
     .dropdown-list { position: absolute; top: 52px; left: 0; width: 100%; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-height: 280px; overflow-y: auto; z-index: 1000; display: none; flex-direction: column; padding: 8px; backdrop-filter: blur(16px); }
@@ -268,7 +271,7 @@
     .dropdown-item input[type="radio"] { border-radius: 50%; }
     .dropdown-item input:checked { border-color: var(--neon-green); background: var(--neon-green); }
     .dropdown-item input:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-    .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: #000; transform: none; }
+    .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: var(--bg-body); transform: none; }
 
     .action-btn.clean-btn { height: 44px; padding: 0 16px; background: var(--btn-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--btn-text); flex: 0 0 auto; transition: all 0.2s ease; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .action-btn.clean-btn:hover { background: var(--btn-hover); color: var(--neon-red); border-color: var(--neon-red); }
@@ -286,8 +289,8 @@
         height: 38px; box-sizing: border-box; 
     }
     .recent-item:hover { 
-        border-color: var(--neon-green); background: rgba(16,185,129,0.1); 
-        box-shadow: 0 0 12px rgba(16,185,129,0.3); transform: translateY(-2px) scale(1.02); 
+        border-color: var(--neon-green); background: rgba(44, 85, 69, 0.1); 
+        box-shadow: 0 0 12px rgba(44, 85, 69, 0.2); transform: translateY(-2px) scale(1.02); 
     }
     .recent-item img { 
         width: 28px !important; height: 28px !important; 
@@ -302,7 +305,7 @@
     }
 
     /* =========================================
-       GRILLA, NUEVAS TARJETAS Y JERARQUÍA
+       GRILLA, TARJETAS, CASCADA Y 3D TILT
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 20px 24px 100px; }
     #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; view-transition-name: catalog-grid; }
@@ -333,12 +336,23 @@
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 185, 129, 0.15), transparent 40%);
+        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(44, 85, 69, 0.15), transparent 40%);
         opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1;
       }
       .product-card:hover::before { opacity: 1; }
       .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; transform: translateZ(15px); } 
     }
+
+    /* VISTA DE LISTA (LIST TOGGLE) */
+    .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
+    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; transform-style: flat; }
+    .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
+    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
+    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
+    .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
+    .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
+    .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
+    .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
 
     .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
     .badge-out { background: var(--neon-red); color: white; }
@@ -359,38 +373,39 @@
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
     .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
-    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
+    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(44, 85, 69,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--neon-green); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
-    .view-btn:hover { background: #fff; transform: scale(1.05); }
-    .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
-    .compare-btn:hover { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
-    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+    .view-btn { background: var(--neon-green); color: var(--bg-body); padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+    .view-btn:hover { background: var(--text-main); transform: scale(1.05); }
+    .compare-btn { background: rgba(255,255,255,0.1); color: var(--text-main); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
+    .compare-btn:hover { background: var(--neon-green); color: var(--bg-body); border-color: var(--neon-green); }
+    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(44, 85, 69, 0.4); }
     .product-card:hover .view-btn { transform: translateY(0); }
 
-    /* NUEVA JERARQUÍA TARJETAS */
-    .card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 14px; }
-    
-    .card-name { font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text-main); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; cursor: copy; transition: color 0.2s; }
-    @media (hover: hover) and (pointer: fine) { .card-name:hover { color: var(--accent-gold); } }
+    /* ESTRUCTURA TARJETA ESCRITORIO (ORIGINAL) */
+    .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
+    .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
+    .card-code { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; }
+    .status-text { text-align: right; display: flex; flex-direction: column; gap: 2px; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.02em; line-height: 1.3;}
+    .pco-text { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
+    .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 600; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; transition: color 0.2s; cursor: copy; }
+    @media (hover: hover) and (pointer: fine) { .card-desc:hover { color: var(--neon-green); } }
 
-    .card-stock-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
-    .stock-pill { background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-    .stock-pill span { color: var(--text-main); font-weight: 800; font-size: 0.95rem; }
-
-    .card-bottom-info { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--card-img-border); padding-top: 12px; margin-top: auto; }
-    .card-code { font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text-code); letter-spacing: 0.05em; }
-
-    .extras-wrap { display:flex; flex-wrap: wrap; align-items:center; gap:6px; justify-content: flex-end;}
+    .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid var(--card-img-border); padding-top: 10px; }
     .card-stock-row { background: var(--pill-uf-bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--pill-uf-border); display: flex; align-items: center; justify-content: center; }
-    .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.7rem; font-weight: 800;}
-    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: var(--pill-plan-bg); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--pill-plan-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; line-height: 1.2;}
+    .card-stock-row .status-text-pill { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
+    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: var(--pill-plan-bg); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--pill-plan-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
+
+    /* STATUS COLORS */
+    .status-green { color: var(--neon-green); }
+    .status-yellow { color: var(--neon-yellow); }
+    .status-red { color: var(--neon-red); }
 
     /* =========================================
-       MODAL BENTO BOX (DETALLES)
+       MODAL BENTO BOX
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -498,7 +513,7 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
     /* =========================================
-       MEDIA QUERIES & OPTIMIZACIÓN MÓVIL
+       MEDIA QUERIES & OPTIMIZACIÓN MÓVIL (JERARQUÍA REORDENADA)
        ========================================= */
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
     
@@ -581,18 +596,34 @@
       .dropdown-list { position: static; box-shadow: none; border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 8px 8px; margin-top: -4px; max-height: 200px; }
       .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--neon-green); background: var(--btn-hover); }
       .custom-dropdown.open .dropdown-list { border-color: var(--neon-green); }
-
       .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
+      /* CIRUGÍA DE REORDENAMIENTO EXCLUSIVO PARA MÓVIL (FLEX ORDER) */
       .product-card { transform-style: flat !important; } 
       .card-img-wrap, .card-body, .badge-ribbon { transform: translateZ(0) !important; }
-      .product-card .card-body { padding: 16px 12px; }
       
-      .product-card .card-name { font-size: 0.95rem; text-align: center; }
-      .product-card .card-stock-wrapper { justify-content: center; margin-bottom: 4px;}
-      .product-card .card-bottom-info { flex-direction: column; gap: 8px; padding-top: 10px; }
-      .product-card .card-code { text-align: center; width: 100%; font-size: 0.75rem; }
-      .product-card .extras-wrap { justify-content: center; width: 100%; }
+      .product-card .card-body { padding: 16px 12px; display: flex; flex-direction: column; }
+      .product-card .card-top-row { display: contents; } /* Rompe el div padre para reordenar sus hijos libres */
+      
+      .product-card .card-desc { 
+          order: -3; /* Primero arriba */
+          font-size: 0.95rem; text-align: center; margin-bottom: 12px; font-weight: 800; color: var(--text-main);
+      }
+      .product-card .status-text { 
+          order: -2; /* Segundo */
+          flex-direction: row !important; justify-content: center !important; align-items: center; gap: 8px !important; margin-bottom: 12px; width: 100%;
+      }
+      .product-card .status-text span { 
+          background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem !important; color: var(--text-main) !important; font-weight: 800;
+      }
+      .product-card .card-code { 
+          order: -1; /* Tercero */
+          text-align: center; width: 100%; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-muted); 
+      }
+      .product-card .extras-wrap { 
+          order: 0; /* Último */
+          justify-content: center; width: 100%; 
+      }
 
       .compare-floating-bar { width: 95%; padding: 12px; gap: 10px; flex-direction: column; bottom: -150px; }
       .compare-actions { width: 100%; display: flex; justify-content: space-between; }
@@ -686,7 +717,6 @@
                 <button class="close-filters-btn" onclick="toggleMobileFilters()">✕</button>
             </div>
 
-            <!-- FILTRO CATEGORÍA -->
             <div class="custom-dropdown" id="ddCat">
               <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
@@ -698,7 +728,7 @@
               </div>
             </div>
 
-            <!-- NUEVO FILTRO STOCK GENERAL (Lista) -->
+            <!-- FILTRO STOCK GENERAL -->
             <div class="custom-dropdown" id="ddStock">
               <div class="dropdown-header"><span class="text">Stock: Todos</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
@@ -708,9 +738,9 @@
               </div>
             </div>
 
-            <!-- NUEVO FILTRO SUCURSAL -->
+            <!-- FILTRO SUCURSAL -->
             <div class="custom-dropdown" id="ddBranch">
-              <div class="dropdown-header"><span class="text">Sucursal: Ambas</span><span class="arrow">▼</span></div>
+              <div class="dropdown-header"><span class="text">Bodega: Ambas</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
                 <label class="dropdown-item"><input type="radio" name="branchFilter" value="all" checked> Ambas Bodegas</label>
                 <label class="dropdown-item"><input type="radio" name="branchFilter" value="pav"> Solo Stock PAV</label>
@@ -718,7 +748,6 @@
               </div>
             </div>
 
-            <!-- FILTROS EXTRA -->
             <div class="custom-dropdown" id="ddUF">
               <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
               <div class="dropdown-list" id="ufOptionsList">
@@ -813,7 +842,7 @@
                   </div>
                   <div id="modalStockPcoContainer">
                       <div class="modal-stock-label">Stock PCO</div>
-                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 1.6rem; color: var(--text-muted);"></div>
+                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 2.2rem; font-weight: 500; color: var(--text-muted);"></div>
                   </div>
               </div>
               <div id="modalStatus" class="modal-stock-status"></div>
@@ -1214,7 +1243,11 @@ function showToast(msg) {
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
-  // LÓGICA DE TEMA (MODO DÍA PREDETERMINADO)
+  // LÓGICA DE TEMA: FORZAMOS "LIGHT" COMO PREDETERMINADO SI NO HAY PREFERENCIA GUARDADA
+  if (!localStorage.getItem('theme_v9_set')) {
+      localStorage.setItem('theme', 'light');
+      localStorage.setItem('theme_v9_set', 'true');
+  }
   let currentTheme = safeGetLocal('theme');
   if (currentTheme !== 'dark') { 
       document.body.classList.add('light-mode'); 
@@ -1309,7 +1342,7 @@ function updateDropdownLabel(radioInput, dropdownId) {
     if(dd) {
         const textSpan = dd.querySelector('.dropdown-header .text');
         if(radioInput.name === 'stockFilter') { textSpan.textContent = "Stock: " + radioInput.parentNode.textContent.trim(); }
-        else if (radioInput.name === 'branchFilter') { textSpan.textContent = "Sucursal: " + radioInput.parentNode.textContent.trim(); }
+        else if (radioInput.name === 'branchFilter') { textSpan.textContent = "Bodega: " + radioInput.parentNode.textContent.trim(); }
         dd.classList.remove('open');
     }
 }
@@ -1325,7 +1358,7 @@ function setupCustomDropdowns() {
     });
     dd.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
-        if(radio.name === 'stockFilter' || radio.name === 'branchFilter') return; // Handled separately
+        if(radio.name === 'stockFilter' || radio.name === 'branchFilter') return; 
         const textSpan = dd.querySelector('.dropdown-header .text');
         if(radio.name === 'catFilter') textSpan.textContent = radio.value === 'all' ? 'Categoría: Todas' : radio.parentNode.textContent.trim();
         else textSpan.textContent = radio.parentNode.textContent.trim();
@@ -1398,6 +1431,8 @@ function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(A
 async function sincronizarERP() {
   if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
+    // ELIMINADA LA CACHÉ DE MEMORIA PARA OBTENER DATOS 100% EN VIVO SIEMPRE
+
     let pcoData = {};
     const pcoUrls = [
         "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
@@ -1604,7 +1639,7 @@ function updateGridDOM(append) {
     let extraHTML = '';
     if (ed.valor || ed.plan) {
         extraHTML = `<div class="extras-wrap">
-          ${ed.valor ? `<div class="card-stock-row"><span class="status-text">${ed.valor} UF</span></div>` : ``}
+          ${ed.valor ? `<div class="card-stock-row"><span class="status-text-pill">${ed.valor} UF</span></div>` : ``}
           ${ed.plan ? `<div class="card-plan">${ed.plan}</div>` : ``}
         </div>`;
     }
@@ -1619,17 +1654,15 @@ function updateGridDOM(append) {
         </div>
       </div>
       <div class="card-body">
-        <div class="card-main-info">
-            <div class="card-name" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
-            <div class="card-stock-wrapper">
-                <div class="stock-pill pav-pill">PAV: <span>${qty}</span></div>
-                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div class="stock-pill pco-pill">PCO: <span>${p.cantidadPCO}</span></div>` : ''}
+        <div class="card-top-row">
+            <div class="card-code">${p.codigo}</div>
+            <div class="status-text">
+                <span class="${statusObj.cls}">PAV: ${qty}</span>
+                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span class="pco-text">PCO: ${p.cantidadPCO}</span>` : ''}
             </div>
         </div>
-        <div class="card-bottom-info">
-            <div class="card-code">${p.codigo}</div>
-            ${extraHTML}
-        </div>
+        <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
+        ${extraHTML}
       </div>`;
     grid.appendChild(card);
   });
@@ -1688,7 +1721,6 @@ function renderModalData(p) {
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   document.getElementById('modalCode').textContent = p.codigo; 
   
-  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO Y CONDICIONAL
   document.getElementById('modalStock').innerHTML = p.cantidad || 0; 
   let pcoWrap = document.getElementById('modalStockPcoContainer');
   if (pcoWrap) {
