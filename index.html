@@ -105,11 +105,9 @@
     /* =========================================
        MODO CLIENTE
        ========================================= */
-    body.client-mode .card-stock-row,
-    body.client-mode .status-text,
+    body.client-mode .card-stock-wrapper,
     body.client-mode .badge-ribbon,
     body.client-mode .modal-stock-section,
-    body.client-mode .card-code,
     body.client-mode .modal-code-small,
     body.client-mode #ddStock,
     body.client-mode #ddBranch { display: none !important; }
@@ -305,7 +303,7 @@
     }
 
     /* =========================================
-       GRILLA, TARJETAS, CASCADA Y 3D TILT
+       GRILLA Y TARJETAS
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 20px 24px 100px; }
     #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; view-transition-name: catalog-grid; }
@@ -343,17 +341,6 @@
       .card-img-wrap, .card-body, .badge-ribbon { position: relative; z-index: 2; transform: translateZ(15px); } 
     }
 
-    /* VISTA DE LISTA (LIST TOGGLE) */
-    .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
-    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; transform-style: flat; }
-    .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
-    .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
-    .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
-    .catalog-wrap.list-view .card-code { font-size: 1.1rem; }
-    .catalog-wrap.list-view .card-desc { -webkit-line-clamp: 1; min-height: auto; margin-bottom: auto; }
-    .catalog-wrap.list-view .extras-wrap { border-top: none; padding-top: 0; justify-content: flex-start; gap: 12px; }
-    .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
-
     .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
     .badge-out { background: var(--neon-red); color: white; }
     .badge-low { background: var(--neon-yellow); color: #000; }
@@ -385,7 +372,7 @@
     .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(44, 85, 69, 0.4); }
     .product-card:hover .view-btn { transform: translateY(0); }
 
-    /* ESTRUCTURA TARJETA ESCRITORIO (ORIGINAL) */
+    /* ESTRUCTURA TARJETA ESCRITORIO (ORIGINAL INTACTO) */
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
     .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
     .card-code { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; }
@@ -403,6 +390,9 @@
     .status-green { color: var(--neon-green); }
     .status-yellow { color: var(--neon-yellow); }
     .status-red { color: var(--neon-red); }
+
+    /* MÓVIL ELEMENTOS EXTRA (Ocultos en PC) */
+    .card-name, .card-stock-wrapper { display: none; }
 
     /* =========================================
        MODAL BENTO BOX
@@ -429,7 +419,6 @@
 
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
     
-    /* MODAL JERARQUÍA INVERTIDA */
     .modal-desc-big { font-size: 1.6rem; font-weight: 800; color: var(--text-main); line-height: 1.2; margin: 0 0 12px 0; }
     .modal-code-small { font-size: 0.9rem; font-weight: 700; color: var(--text-code); letter-spacing: 0.1em; text-transform: uppercase; margin: 0; }
     
@@ -596,34 +585,33 @@
       .dropdown-list { position: static; box-shadow: none; border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 8px 8px; margin-top: -4px; max-height: 200px; }
       .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--neon-green); background: var(--btn-hover); }
       .custom-dropdown.open .dropdown-list { border-color: var(--neon-green); }
+
       .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
-      /* CIRUGÍA DE REORDENAMIENTO EXCLUSIVO PARA MÓVIL (FLEX ORDER) */
+      /* CIRUGÍA DE REORDENAMIENTO EXCLUSIVO PARA MÓVIL */
+      .card-name, .card-stock-wrapper { display: flex; } /* Aparecen en móvil */
+      .card-top-row, .card-desc { display: none; } /* Ocultamos los de PC */
+      
       .product-card { transform-style: flat !important; } 
       .card-img-wrap, .card-body, .badge-ribbon { transform: translateZ(0) !important; }
       
-      .product-card .card-body { padding: 16px 12px; display: flex; flex-direction: column; }
-      .product-card .card-top-row { display: contents; } /* Rompe el div padre para reordenar sus hijos libres */
+      .product-card .card-body { padding: 16px 12px; justify-content: flex-start; gap: 0;}
       
-      .product-card .card-desc { 
-          order: -3; /* Primero arriba */
+      .product-card .card-name { 
           font-size: 0.95rem; text-align: center; margin-bottom: 12px; font-weight: 800; color: var(--text-main);
+          justify-content: center;
       }
-      .product-card .status-text { 
-          order: -2; /* Segundo */
-          flex-direction: row !important; justify-content: center !important; align-items: center; gap: 8px !important; margin-bottom: 12px; width: 100%;
+      .product-card .card-stock-wrapper { 
+          justify-content: center; margin-bottom: 12px; gap: 8px;
       }
-      .product-card .status-text span { 
-          background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem !important; color: var(--text-main) !important; font-weight: 800;
+      .product-card .stock-pill { 
+          background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; color: var(--text-muted); font-weight: 700;
       }
-      .product-card .card-code { 
-          order: -1; /* Tercero */
-          text-align: center; width: 100%; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-muted); 
-      }
-      .product-card .extras-wrap { 
-          order: 0; /* Último */
-          justify-content: center; width: 100%; 
-      }
+      .product-card .stock-pill span { color: var(--text-main); font-weight: 800; font-size: 0.9rem; margin-left: 4px;}
+
+      .product-card .card-bottom-info { flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--card-img-border); margin-top: auto;}
+      .product-card .card-code { text-align: center; width: 100%; font-size: 0.8rem; color: var(--text-code); }
+      .product-card .extras-wrap { justify-content: center; width: 100%; border: none; padding-top: 0;}
 
       .compare-floating-bar { width: 95%; padding: 12px; gap: 10px; flex-direction: column; bottom: -150px; }
       .compare-actions { width: 100%; display: flex; justify-content: space-between; }
@@ -637,6 +625,20 @@
   </style>
 </head>
 <body>
+
+<!-- EJECUCIÓN INMEDIATA DEL TEMA (Previene parpadeo) -->
+<script>
+    function safeGetLocalTheme(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+    function safeSetLocalTheme(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
+    
+    if (!safeGetLocalTheme('theme_v10_set')) {
+        safeSetLocalTheme('theme', 'light');
+        safeSetLocalTheme('theme_v10_set', 'true');
+    }
+    if (safeGetLocalTheme('theme') !== 'dark') {
+        document.body.classList.add('light-mode');
+    }
+</script>
 
 <!-- TOAST NOTIFICACIÓN -->
 <div id="toast" class="toast-notification">
@@ -672,7 +674,9 @@
     <div class="controls-main-bar">
       
       <div class="search-header-mobile">
-          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
+          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema">
+             <!-- Se actualiza por JS luego -->
+          </button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -717,6 +721,7 @@
                 <button class="close-filters-btn" onclick="toggleMobileFilters()">✕</button>
             </div>
 
+            <!-- FILTRO CATEGORÍA -->
             <div class="custom-dropdown" id="ddCat">
               <div class="dropdown-header"><span class="text">Categoría: Todas</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
@@ -728,7 +733,7 @@
               </div>
             </div>
 
-            <!-- FILTRO STOCK GENERAL -->
+            <!-- NUEVO FILTRO STOCK GENERAL (Lista) -->
             <div class="custom-dropdown" id="ddStock">
               <div class="dropdown-header"><span class="text">Stock: Todos</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
@@ -738,9 +743,9 @@
               </div>
             </div>
 
-            <!-- FILTRO SUCURSAL -->
+            <!-- NUEVO FILTRO SUCURSAL -->
             <div class="custom-dropdown" id="ddBranch">
-              <div class="dropdown-header"><span class="text">Bodega: Ambas</span><span class="arrow">▼</span></div>
+              <div class="dropdown-header"><span class="text">Sucursal: Ambas</span><span class="arrow">▼</span></div>
               <div class="dropdown-list">
                 <label class="dropdown-item"><input type="radio" name="branchFilter" value="all" checked> Ambas Bodegas</label>
                 <label class="dropdown-item"><input type="radio" name="branchFilter" value="pav"> Solo Stock PAV</label>
@@ -748,6 +753,7 @@
               </div>
             </div>
 
+            <!-- FILTROS EXTRA -->
             <div class="custom-dropdown" id="ddUF">
               <div class="dropdown-header"><span class="text">Todos los Valores (UF)</span><span class="arrow">▼</span></div>
               <div class="dropdown-list" id="ufOptionsList">
@@ -829,7 +835,6 @@
       <div class="modal-content-bento">
           <div class="bento-card bento-header">
               <span class="modal-category" id="modalCat"></span>
-              <!-- JERARQUÍA INVERTIDA: DESCRIPCIÓN GRANDE, CÓDIGO PEQUEÑO -->
               <h2 class="modal-desc-big" id="modalDesc"></h2>
               <p class="modal-code-small" id="modalCode"></p>
           </div>
@@ -887,9 +892,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Mejoras</h2>
             <ul class="changelog-list">
+                <li><strong>Sincronización Inteligente</strong>El catálogo ahora carga de inmediato con los últimos datos conocidos y se actualiza de forma invisible en segundo plano, sin interrumpir tu navegación.</li>
                 <li><strong>Visibilidad de Sucursales</strong>Ahora puedes filtrar y visualizar al instante el stock disponible tanto para el Parque Américo Vespucio (PAV) como para PCO de forma automática y en tiempo real.</li>
                 <li><strong>Nuevo Diseño Tipográfico</strong>Hemos rediseñado las tarjetas dando prioridad al nombre del producto y al stock disponible, facilitando la lectura rápida para los asesores.</li>
-                <li><strong>Modo Cliente y Anti-Errores</strong>Se agregó un "Modo Cliente" (icono de ojo) perfecto para ocultar stocks y precios al mostrar el celular a las familias. Además, el buscador ahora es tolerante a errores ortográficos rápidos.</li>
             </ul>
         </div>
     </div>
@@ -921,7 +926,6 @@ let currentModalCode = '';
 let isListView = safeGetLocal('viewMode') === 'list';
 let isClientMode = safeGetLocal('clientMode') === 'true';
 
-// Variables Historial y Comparador
 let recentHistory = JSON.parse(safeGetLocal('recentHistory') || '[]');
 let compareList = [];
 
@@ -1047,7 +1051,6 @@ function stopVoiceSearch() {
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
 
-// BÚSQUEDA DIFUSA (LEVENSHTEIN)
 function levenshtein(a, b) {
     if(a.length === 0) return b.length;
     if(b.length === 0) return a.length;
@@ -1124,7 +1127,6 @@ window.navegarModal = function(direccion) {
     updateModalContent(window.currentFilteredList[nextIndex], direccion);
 };
 
-// LÓGICA DE HISTORIAL
 function renderRecentHistory() {
     const container = document.getElementById('recentHistoryContainer');
     const list = document.getElementById('recentList');
@@ -1152,7 +1154,6 @@ function addToHistory(code) {
     renderRecentHistory();
 }
 
-// LÓGICA DE COMPARADOR
 function toggleCompare(code, e) {
     e.stopPropagation();
     if (compareList.includes(code)) {
@@ -1243,18 +1244,10 @@ function showToast(msg) {
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
-  // LÓGICA DE TEMA: FORZAMOS "LIGHT" COMO PREDETERMINADO SI NO HAY PREFERENCIA GUARDADA
-  if (!localStorage.getItem('theme_v9_set')) {
-      localStorage.setItem('theme', 'light');
-      localStorage.setItem('theme_v9_set', 'true');
-  }
   let currentTheme = safeGetLocal('theme');
   if (currentTheme !== 'dark') { 
-      document.body.classList.add('light-mode'); 
       document.getElementById('themeToggleBtn').innerHTML = svgMoon; 
-      safeSetLocal('theme', 'light');
   } else { 
-      document.body.classList.remove('light-mode');
       document.getElementById('themeToggleBtn').innerHTML = svgSun; 
   }
   
@@ -1305,7 +1298,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
-  // GALERÍA INMERSIVA (SWIPE GESTURE EN IMAGEN)
   const modalImgSection = document.getElementById('modalImgSection');
   let touchstartX = 0; let touchendX = 0;
   if(modalImgSection) {
@@ -1330,11 +1322,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   setupCustomDropdowns();
+  
+  // INICIO DE SINCRONIZACIÓN HÍBRIDA (STALE-WHILE-REVALIDATE)
   await sincronizarERP();
-  renderLastUpdated(); 
-  renderUFMultiSelect(); 
-  renderGrid();
-  setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
 function updateDropdownLabel(radioInput, dropdownId) {
@@ -1428,11 +1418,38 @@ window.clearFilters = function() {
 
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
+// =========================================
+// SISTEMA HÍBRIDO (STALE-WHILE-REVALIDATE)
+// =========================================
 async function sincronizarERP() {
-  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
-  try {
-    // ELIMINADA LA CACHÉ DE MEMORIA PARA OBTENER DATOS 100% EN VIVO SIEMPRE
+  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { 
+      document.getElementById('loaderText').textContent = "Modo Demo"; 
+      detenerCargadorInteractivo();
+      return; 
+  }
+  
+  const cacheKey = 'erp_cache_data_v10';
+  const cachedData = safeGetLocal(cacheKey);
 
+  // 1. CARGA INSTANTÁNEA (Mostrar datos viejos inmediatamente)
+  if (cachedData) {
+      try {
+          const parsedCache = JSON.parse(cachedData);
+          products = parsedCache.products || [];
+          EXTRA_DATA = parsedCache.EXTRA_DATA || {};
+          renderGrid(); 
+          renderUFMultiSelect();
+          renderLastUpdated();
+          detenerCargadorInteractivo(); // Liberamos la pantalla al instante
+      } catch(e) { console.error("Error leyendo caché", e); }
+  }
+
+  // 2. REVALIDACIÓN EN SEGUNDO PLANO
+  fetchRealTimeData(cacheKey);
+}
+
+async function fetchRealTimeData(cacheKey) {
+  try {
     let pcoData = {};
     const pcoUrls = [
         "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
@@ -1467,6 +1484,7 @@ async function sincronizarERP() {
         } catch(e) {}
     }
 
+    let newExtraData = {};
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
@@ -1480,10 +1498,10 @@ async function sincronizarERP() {
           }
           let codeIdx = cols.findIndex(c => isValidCode(c));
           if(codeIdx !== -1) {
-            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
+            let code = cols[codeIdx].toUpperCase().trim(); if(!newExtraData[code]) newExtraData[code] = {};
             let valCol = cols[valorIdx]; let planCol = cols[planIdx];
-            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
-            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
+            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") newExtraData[code].valor = valCol;
+            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") newExtraData[code].plan = planCol;
           }
         });
       }
@@ -1508,17 +1526,40 @@ async function sincronizarERP() {
            const allCodes = new Set([...Object.keys(stockConsolidado), ...Object.keys(pcoData)]);
            products = Array.from(allCodes).map(cod => {
                let desc = (stockConsolidado[cod] ? stockConsolidado[cod].descripcion : "Sin descripción") || "Sin descripción";
-               
                let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
-               
                let pavQty = Math.max(0, erpTotal - pcoQty);
                
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
            }).filter(p => isValidCode(p.codigo));
+           
+           EXTRA_DATA = newExtraData;
+           safeSetLocal(cacheKey, JSON.stringify({products, EXTRA_DATA}));
+           
+           // Actualización silenciosa de la interfaz
+           renderGrid();
+           renderUFMultiSelect();
+           renderLastUpdated();
        }
     }
-  } catch (err) {}
+  } catch (err) {
+      console.error("Error en sincronización en vivo", err);
+  } finally {
+      detenerCargadorInteractivo(); // Seguro anti-bloqueos
+  }
+}
+
+function toggleTheme() { 
+  const body = document.body; const btn = document.getElementById('themeToggleBtn'); 
+  if (body.classList.contains('light-mode')) { 
+      body.classList.remove('light-mode'); 
+      safeSetLocal('theme', 'dark'); 
+      btn.innerHTML = svgSun; 
+  } else { 
+      body.classList.add('light-mode'); 
+      safeSetLocal('theme', 'light'); 
+      btn.innerHTML = svgMoon; 
+  } 
 }
 
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
@@ -1661,11 +1702,34 @@ function updateGridDOM(append) {
                 ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span class="pco-text">PCO: ${p.cantidadPCO}</span>` : ''}
             </div>
         </div>
+        <div class="card-name" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
+        <div class="card-stock-wrapper">
+            <div class="stock-pill pav-pill">PAV: <span>${qty}</span></div>
+            ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div class="stock-pill pco-pill">PCO: <span>${p.cantidadPCO}</span></div>` : ''}
+        </div>
+        <div class="card-bottom-info">
+            <div class="card-code">${p.codigo}</div>
+            ${extraHTML}
+        </div>
         ${extraHTML}
       </div>`;
     grid.appendChild(card);
   });
+  
+  // Limpieza de duplicados generados por la estructura dividida móvil/escritorio
+  document.querySelectorAll('.card-body').forEach(body => {
+      if(window.innerWidth > 600) {
+          let name = body.querySelector('.card-name'); if(name) name.remove();
+          let stock = body.querySelector('.card-stock-wrapper'); if(stock) stock.remove();
+          let btm = body.querySelector('.card-bottom-info'); if(btm) btm.remove();
+      } else {
+          let top = body.querySelector('.card-top-row'); if(top) top.remove();
+          let desc = body.querySelector('.card-desc'); if(desc) desc.remove();
+          let extra = body.querySelector(':scope > .extras-wrap'); if(extra) extra.remove();
+      }
+  });
+
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
   updateCompareUI();
 }
