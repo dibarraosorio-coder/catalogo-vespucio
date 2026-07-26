@@ -25,7 +25,7 @@
       --glass-shadow: 0 8px 32px rgba(0,0,0,0.5);
       --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(229,222,206,0.05);
       --card-bg: #121E18;
-      --card-border-hover: rgba(179, 146, 102, 0.6); /* Ajustado a dorado/beige */
+      --card-border-hover: rgba(179, 146, 102, 0.6);
       --card-img-border: rgba(229,222,206,0.05);
       --card-overlay: rgba(11,20,17,.7);
       --input-bg: rgba(26,44,35,0.8);
@@ -1236,7 +1236,7 @@ function generateCompareColumnHTML(code) {
       <div class="bento-card bento-stock" style="margin-top: 16px;">
           <div style="display:flex; flex-direction:column; gap:8px;">
               <div><div class="modal-stock-label">Stock PAV</div><div class="modal-stock-number">${p.cantidad || 0}</div></div>
-              ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div><div class="modal-stock-label">Stock PCO</div><div class="modal-stock-number" style="font-size: 1.6rem; color: var(--text-muted);">${p.cantidadPCO}</div></div>` : ''}
+              <div><div class="modal-stock-label">Stock PCO</div><div class="modal-stock-number" style="font-size: 1.6rem; color: var(--text-muted);">${p.cantidadPCO || 0}</div></div>
           </div>
           <div class="modal-stock-status ${status.cls}">${status.text}</div>
       </div>
@@ -1602,9 +1602,11 @@ function updateGridDOM(append) {
     if (bodegaVal === 'pav') {
         if (currentStockFilter === 'with' && pavQty === 0) return false;
         if (currentStockFilter === 'without' && pavQty > 0) return false;
+        if (currentStockFilter === 'all' && pavQty === 0) return false; // Solo muestra si tiene stock en PAV cuando el filtro de stock es "Todos"
     } else if (bodegaVal === 'pco') {
         if (currentStockFilter === 'with' && pcoQty === 0) return false;
         if (currentStockFilter === 'without' && pcoQty > 0) return false;
+        if (currentStockFilter === 'all' && pcoQty === 0) return false; // Solo muestra si tiene stock en PCO cuando el filtro de stock es "Todos"
     } else {
         if (currentStockFilter === 'with' && totalQty === 0) return false;
         if (currentStockFilter === 'without' && totalQty > 0) return false;
@@ -1671,7 +1673,6 @@ function updateGridDOM(append) {
     
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // REORGANIZACIÓN HTML TARJETA
     let extrasHTML = `<div class="extras-wrap">
         <div style="display:flex; gap:6px; width:100%; justify-content: flex-end;">
             ${ed.valor ? `<div class="card-plan" style="color:var(--accent-gold); border-color:rgba(179,146,102,0.3); background:rgba(179,146,102,0.1)">${ed.valor} UF</div>` : ``}
@@ -1694,7 +1695,7 @@ function updateGridDOM(append) {
         
         <div class="stock-pills-wrap">
             <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
-            ${(pcoQty > 0) ? `<span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>` : ''}
+            <span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>
         </div>
         
         ${extrasHTML}
@@ -1757,16 +1758,12 @@ function renderModalData(p) {
   document.getElementById('modalCode').textContent = p.codigo; 
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   
-  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO Y CONDICIONAL
+  // STOCK PAV Y PCO SIEMPRE SE MUESTRAN PARA EVITAR CONFUSIONES
   document.getElementById('modalStock').innerHTML = p.cantidad || 0; 
   let pcoWrap = document.getElementById('modalStockPcoContainer');
   if (pcoWrap) {
-      if (p.cantidadPCO && p.cantidadPCO > 0) {
-          pcoWrap.style.display = 'block';
-          document.getElementById('modalStockPCO').innerHTML = p.cantidadPCO;
-      } else {
-          pcoWrap.style.display = 'none';
-      }
+      pcoWrap.style.display = 'block';
+      document.getElementById('modalStockPCO').innerHTML = p.cantidadPCO || 0;
   }
   
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
@@ -1818,12 +1815,11 @@ window.compartirProducto = async function() {
   if (!currentModalCode) return;
   const p = products.find(x => x.codigo === currentModalCode) || {codigo: currentModalCode, descripcion:'', cantidad: 0, cantidadPCO: 0};
   const ed = EXTRA_DATA[currentModalCode] || {};
-  let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK PAV: ${p.cantidad || 0}`;
-  if (p.cantidadPCO && p.cantidadPCO > 0) {
-      textToShare += `\n📦 STOCK PCO: ${p.cantidadPCO}`;
-  }
+  
+  let textToShare = `🏷️ *${p.codigo}*\n📝 ${p.descripcion || 'Sin descripción'}\n📦 STOCK PAV: ${p.cantidad || 0}\n📦 STOCK PCO: ${p.cantidadPCO || 0}`;
   if (ed.plan) textToShare += `\n📋 PLAN: ${ed.plan}`; 
   if (ed.valor) textToShare += `\n💰 VALOR REF: ${ed.valor} UF`; 
+  
   if (!navigator.share) { alert("Tu navegador no soporta el menú nativo de compartir."); return; }
   if (window.currentShareFile && navigator.canShare) { const shareData = { files: [window.currentShareFile], text: textToShare }; if (navigator.canShare(shareData)) { try { await navigator.share(shareData); return; } catch (err) { if (err.name === 'AbortError') return; } } }
   try { await navigator.share({ text: textToShare }); } catch (err) {}
