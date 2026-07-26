@@ -25,15 +25,15 @@
       --glass-shadow: 0 8px 32px rgba(0,0,0,0.5);
       --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(229,222,206,0.05);
       --card-bg: #121E18;
-      --card-border-hover: rgba(52, 108, 86, 0.6);
+      --card-border-hover: rgba(179, 146, 102, 0.6); /* Ajustado a dorado/beige */
       --card-img-border: rgba(229,222,206,0.05);
       --card-overlay: rgba(11,20,17,.7);
       --input-bg: rgba(26,44,35,0.8);
       --input-border: rgba(229,222,206,0.1);
       --tab-bg: rgba(26,44,35,0.5);
-      --tab-active-bg: rgba(52, 108, 86, 0.3);
+      --tab-active-bg: rgba(179, 146, 102, 0.15);
       --tab-active-color: #E5DECE;
-      --tab-active-border: rgba(52, 108, 86, 0.6);
+      --tab-active-border: rgba(179, 146, 102, 0.5);
       --tab-hover-bg: rgba(229,222,206,0.05);
       --btn-bg: rgba(26,44,35,0.8);
       --btn-hover: rgba(229,222,206,0.1);
@@ -43,7 +43,7 @@
       --modal-info-bg: rgba(0,0,0,0.2);
       --modal-close-bg: rgba(26,44,35,.8);
       --modal-close-hover: rgba(139,58,58,.8);
-      --neon-green: #346C56; 
+      --stock-online: #34d399; /* Exclusivo para el destello/animación */
       --neon-yellow: #B39266; 
       --neon-red: #8B3A3A;
       --accent-gold: #B39266;
@@ -60,7 +60,7 @@
       --header-shadow: none;
       --text-main: #2d2822;
       --text-muted: #6b6357;
-      --text-code: #059669;
+      --text-code: #AE8A77;
       --glass-bg: rgba(234, 226, 210, 0.6);
       --glass-border: #BDB2A0;
       --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
@@ -84,7 +84,7 @@
       --modal-info-bg: #E2D8C6;
       --modal-close-bg: #F5F0E6;
       --modal-close-hover: #ef4444;
-      --neon-green: #059669;
+      --stock-online: #059669;
       --neon-yellow: #d97706;
       --neon-red: #dc2626;
       --accent-gold: #AE8A77;
@@ -101,7 +101,7 @@
     body.client-mode .modal-code-small,
     body.client-mode .stock-pills-wrap,
     body.client-mode #ddStock { display: none !important; }
-    body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--neon-green); }
+    body.client-mode .controls-main-bar { padding-bottom: 4px; border-bottom: 2px solid var(--accent-gold); }
 
     /* =========================================
        MEJORAS ESCRITORIO (ANIMACIONES Y TREN DE HISTORIAL)
@@ -112,16 +112,16 @@
         .desktop-only { display: flex !important; }
         .mobile-clear-btn { display: none !important; }
         
-        /* Animación Stock en Línea parpadeante */
+        /* Animación Stock en Línea parpadeante (ÚNICO VERDE NEÓN) */
         @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(52, 108, 86, 0.4) !important; padding-left: 12px !important; }
-        .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--neon-green); }
+        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(52, 211, 153, 0.4) !important; padding-left: 12px !important; }
+        .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--stock-online); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--stock-online); }
         
         /* Ajustes barra superior para integrar botones extra e historial */
         .search-header-mobile { flex-wrap: nowrap !important; justify-content: flex-start !important; }
         .search-wrap { max-width: 280px !important; flex: 0 1 auto !important; }
         
-        /* Vitrina Historial Reciente Moviéndose a la Derecha del botón limpiar */
+        /* Vitrina Historial Reciente */
         .recent-history-container {
             display: flex; align-items: center; flex: 1 1 auto; margin-left: 12px; overflow: hidden; max-width: 700px;
         }
@@ -154,7 +154,7 @@
     
     body::before {
       content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 15% 20%, rgba(52, 108, 86,.04) 0%, transparent 40%),
+      background: radial-gradient(ellipse at 15% 20%, rgba(179, 146, 102,.03) 0%, transparent 40%),
                   radial-gradient(ellipse at 85% 80%, rgba(179, 146, 102,.02) 0%, transparent 40%);
       pointer-events: none; z-index: 0;
     }
@@ -183,7 +183,7 @@
       text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;
       text-decoration: underline; text-decoration-color: var(--glass-border); text-underline-offset: 3px; transition: all 0.2s;
     }
-    .changelog-btn:hover { color: var(--neon-green); text-decoration-color: var(--neon-green); }
+    .changelog-btn:hover { color: var(--accent-gold); text-decoration-color: var(--accent-gold); }
 
     .header-logo { max-height: 85px; width: auto; margin-bottom: 12px; cursor: default; }
     .header-title { 
@@ -192,7 +192,7 @@
       line-height: 1.15; cursor: default; user-select: none; text-shadow: var(--header-shadow); 
     }
     .header-subtitle { 
-      font-family: 'Cinzel', serif; font-size: .7rem; color: var(--neon-green); 
+      font-family: 'Cinzel', serif; font-size: .7rem; color: var(--accent-gold); 
       margin-top: 12px; letter-spacing: .25em; text-transform: uppercase; font-weight: 700; 
     }
 
@@ -211,7 +211,7 @@
       justify-content: center; align-items: center; color: var(--text-main); 
       border: 1px solid var(--input-border); border-radius: 8px; background: var(--btn-bg); cursor: pointer; transition: all 0.2s;
     }
-    .icon-btn:hover { background: var(--btn-hover); border-color: var(--neon-green); color: var(--neon-green); }
+    .icon-btn:hover { background: var(--btn-hover); border-color: var(--accent-gold); color: var(--accent-gold); }
     .icon-btn svg { width: 22px; height: 22px; }
     
     .search-wrap { position: relative; flex: 1 1 240px; max-width: 320px; display: flex; align-items: center; }
@@ -223,7 +223,7 @@
         background: transparent; border: none; color: var(--text-muted); cursor: pointer;
         display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
-    .mic-btn:hover { color: var(--neon-green); background: rgba(255,255,255,0.05); }
+    .mic-btn:hover { color: var(--accent-gold); background: rgba(255,255,255,0.05); }
     .mic-btn.listening {
         color: var(--neon-red); animation: pulse-mic 1.5s infinite;
         background: rgba(139,58,58,0.1);
@@ -235,7 +235,7 @@
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
       outline: none; transition: all .2s; padding: 0 44px 0 46px; 
     }
-    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(52, 108, 86,.2); }
+    #searchInput:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(179, 146, 102,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
     /* FILTROS Y DROPDOWNS */
@@ -245,24 +245,24 @@
     .filters-wrapper, .filters-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto; }
     #filterActiveDot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--neon-red); border-radius: 50%; display: none; }
 
-    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 180px; max-width: 220px; }
+    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 170px; max-width: 220px; }
     .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
     .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;}
     .dropdown-header span.arrow { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.3s; }
     
-    .dropdown-header:hover, .custom-dropdown.open .dropdown-header { border-color: var(--neon-green); background: var(--btn-hover); }
-    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(52, 108, 86,.2); }
-    .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--neon-green); }
+    .dropdown-header:hover, .custom-dropdown.open .dropdown-header { border-color: var(--accent-gold); background: var(--btn-hover); }
+    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(179, 146, 102,.2); }
+    .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--accent-gold); }
 
     .dropdown-list { position: absolute; top: 52px; left: 0; width: 100%; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-height: 280px; overflow-y: auto; z-index: 1000; display: none; flex-direction: column; padding: 8px; backdrop-filter: blur(16px); }
     .custom-dropdown.open .dropdown-list { display: flex; animation: slideDown 0.2s ease forwards; }
     @keyframes slideDown { from {opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
 
     .dropdown-item { padding: 10px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-weight: 700; color: var(--text-main); transition: all 0.2s; }
-    .dropdown-item:hover { background: var(--tab-hover-bg); color: var(--neon-green); }
+    .dropdown-item:hover { background: var(--tab-hover-bg); color: var(--accent-gold); }
     .dropdown-item input[type="radio"], .dropdown-item input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--text-muted); border-radius: 4px; outline: none; cursor: pointer; transition: all 0.2s; position: relative; flex-shrink: 0; }
     .dropdown-item input[type="radio"] { border-radius: 50%; }
-    .dropdown-item input:checked { border-color: var(--neon-green); background: var(--neon-green); }
+    .dropdown-item input:checked { border-color: var(--accent-gold); background: var(--accent-gold); }
     .dropdown-item input:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid var(--bg-body); border-width: 0 2px 2px 0; transform: rotate(45deg); }
     .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: var(--bg-body); transform: none; }
 
@@ -282,8 +282,8 @@
         height: 38px; box-sizing: border-box; 
     }
     .recent-item:hover { 
-        border-color: var(--neon-green); background: rgba(52, 108, 86, 0.2); 
-        box-shadow: 0 0 12px rgba(52, 108, 86, 0.3); transform: translateY(-2px) scale(1.02); 
+        border-color: var(--accent-gold); background: rgba(179, 146, 102, 0.1); 
+        box-shadow: 0 0 12px rgba(179, 146, 102, 0.2); transform: translateY(-2px) scale(1.02); 
     }
     .recent-item img { 
         width: 28px !important; height: 28px !important; 
@@ -329,7 +329,7 @@
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(52, 108, 86, 0.15), transparent 40%);
+        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(179, 146, 102, 0.1), transparent 40%);
         opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1;
       }
       .product-card:hover::before { opacity: 1; }
@@ -342,9 +342,10 @@
     .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
     .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
     .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
+    .catalog-wrap.list-view .card-code { margin-bottom: 2px; }
     .catalog-wrap.list-view .card-desc { font-size: 1.1rem; -webkit-line-clamp: 1; min-height: auto; margin-bottom: 4px; }
     .catalog-wrap.list-view .stock-pills-wrap { margin-bottom: auto; border-bottom: none; padding-bottom: 0; }
-    .catalog-wrap.list-view .extras-wrap { margin-top: 8px; justify-content: space-between; }
+    .catalog-wrap.list-view .extras-wrap { margin-top: 8px; justify-content: flex-end; }
     .catalog-wrap.list-view .badge-ribbon { transform: none; right: 12px; top: 12px; border-radius: 6px; width: auto; padding: 4px 12px; }
 
     .badge-ribbon { position: absolute; top: 20px; right: -40px; padding: 4px 40px; font-size: 0.6rem; font-weight: 800; transform: rotate(45deg); z-index: 10; text-transform: uppercase; letter-spacing: 1px; text-align: center; width: 170px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); line-height: 1.2; }
@@ -365,31 +366,40 @@
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
-    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(52, 108, 86,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
-    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(179, 146, 102,0.05) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
+    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(179, 146, 102,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--neon-green); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
-    .view-btn:hover { background: #fff; color: #000; transform: scale(1.05); }
+    .view-btn { background: var(--accent-gold); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+    .view-btn:hover { background: #fff; transform: scale(1.05); }
     
     .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
-    .compare-btn:hover { background: var(--neon-green); color: #fff; border-color: var(--neon-green); }
-    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(52, 108, 86,0.4); }
+    .compare-btn:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+    .product-card.comparing { border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(179, 146, 102,0.4); }
 
     .product-card:hover .view-btn { transform: translateY(0); }
 
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
     
-    /* REORGANIZACIÓN: Nombre prominente, stock en píldoras, código inferior */
+    /* REORGANIZACIÓN: Código prominente arriba, seguido de descripción y píldoras */
+    .product-card .card-code { 
+        font-family: 'Nunito', sans-serif; 
+        font-size: 0.9rem; 
+        color: var(--accent-gold); 
+        font-weight: 800; 
+        letter-spacing: 0.05em; 
+        margin-bottom: 4px; 
+    }
+    
     .product-card .card-desc { 
         font-family: 'Nunito', sans-serif; 
         font-size: 0.95rem; 
         font-weight: 800; 
         line-height: 1.3; 
         color: var(--text-main); 
-        margin-bottom: 8px; 
+        margin-bottom: 12px; 
         text-transform: uppercase;
         min-height: 2.6em; 
         display: -webkit-box; 
@@ -398,7 +408,7 @@
         overflow: hidden; 
         transition: color 0.2s; 
     }
-    @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--neon-green); } }
+    @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--accent-gold); } }
 
     .stock-pills-wrap {
         display: flex;
@@ -426,20 +436,13 @@
 
     .product-card .extras-wrap { 
         display: flex; 
-        justify-content: space-between; 
-        align-items: flex-end; 
+        justify-content: flex-end; 
+        align-items: center; 
         margin-top: 12px; 
         width: 100%; 
     }
-    .product-card .card-code { 
-        font-family: 'Nunito', sans-serif; 
-        font-size: 0.75rem; 
-        color: var(--accent-gold); 
-        font-weight: 800; 
-        letter-spacing: 0.05em; 
-        margin: 0; 
-    }
-    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: rgba(52, 108, 86,0.1); padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(52, 108, 86,0.3); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
+    
+    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--text-main); background: rgba(255,255,255,0.05); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--glass-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
     /* =========================================
        MODAL BENTO BOX
@@ -460,48 +463,48 @@
     
     .bento-card { background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,.5); display: flex; flex-direction: column; justify-content: center; position: relative; }
     .bento-header { grid-column: 1 / -1; align-items: flex-start; }
-    .bento-stock { grid-column: 1 / -1; align-items: center; flex-direction: row; justify-content: space-between; background: var(--modal-info-bg); border-color: rgba(52, 108, 86,0.3); }
+    .bento-stock { grid-column: 1 / -1; align-items: center; flex-direction: row; justify-content: space-between; background: var(--modal-info-bg); border-color: rgba(179, 146, 102,0.3); }
     .bento-extra { align-items: center; text-align: center; background: var(--modal-info-bg); }
     .bento-actions { grid-column: 1 / -1; align-items: center; padding: 16px; background: transparent; border: none; box-shadow: none; flex-direction: row; gap: 16px;}
 
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
     
-    /* REORGANIZACIÓN MODAL: Descripción predominante, código secundario */
+    /* REORGANIZACIÓN MODAL */
     .modal-desc-large { font-size: 1.8rem; font-weight: 800; color: var(--text-main); letter-spacing: 0.02em; text-transform: uppercase; margin: 0 0 8px 0; line-height: 1.2; }
     .modal-code-small { font-size: 1rem; font-weight: 700; color: var(--accent-gold); letter-spacing: .05em; text-transform: uppercase; margin: 0; line-height: 1.1; }
     
     .modal-stock-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
-    .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--neon-green); line-height: 1; }
+    .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--text-main); line-height: 1; }
     .modal-stock-status { font-size: 1rem; font-weight: 700; text-align: right; }
     
     .bento-extra-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em; margin: 0 0 8px 0; line-height: 1; }
     .bento-extra-val { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1; }
     #modalValor { color: var(--accent-gold); }
-    #modalPlan { color: var(--neon-green); }
+    #modalPlan { color: var(--text-main); }
     
     .modal-close { position: fixed; top: 24px; right: 28px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
     .modal-close:hover { transform: scale(1.1); background: var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red); }
     
     .btn-share-modal { background: rgba(229, 222, 206, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); width: 100%; max-width: 250px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-    .btn-share-modal:hover { background: var(--neon-green); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52, 108, 86,0.3); border-color: var(--neon-green); }
+    .btn-share-modal:hover { background: var(--accent-gold); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); border-color: var(--accent-gold); }
 
     .modal-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
-    .modal-nav-btn:hover { background: var(--btn-hover); color: var(--neon-green); border-color: var(--neon-green); transform: translateY(-50%) scale(1.1); }
+    .modal-nav-btn:hover { background: var(--btn-hover); color: var(--accent-gold); border-color: var(--accent-gold); transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 24px; } .nav-next { right: 24px; }
 
     /* =========================================
        BARRA DE COMPARACIÓN (FLOTANTE)
        ========================================= */
-    .compare-floating-bar { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--modal-bg); border: 1px solid var(--neon-green); border-radius: 20px; padding: 12px 24px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 1500; transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(12px); width: 90%; max-width: 500px; justify-content: space-between;}
+    .compare-floating-bar { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--modal-bg); border: 1px solid var(--accent-gold); border-radius: 20px; padding: 12px 24px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 1500; transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(12px); width: 90%; max-width: 500px; justify-content: space-between;}
     .compare-floating-bar.visible { bottom: 24px; }
     .compare-info { display: flex; flex-direction: column; }
     .compare-text { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .compare-codes { font-size: 1.1rem; color: var(--neon-green); font-weight: 800; margin-top: 2px;}
+    .compare-codes { font-size: 1.1rem; color: var(--text-main); font-weight: 800; margin-top: 2px;}
     .compare-actions { display: flex; gap: 10px; }
     .comp-btn { padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; border: none; }
     .comp-clear { background: rgba(139,58,58,0.1); color: var(--neon-red); border: 1px solid rgba(139,58,58,0.3); }
     .comp-clear:hover { background: var(--neon-red); color: white; }
-    .comp-run { background: var(--neon-green); color: #fff; box-shadow: 0 4px 12px rgba(52, 108, 86,0.3); }
+    .comp-run { background: var(--accent-gold); color: #000; box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); }
     .comp-run:hover { transform: scale(1.05); }
     .comp-run:disabled { background: var(--glass-bg); color: var(--text-muted); cursor: not-allowed; box-shadow: none; border: 1px solid var(--glass-border);}
 
@@ -523,32 +526,32 @@
     .changelog-modal-box { max-width: 650px; padding: 40px; display: block; text-align: left; }
     .changelog-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
     .changelog-list li { font-size: 0.9rem; color: var(--text-main); line-height: 1.5; padding: 20px; background: var(--modal-info-bg); border-radius: 16px; border: 1px solid var(--glass-border); }
-    .changelog-list li strong { color: var(--neon-green); display: block; margin-bottom: 6px; font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .changelog-list li strong { color: var(--accent-gold); display: block; margin-bottom: 6px; font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
     /* --- ESTILOS PANTALLA DE CARGA CENTRADA --- */
     .loading-overlay { position: fixed; inset: 0; background-color: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 999999; transition: opacity 0.5s ease, visibility 0.5s ease; }
     .loader-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; width: 100%; }
     .loader-image-wrapper { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-    .loader-spinner-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 3px solid rgba(52, 108, 86, 0.1); border-radius: 50%; border-top-color: var(--neon-green); animation: spin 1.2s linear infinite; z-index: 1; box-sizing: border-box; }
-    .loader-image-container { position: relative; width: 110px; height: 110px; border-radius: 50%; border: 1px solid rgba(52, 108, 86, 0.15); overflow: hidden; background-color: var(--glass-bg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(52, 108, 86, 0.15); backdrop-filter: blur(8px); z-index: 2; box-sizing: border-box; }
+    .loader-spinner-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 3px solid rgba(179, 146, 102, 0.1); border-radius: 50%; border-top-color: var(--accent-gold); animation: spin 1.2s linear infinite; z-index: 1; box-sizing: border-box; }
+    .loader-image-container { position: relative; width: 110px; height: 110px; border-radius: 50%; border: 1px solid rgba(179, 146, 102, 0.15); overflow: hidden; background-color: var(--glass-bg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(179, 146, 102, 0.15); backdrop-filter: blur(8px); z-index: 2; box-sizing: border-box; }
     .loader-image-container img { max-width: 70px !important; max-height: 70px !important; width: auto; height: auto; object-fit: contain; transition: opacity 0.5s ease-in-out; opacity: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
     .loader-img-fade-in { opacity: 1 !important; }
     .loader-text-new { font-family: 'Cinzel', serif; letter-spacing: 4px; color: var(--text-main); font-size: 14px; text-align: center; margin: 0; animation: pulse 1.5s infinite; text-transform: uppercase; width: 100%; }
 
     /* --- ESTILOS NOTIFICACIÓN TOAST --- */
-    .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
+    .toast-notification { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--header-bg-solid); border: 1px solid var(--accent-gold); color: var(--text-main); padding: 12px 24px; border-radius: 30px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.9rem; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; display: flex; align-items: center; gap: 8px; }
     .toast-notification.show { bottom: 30px; }
 
     .back-to-top { position: fixed; bottom: 24px; right: 24px; z-index: 500; background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 50%; width: 50px; height: 50px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);}
     .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--neon-green); }
+    .back-to-top:hover { background: var(--tab-hover-bg); transform: translateY(-4px); border-color: var(--accent-gold); }
     
     .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); font-weight: 700; grid-column: 1/-1; font-size: 1.1rem; background: var(--tab-bg); border-radius: 16px; border: 1px dashed var(--glass-border); }
 
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-body); }
     ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
 
     /* =========================================
        MEDIA QUERIES & OPTIMIZACIÓN MÓVIL
@@ -601,10 +604,10 @@
       #clientModeBtn { grid-column: 2; grid-row: 1; margin: 0; }
       .mobile-filter-toggle { 
           grid-column: 4; grid-row: 1; display: flex !important; margin: 0; 
-          border: 1px solid var(--neon-green); border-radius: 8px; 
-          background: var(--glass-bg); color: var(--neon-green); 
+          border: 1px solid var(--accent-gold); border-radius: 8px; 
+          background: var(--glass-bg); color: var(--accent-gold); 
       }
-      .mobile-filter-toggle svg { stroke: var(--neon-green); }
+      .mobile-filter-toggle svg { stroke: var(--accent-gold); }
       .search-wrap { grid-column: 1 / 5; grid-row: 2; width: 100%; max-width: none !important; }
 
       .filters-wrapper { display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999 !important; pointer-events: none; }
@@ -632,8 +635,8 @@
       .dropdown-header { font-size: 0.75rem; padding: 0 10px; height: 40px; }
       .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 4px; }
       .dropdown-list { position: static; box-shadow: none; border: 1px solid var(--glass-border); border-top: none; border-radius: 0 0 8px 8px; margin-top: -4px; max-height: 200px; }
-      .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--neon-green); background: var(--btn-hover); }
-      .custom-dropdown.open .dropdown-list { border-color: var(--neon-green); }
+      .custom-dropdown.open .dropdown-header { border-radius: 8px 8px 0 0; border-color: var(--accent-gold); background: var(--btn-hover); }
+      .custom-dropdown.open .dropdown-list { border-color: var(--accent-gold); }
 
       .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
@@ -641,10 +644,7 @@
       .card-img-wrap, .card-body, .badge-ribbon { transform: translateZ(0) !important; }
       .product-card .card-body { padding: 16px 12px; }
       .product-card .card-body > div:first-child { 
-          flex-direction: column !important; 
-          align-items: center !important; 
-          gap: 6px; 
-          margin-bottom: 10px;
+          text-align: center;
       }
       .product-card .card-code { text-align: center; }
       .product-card .stock-pills-wrap { 
@@ -744,6 +744,16 @@
             <div class="mobile-filter-header">
                 <h3>Filtros de Catálogo</h3>
                 <button class="close-filters-btn" onclick="toggleMobileFilters()">✕</button>
+            </div>
+
+            <!-- NUEVO FILTRO DE BODEGA -->
+            <div class="custom-dropdown" id="ddBodega">
+              <div class="dropdown-header"><span class="text">Bodega: Ambas</span><span class="arrow">▼</span></div>
+              <div class="dropdown-list">
+                <label class="dropdown-item"><input type="radio" name="bodegaFilter" value="ambas" checked> Bodega: Ambas</label>
+                <label class="dropdown-item"><input type="radio" name="bodegaFilter" value="pav"> Solo Stock PAV</label>
+                <label class="dropdown-item"><input type="radio" name="bodegaFilter" value="pco"> Solo Stock PCO</label>
+              </div>
             </div>
 
             <div class="custom-dropdown" id="ddCat">
@@ -848,7 +858,6 @@
       <div class="modal-content-bento">
           <div class="bento-card bento-header">
               <span class="modal-category" id="modalCat"></span>
-              <!-- REORDENADO EN EL MODAL -->
               <h2 class="modal-desc-large" id="modalDesc"></h2>
               <p class="modal-code-small" id="modalCode"></p>
           </div>
@@ -1017,7 +1026,7 @@ function applyClientMode() {
     const btn = document.getElementById('clientModeBtn');
     if(isClientMode) {
         document.body.classList.add('client-mode');
-        if(btn) { btn.style.color = 'var(--neon-green)'; btn.style.borderColor = 'var(--neon-green)'; btn.innerHTML = svgEyeOn; }
+        if(btn) { btn.style.color = 'var(--accent-gold)'; btn.style.borderColor = 'var(--accent-gold)'; btn.innerHTML = svgEyeOn; }
     } else {
         document.body.classList.remove('client-mode');
         if(btn) { btn.style.color = ''; btn.style.borderColor = ''; btn.innerHTML = svgEyeOff; }
@@ -1213,7 +1222,9 @@ function generateCompareColumnHTML(code) {
     const p = products.find(x => x.codigo === code) || {codigo: code, descripcion:'', cantidad: 0, cantidadPCO: 0};
     const ed = EXTRA_DATA[code] || {};
     let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
-    const status = getStockStatus(p.cantidad || 0, isDesc);
+    
+    const totalQty = (p.cantidad || 0) + (p.cantidadPCO || 0);
+    const status = getStockStatus(totalQty, isDesc);
     const cat = getCategory(p.codigo).label;
     
     return `
@@ -1233,7 +1244,7 @@ function generateCompareColumnHTML(code) {
       ${ed.valor || ed.plan ? `
       <div style="display:flex; gap:16px; width:100%; margin-top:16px;">
           ${ed.valor ? `<div class="bento-card bento-extra"><h3 class="bento-extra-title">Valor Ref.</h3><p class="bento-extra-val" style="color:var(--accent-gold)">${ed.valor} UF</p></div>` : ''}
-          ${ed.plan ? `<div class="bento-card bento-extra"><h3 class="bento-extra-title">Plan</h3><p class="bento-extra-val" style="color:var(--neon-green)">${ed.plan}</p></div>` : ''}
+          ${ed.plan ? `<div class="bento-card bento-extra"><h3 class="bento-extra-title">Plan</h3><p class="bento-extra-val" style="color:var(--text-main)">${ed.plan}</p></div>` : ''}
       </div>` : ''}
     `;
 }
@@ -1359,6 +1370,8 @@ function setupCustomDropdowns() {
             textSpan.textContent = radio.value === 'all' ? 'Stock: Todos' : 'Stock: ' + radio.parentNode.textContent.trim();
             currentStockFilter = radio.value;
             safeSetLocal('stockFilter', currentStockFilter);
+        } else if(radio.name === 'bodegaFilter') {
+            textSpan.textContent = radio.parentNode.textContent.trim();
         } else {
             textSpan.textContent = radio.parentNode.textContent.trim();
         }
@@ -1395,8 +1408,9 @@ function renderUFMultiSelect() {
 function updateFilterDot() {
     const catVal = document.querySelector('input[name="catFilter"]:checked').value;
     const planVal = document.querySelector('input[name="planFilter"]:checked').value;
+    const bodegaVal = document.querySelector('input[name="bodegaFilter"]:checked').value;
     const ufSelected = document.querySelectorAll('.uf-cb:checked').length > 0;
-    const isFilterActive = catVal !== 'all' || planVal !== 'all' || ufSelected || currentStockFilter !== 'all';
+    const isFilterActive = catVal !== 'all' || planVal !== 'all' || bodegaVal !== 'ambas' || ufSelected || currentStockFilter !== 'all';
     const dot = document.getElementById('filterActiveDot');
     if (dot) dot.style.display = isFilterActive ? 'block' : 'none';
 }
@@ -1406,18 +1420,25 @@ window.clearFilters = function() {
   safeRemoveLocal('stockFilter'); safeRemoveLocal('searchQuery');
   document.getElementById('searchInput').value = '';
   
-  // Reseteo del nuevo dropdown de Stock
+  // Reseteo de dropdowns
+  document.querySelector('input[name="bodegaFilter"][value="ambas"]').checked = true;
+  document.querySelector('#ddBodega .dropdown-header .text').textContent = 'Bodega: Ambas';
+
   document.querySelector('input[name="stockFilter"][value="all"]').checked = true;
   document.querySelector('#ddStock .dropdown-header .text').textContent = 'Stock: Todos';
 
   document.querySelector('input[name="catFilter"][value="all"]').checked = true;
   document.querySelector('#ddCat .dropdown-header .text').textContent = 'Categoría: Todas';
+  
   document.querySelector('input[name="planFilter"][value="all"]').checked = true;
   document.querySelector('#ddPlan .dropdown-header .text').textContent = 'Todos los Planes';
+  
   document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
   document.querySelector('#ddSort .dropdown-header .text').textContent = 'A - Z (Por defecto)';
+  
   document.querySelectorAll('.uf-cb').forEach(cb => cb.checked = false);
   updateUFHeader();
+  
   const wrapper = document.getElementById('filtersWrapper');
   if(wrapper && wrapper.classList.contains('open')) { toggleMobileFilters(); }
   renderGrid();
@@ -1555,6 +1576,7 @@ function updateGridDOM(append) {
   
   const catVal = document.querySelector('input[name="catFilter"]:checked').value;
   const planVal = document.querySelector('input[name="planFilter"]:checked').value;
+  const bodegaVal = document.querySelector('input[name="bodegaFilter"]:checked').value;
   const sortVal = document.querySelector('input[name="sortOrder"]:checked').value;
   const ufSelected = Array.from(document.querySelectorAll('.uf-cb:checked')).map(cb => parseFloat(cb.value));
 
@@ -1572,8 +1594,21 @@ function updateGridDOM(append) {
       if (!isFuzzyMatch(fullText, q)) return false; 
     }
 
-    if (currentStockFilter === 'with' && p.cantidad === 0) return false; 
-    if (currentStockFilter === 'without' && p.cantidad > 0) return false;
+    const pavQty = p.cantidad || 0;
+    const pcoQty = p.cantidadPCO || 0;
+    const totalQty = pavQty + pcoQty;
+    
+    // Lógica del filtro de Bodegas cruzado con filtro de Stock
+    if (bodegaVal === 'pav') {
+        if (currentStockFilter === 'with' && pavQty === 0) return false;
+        if (currentStockFilter === 'without' && pavQty > 0) return false;
+    } else if (bodegaVal === 'pco') {
+        if (currentStockFilter === 'with' && pcoQty === 0) return false;
+        if (currentStockFilter === 'without' && pcoQty > 0) return false;
+    } else {
+        if (currentStockFilter === 'with' && totalQty === 0) return false;
+        if (currentStockFilter === 'without' && totalQty > 0) return false;
+    }
 
     let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
     let val = parseFloat(valStr ? valStr.replace(',', '.') : 'NaN'); 
@@ -1599,8 +1634,22 @@ function updateGridDOM(append) {
   if (window.currentTotalItems === 0 && !append) { grid.innerHTML = `<div class="empty-state">Ningún producto coincide con la búsqueda o el ERP no envió datos.</div>`; }
 
   paginated.forEach((p, index) => {
-    const qty = p.cantidad || 0; const badge = getStockBadge(qty); const ed = EXTRA_DATA[p.codigo] || {}; let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); const statusObj = getStockStatus(qty, isDesc);
-    let ribbon = ''; if (qty === 0) { if(isDesc) ribbon = `<div class="badge-ribbon badge-desc">Agotado<br>Descont.</div>`; else ribbon = `<div class="badge-ribbon badge-out">Agotado</div>`; } else if (qty <= 3) ribbon = `<div class="badge-ribbon badge-low">Últimas<br>Unidades</div>`;
+    const pavQty = p.cantidad || 0;
+    const pcoQty = p.cantidadPCO || 0;
+    const totalQty = pavQty + pcoQty;
+    
+    const badge = getStockBadge(totalQty); 
+    const ed = EXTRA_DATA[p.codigo] || {}; 
+    let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
+    const statusObj = getStockStatus(totalQty, isDesc);
+    
+    let ribbon = ''; 
+    if (totalQty === 0) { 
+        if(isDesc) ribbon = `<div class="badge-ribbon badge-desc">Agotado<br>Descont.</div>`; 
+        else ribbon = `<div class="badge-ribbon badge-out">Agotado</div>`; 
+    } else if (totalQty <= 3) {
+        ribbon = `<div class="badge-ribbon badge-low">Últimas<br>Unidades</div>`;
+    }
 
     const card = document.createElement('div'); 
     card.className = `product-card card-${badge.cls} ${compareList.includes(p.codigo) ? 'comparing' : ''}`; 
@@ -1620,16 +1669,15 @@ function updateGridDOM(append) {
     };
     card.onmouseleave = () => { card.style.setProperty('--tilt-x', `0deg`); card.style.setProperty('--tilt-y', `0deg`); };
     
+    let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
+    
     // REORGANIZACIÓN HTML TARJETA
     let extrasHTML = `<div class="extras-wrap">
-        <div class="card-code">${p.codigo}</div>
-        <div style="display:flex; gap:6px;">
+        <div style="display:flex; gap:6px; width:100%; justify-content: flex-end;">
             ${ed.valor ? `<div class="card-plan" style="color:var(--accent-gold); border-color:rgba(179,146,102,0.3); background:rgba(179,146,102,0.1)">${ed.valor} UF</div>` : ``}
             ${ed.plan ? `<div class="card-plan">${ed.plan}</div>` : ``}
         </div>
     </div>`;
-    
-    let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
@@ -1641,11 +1689,12 @@ function updateGridDOM(append) {
       </div>
       <div class="card-body">
         
+        <div class="card-code">${p.codigo}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         
         <div class="stock-pills-wrap">
-            <span class="stock-pill">PAV: <strong>${qty}</strong></span>
-            ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span class="stock-pill">PCO: <strong>${p.cantidadPCO}</strong></span>` : ''}
+            <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
+            ${(pcoQty > 0) ? `<span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>` : ''}
         </div>
         
         ${extrasHTML}
@@ -1721,7 +1770,9 @@ function renderModalData(p) {
   }
   
   let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
-  const status = getStockStatus(p.cantidad || 0, isDesc);
+  const totalQty = (p.cantidad || 0) + (p.cantidadPCO || 0);
+  const status = getStockStatus(totalQty, isDesc);
+  
   document.getElementById('modalStatus').textContent = status.text; 
   document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
