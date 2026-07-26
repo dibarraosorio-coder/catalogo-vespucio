@@ -8,20 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS: FTALO NOCTURNO Y MARFIL DIURNO
+       SISTEMA DE TEMAS: NUEVA PALETA NOCTURNA FTALO Y DÍA MARFIL
        ========================================= */
     :root {
-      /* MODO OSCURO: PALETA VERDE FTALO DE LUJO */
-      --bg-body: #0b1210; 
-      --bg-gradient: linear-gradient(145deg, #0b1210 0%, #111d1a 100%);
-      --header-bg: linear-gradient(160deg, #0b1210 0%, #111d1a 50%, #0b1210 100%);
+      /* MODO OSCURO (PREDETERMINADO DE RESPALDO, AUNQUE ARRANCA EN LUZ) */
+      --bg-body: #0b1613; /* Verde bosque casi negro */
+      --bg-gradient: linear-gradient(145deg, #0b1613 0%, #111d1a 100%);
+      --header-bg: linear-gradient(160deg, #0b1613 0%, #111d1a 50%, #0b1613 100%);
       --header-bg-solid: rgba(17, 29, 26, 0.95);
-      --header-title: #e6decb; 
+      --header-title: #e6decb; /* Crema extraído de la paleta */
       --header-shadow: 0 2px 10px rgba(0,0,0,0.8);
       --text-main: #e6decb;
       --text-muted: #8c9b96;
-      --text-code: #bca076; 
-      --glass-bg: rgba(42, 87, 79, 0.35); 
+      --text-code: #bca076; /* Taupe extraído de la paleta */
+      --glass-bg: rgba(42, 87, 79, 0.35); /* Verde ftalo translúcido */
       --glass-border: rgba(188, 160, 118, 0.2);
       --glass-shadow: 0 8px 32px rgba(0,0,0,0.5);
       --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(188, 160, 118, 0.1);
@@ -44,7 +44,7 @@
       --modal-info-bg: rgba(11, 22, 19, 0.5);
       --modal-close-bg: rgba(42, 87, 79, 0.8);
       --modal-close-hover: rgba(239,68,68,.8);
-      --neon-green: #2eb87c; 
+      --neon-green: #1A6340; /* Verde brillante profundo extraído */
       --neon-yellow: #bca076; 
       --neon-red: #ef4444;
       --accent-gold: #bca076;
@@ -53,11 +53,10 @@
       
       --pill-uf-bg: rgba(188, 160, 118, 0.1);
       --pill-uf-border: rgba(188, 160, 118, 0.2);
-      --pill-plan-bg: rgba(46, 184, 124, 0.1);
-      --pill-plan-border: rgba(46, 184, 124, 0.3);
+      --pill-plan-bg: rgba(26, 99, 64, 0.15);
+      --pill-plan-border: rgba(26, 99, 64, 0.3);
     }
 
-    /* MODO CLARO: PALETA BEIGE Y MARFIL */
     body.light-mode {
       --bg-body: #fdfbf7;
       --bg-gradient: linear-gradient(145deg, #fdfbf7 0%, #EAE2D2 100%);
@@ -123,7 +122,7 @@
         .mobile-clear-btn { display: none !important; }
         
         @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(44, 85, 69, 0.4) !important; padding-left: 12px !important; }
+        .last-updated { animation: pulse-live 2.5s infinite ease-in-out; border-color: rgba(16,185,129,0.4) !important; padding-left: 12px !important; }
         .last-updated::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; margin-right: 6px; margin-bottom: 1px; box-shadow: 0 0 8px var(--neon-green); }
         
         .search-header-mobile { flex-wrap: nowrap !important; justify-content: flex-start !important; }
@@ -161,8 +160,8 @@
     
     body::before {
       content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 15% 20%, rgba(44,85,69,.06) 0%, transparent 40%),
-                  radial-gradient(ellipse at 85% 80%, rgba(188,160,118,.05) 0%, transparent 40%);
+      background: radial-gradient(ellipse at 15% 20%, rgba(16,185,129,.04) 0%, transparent 40%),
+                  radial-gradient(ellipse at 85% 80%, rgba(253,224,71,.02) 0%, transparent 40%);
       pointer-events: none; z-index: 0;
     }
 
@@ -240,7 +239,7 @@
       font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text-main); 
       outline: none; transition: all .2s; padding: 0 44px 0 46px; 
     }
-    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(44, 85, 69, 0.2); }
+    #searchInput:focus { border-color: var(--neon-green); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     #searchInput::placeholder { color: var(--text-muted); font-weight: 500; opacity: 0.8; }
 
     /* FILTROS Y DROPDOWNS */
@@ -250,13 +249,13 @@
     .filters-wrapper, .filters-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; flex: 1 1 auto; }
     #filterActiveDot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--neon-red); border-radius: 50%; display: none; }
 
-    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 170px; max-width: 200px; }
-    .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
+    .custom-dropdown { position: relative; flex: 1 1 auto; min-width: 180px; max-width: 220px; }
+    .dropdown-header { height: 44px; padding: 0 14px; border: 1px solid var(--input-border); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; user-select: none; white-space: nowrap; }
     .dropdown-header span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;}
     .dropdown-header span.arrow { color: var(--text-muted); font-size: 0.7rem; transition: transform 0.3s; }
     
     .dropdown-header:hover, .custom-dropdown.open .dropdown-header { border-color: var(--neon-green); background: var(--btn-hover); }
-    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(44, 85, 69, 0.2); }
+    .custom-dropdown.open .dropdown-header { box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
     .custom-dropdown.open .dropdown-header span.arrow { transform: rotate(180deg); color: var(--neon-green); }
 
     .dropdown-list { position: absolute; top: 52px; left: 0; width: 100%; background: var(--modal-bg); border: 1px solid var(--glass-border); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-height: 280px; overflow-y: auto; z-index: 1000; display: none; flex-direction: column; padding: 8px; backdrop-filter: blur(16px); }
@@ -269,7 +268,7 @@
     .dropdown-item input[type="radio"] { border-radius: 50%; }
     .dropdown-item input:checked { border-color: var(--neon-green); background: var(--neon-green); }
     .dropdown-item input:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-    .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: var(--bg-body); transform: none; }
+    .dropdown-item input[type="radio"]:checked::after { left: 3px; top: 3px; width: 6px; height: 6px; border: none; border-radius: 50%; background: #000; transform: none; }
 
     .action-btn.clean-btn { height: 44px; padding: 0 16px; background: var(--btn-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--btn-text); flex: 0 0 auto; transition: all 0.2s ease; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .action-btn.clean-btn:hover { background: var(--btn-hover); color: var(--neon-red); border-color: var(--neon-red); }
@@ -287,8 +286,8 @@
         height: 38px; box-sizing: border-box; 
     }
     .recent-item:hover { 
-        border-color: var(--neon-green); background: rgba(44, 85, 69, 0.1); 
-        box-shadow: 0 0 12px rgba(44, 85, 69, 0.2); transform: translateY(-2px) scale(1.02); 
+        border-color: var(--neon-green); background: rgba(16,185,129,0.1); 
+        box-shadow: 0 0 12px rgba(16,185,129,0.3); transform: translateY(-2px) scale(1.02); 
     }
     .recent-item img { 
         width: 28px !important; height: 28px !important; 
@@ -303,7 +302,7 @@
     }
 
     /* =========================================
-       GRILLA Y TARJETAS
+       GRILLA, NUEVAS TARJETAS Y JERARQUÍA
        ========================================= */
     .catalog-wrap { position: relative; z-index: 1; width: 100%; max-width: 100%; padding: 20px 24px 100px; }
     #catalogGrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 20px; transition: all 0.3s; view-transition-name: catalog-grid; }
@@ -334,7 +333,7 @@
     @media (hover: hover) and (pointer: fine) {
       .product-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(44, 85, 69, 0.15), transparent 40%);
+        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 185, 129, 0.15), transparent 40%);
         opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1;
       }
       .product-card:hover::before { opacity: 1; }
@@ -360,42 +359,38 @@
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
     .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.01) 25%, rgba(16,185,129,0.06) 50%, rgba(255,255,255,0.01) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
-    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(44, 85, 69,0.06) 50%, rgba(0,0,0,0.02) 75%); }
+    body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(5,150,105,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--neon-green); color: var(--bg-body); padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
-    .view-btn:hover { background: var(--text-main); transform: scale(1.05); }
-    .compare-btn { background: rgba(255,255,255,0.1); color: var(--text-main); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
-    .compare-btn:hover { background: var(--neon-green); color: var(--bg-body); border-color: var(--neon-green); }
-    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(44, 85, 69, 0.4); }
+    .view-btn { background: var(--neon-green); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+    .view-btn:hover { background: #fff; transform: scale(1.05); }
+    .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
+    .compare-btn:hover { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
+    .product-card.comparing { border: 2px solid var(--neon-green); box-shadow: 0 0 15px rgba(16,185,129,0.4); }
     .product-card:hover .view-btn { transform: translateY(0); }
 
-    /* ESTRUCTURA TARJETA ESCRITORIO (ORIGINAL INTACTO) */
-    .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 8px; }
-    .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
-    .card-code { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--text-code); letter-spacing: 0.05em; }
-    .status-text { text-align: right; display: flex; flex-direction: column; gap: 2px; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.02em; line-height: 1.3;}
-    .pco-text { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
-    .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 600; line-height: 1.4; color: var(--text-muted); margin-bottom: 12px; min-height: 2.8em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; transition: color 0.2s; cursor: copy; }
-    @media (hover: hover) and (pointer: fine) { .card-desc:hover { color: var(--neon-green); } }
+    /* NUEVA JERARQUÍA TARJETAS */
+    .card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; gap: 14px; }
+    
+    .card-name { font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text-main); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; cursor: copy; transition: color 0.2s; }
+    @media (hover: hover) and (pointer: fine) { .card-name:hover { color: var(--accent-gold); } }
 
-    .extras-wrap { display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; gap:6px; margin-top:auto; width: 100%; border-top: 1px solid var(--card-img-border); padding-top: 10px; }
+    .card-stock-wrapper { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stock-pill { background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .stock-pill span { color: var(--text-main); font-weight: 800; font-size: 0.95rem; }
+
+    .card-bottom-info { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--card-img-border); padding-top: 12px; margin-top: auto; }
+    .card-code { font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text-code); letter-spacing: 0.05em; }
+
+    .extras-wrap { display:flex; flex-wrap: wrap; align-items:center; gap:6px; justify-content: flex-end;}
     .card-stock-row { background: var(--pill-uf-bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--pill-uf-border); display: flex; align-items: center; justify-content: center; }
-    .card-stock-row .status-text-pill { color: var(--accent-gold) !important; font-size: 0.75rem; font-weight: 800;}
-    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: var(--pill-plan-bg); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--pill-plan-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
-
-    /* STATUS COLORS */
-    .status-green { color: var(--neon-green); }
-    .status-yellow { color: var(--neon-yellow); }
-    .status-red { color: var(--neon-red); }
-
-    /* MÓVIL ELEMENTOS EXTRA (Ocultos en PC) */
-    .card-name, .card-stock-wrapper { display: none; }
+    .card-stock-row .status-text { color: var(--accent-gold) !important; font-size: 0.7rem; font-weight: 800;}
+    .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--neon-green); background: var(--pill-plan-bg); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--pill-plan-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; line-height: 1.2;}
 
     /* =========================================
-       MODAL BENTO BOX
+       MODAL BENTO BOX (DETALLES)
        ========================================= */
     .modal-overlay { display: none; position: fixed; inset: 0; background: var(--modal-overlay); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 0; }
     .modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
@@ -419,6 +414,7 @@
 
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
     
+    /* MODAL JERARQUÍA INVERTIDA */
     .modal-desc-big { font-size: 1.6rem; font-weight: 800; color: var(--text-main); line-height: 1.2; margin: 0 0 12px 0; }
     .modal-code-small { font-size: 0.9rem; font-weight: 700; color: var(--text-code); letter-spacing: 0.1em; text-transform: uppercase; margin: 0; }
     
@@ -502,7 +498,7 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
     /* =========================================
-       MEDIA QUERIES & OPTIMIZACIÓN MÓVIL (JERARQUÍA REORDENADA)
+       MEDIA QUERIES & OPTIMIZACIÓN MÓVIL
        ========================================= */
     @media (max-width: 1200px) { #catalogGrid { grid-template-columns: repeat(6, 1fr); } }
     
@@ -588,30 +584,15 @@
 
       .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
-      /* CIRUGÍA DE REORDENAMIENTO EXCLUSIVO PARA MÓVIL */
-      .card-name, .card-stock-wrapper { display: flex; } /* Aparecen en móvil */
-      .card-top-row, .card-desc { display: none; } /* Ocultamos los de PC */
-      
       .product-card { transform-style: flat !important; } 
       .card-img-wrap, .card-body, .badge-ribbon { transform: translateZ(0) !important; }
+      .product-card .card-body { padding: 16px 12px; }
       
-      .product-card .card-body { padding: 16px 12px; justify-content: flex-start; gap: 0;}
-      
-      .product-card .card-name { 
-          font-size: 0.95rem; text-align: center; margin-bottom: 12px; font-weight: 800; color: var(--text-main);
-          justify-content: center;
-      }
-      .product-card .card-stock-wrapper { 
-          justify-content: center; margin-bottom: 12px; gap: 8px;
-      }
-      .product-card .stock-pill { 
-          background: var(--modal-info-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; color: var(--text-muted); font-weight: 700;
-      }
-      .product-card .stock-pill span { color: var(--text-main); font-weight: 800; font-size: 0.9rem; margin-left: 4px;}
-
-      .product-card .card-bottom-info { flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--card-img-border); margin-top: auto;}
-      .product-card .card-code { text-align: center; width: 100%; font-size: 0.8rem; color: var(--text-code); }
-      .product-card .extras-wrap { justify-content: center; width: 100%; border: none; padding-top: 0;}
+      .product-card .card-name { font-size: 0.95rem; text-align: center; }
+      .product-card .card-stock-wrapper { justify-content: center; margin-bottom: 4px;}
+      .product-card .card-bottom-info { flex-direction: column; gap: 8px; padding-top: 10px; }
+      .product-card .card-code { text-align: center; width: 100%; font-size: 0.75rem; }
+      .product-card .extras-wrap { justify-content: center; width: 100%; }
 
       .compare-floating-bar { width: 95%; padding: 12px; gap: 10px; flex-direction: column; bottom: -150px; }
       .compare-actions { width: 100%; display: flex; justify-content: space-between; }
@@ -625,20 +606,6 @@
   </style>
 </head>
 <body>
-
-<!-- EJECUCIÓN INMEDIATA DEL TEMA (Previene parpadeo) -->
-<script>
-    function safeGetLocalTheme(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
-    function safeSetLocalTheme(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
-    
-    if (!safeGetLocalTheme('theme_v10_set')) {
-        safeSetLocalTheme('theme', 'light');
-        safeSetLocalTheme('theme_v10_set', 'true');
-    }
-    if (safeGetLocalTheme('theme') !== 'dark') {
-        document.body.classList.add('light-mode');
-    }
-</script>
 
 <!-- TOAST NOTIFICACIÓN -->
 <div id="toast" class="toast-notification">
@@ -674,9 +641,7 @@
     <div class="controls-main-bar">
       
       <div class="search-header-mobile">
-          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema">
-             <!-- Se actualiza por JS luego -->
-          </button>
+          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -835,6 +800,7 @@
       <div class="modal-content-bento">
           <div class="bento-card bento-header">
               <span class="modal-category" id="modalCat"></span>
+              <!-- JERARQUÍA INVERTIDA: DESCRIPCIÓN GRANDE, CÓDIGO PEQUEÑO -->
               <h2 class="modal-desc-big" id="modalDesc"></h2>
               <p class="modal-code-small" id="modalCode"></p>
           </div>
@@ -847,7 +813,7 @@
                   </div>
                   <div id="modalStockPcoContainer">
                       <div class="modal-stock-label">Stock PCO</div>
-                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 2.2rem; font-weight: 500; color: var(--text-muted);"></div>
+                      <div class="modal-stock-number" id="modalStockPCO" style="font-size: 1.6rem; color: var(--text-muted);"></div>
                   </div>
               </div>
               <div id="modalStatus" class="modal-stock-status"></div>
@@ -892,9 +858,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-code" style="margin-bottom: 24px; font-size: 1.6rem;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Sincronización Inteligente</strong>El catálogo ahora carga de inmediato con los últimos datos conocidos y se actualiza de forma invisible en segundo plano, sin interrumpir tu navegación.</li>
                 <li><strong>Visibilidad de Sucursales</strong>Ahora puedes filtrar y visualizar al instante el stock disponible tanto para el Parque Américo Vespucio (PAV) como para PCO de forma automática y en tiempo real.</li>
                 <li><strong>Nuevo Diseño Tipográfico</strong>Hemos rediseñado las tarjetas dando prioridad al nombre del producto y al stock disponible, facilitando la lectura rápida para los asesores.</li>
+                <li><strong>Modo Cliente y Anti-Errores</strong>Se agregó un "Modo Cliente" (icono de ojo) perfecto para ocultar stocks y precios al mostrar el celular a las familias. Además, el buscador ahora es tolerante a errores ortográficos rápidos.</li>
             </ul>
         </div>
     </div>
@@ -926,6 +892,7 @@ let currentModalCode = '';
 let isListView = safeGetLocal('viewMode') === 'list';
 let isClientMode = safeGetLocal('clientMode') === 'true';
 
+// Variables Historial y Comparador
 let recentHistory = JSON.parse(safeGetLocal('recentHistory') || '[]');
 let compareList = [];
 
@@ -1051,6 +1018,7 @@ function stopVoiceSearch() {
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
 
+// BÚSQUEDA DIFUSA (LEVENSHTEIN)
 function levenshtein(a, b) {
     if(a.length === 0) return b.length;
     if(b.length === 0) return a.length;
@@ -1127,6 +1095,7 @@ window.navegarModal = function(direccion) {
     updateModalContent(window.currentFilteredList[nextIndex], direccion);
 };
 
+// LÓGICA DE HISTORIAL
 function renderRecentHistory() {
     const container = document.getElementById('recentHistoryContainer');
     const list = document.getElementById('recentList');
@@ -1154,6 +1123,7 @@ function addToHistory(code) {
     renderRecentHistory();
 }
 
+// LÓGICA DE COMPARADOR
 function toggleCompare(code, e) {
     e.stopPropagation();
     if (compareList.includes(code)) {
@@ -1244,10 +1214,14 @@ function showToast(msg) {
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
+  // LÓGICA DE TEMA (MODO DÍA PREDETERMINADO)
   let currentTheme = safeGetLocal('theme');
   if (currentTheme !== 'dark') { 
+      document.body.classList.add('light-mode'); 
       document.getElementById('themeToggleBtn').innerHTML = svgMoon; 
+      safeSetLocal('theme', 'light');
   } else { 
+      document.body.classList.remove('light-mode');
       document.getElementById('themeToggleBtn').innerHTML = svgSun; 
   }
   
@@ -1298,6 +1272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
   });
 
+  // GALERÍA INMERSIVA (SWIPE GESTURE EN IMAGEN)
   const modalImgSection = document.getElementById('modalImgSection');
   let touchstartX = 0; let touchendX = 0;
   if(modalImgSection) {
@@ -1322,9 +1297,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   setupCustomDropdowns();
-  
-  // INICIO DE SINCRONIZACIÓN HÍBRIDA (STALE-WHILE-REVALIDATE)
   await sincronizarERP();
+  renderLastUpdated(); 
+  renderUFMultiSelect(); 
+  renderGrid();
+  setTimeout(() => { detenerCargadorInteractivo(); }, 300);
 });
 
 function updateDropdownLabel(radioInput, dropdownId) {
@@ -1332,7 +1309,7 @@ function updateDropdownLabel(radioInput, dropdownId) {
     if(dd) {
         const textSpan = dd.querySelector('.dropdown-header .text');
         if(radioInput.name === 'stockFilter') { textSpan.textContent = "Stock: " + radioInput.parentNode.textContent.trim(); }
-        else if (radioInput.name === 'branchFilter') { textSpan.textContent = "Bodega: " + radioInput.parentNode.textContent.trim(); }
+        else if (radioInput.name === 'branchFilter') { textSpan.textContent = "Sucursal: " + radioInput.parentNode.textContent.trim(); }
         dd.classList.remove('open');
     }
 }
@@ -1348,7 +1325,7 @@ function setupCustomDropdowns() {
     });
     dd.querySelectorAll('input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
-        if(radio.name === 'stockFilter' || radio.name === 'branchFilter') return; 
+        if(radio.name === 'stockFilter' || radio.name === 'branchFilter') return; // Handled separately
         const textSpan = dd.querySelector('.dropdown-header .text');
         if(radio.name === 'catFilter') textSpan.textContent = radio.value === 'all' ? 'Categoría: Todas' : radio.parentNode.textContent.trim();
         else textSpan.textContent = radio.parentNode.textContent.trim();
@@ -1418,37 +1395,8 @@ window.clearFilters = function() {
 
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
-// =========================================
-// SISTEMA HÍBRIDO (STALE-WHILE-REVALIDATE)
-// =========================================
 async function sincronizarERP() {
-  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { 
-      document.getElementById('loaderText').textContent = "Modo Demo"; 
-      detenerCargadorInteractivo();
-      return; 
-  }
-  
-  const cacheKey = 'erp_cache_data_v10';
-  const cachedData = safeGetLocal(cacheKey);
-
-  // 1. CARGA INSTANTÁNEA (Mostrar datos viejos inmediatamente)
-  if (cachedData) {
-      try {
-          const parsedCache = JSON.parse(cachedData);
-          products = parsedCache.products || [];
-          EXTRA_DATA = parsedCache.EXTRA_DATA || {};
-          renderGrid(); 
-          renderUFMultiSelect();
-          renderLastUpdated();
-          detenerCargadorInteractivo(); // Liberamos la pantalla al instante
-      } catch(e) { console.error("Error leyendo caché", e); }
-  }
-
-  // 2. REVALIDACIÓN EN SEGUNDO PLANO
-  fetchRealTimeData(cacheKey);
-}
-
-async function fetchRealTimeData(cacheKey) {
+  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
     let pcoData = {};
     const pcoUrls = [
@@ -1484,7 +1432,6 @@ async function fetchRealTimeData(cacheKey) {
         } catch(e) {}
     }
 
-    let newExtraData = {};
     try {
       const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
@@ -1498,10 +1445,10 @@ async function fetchRealTimeData(cacheKey) {
           }
           let codeIdx = cols.findIndex(c => isValidCode(c));
           if(codeIdx !== -1) {
-            let code = cols[codeIdx].toUpperCase().trim(); if(!newExtraData[code]) newExtraData[code] = {};
+            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
             let valCol = cols[valorIdx]; let planCol = cols[planIdx];
-            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") newExtraData[code].valor = valCol;
-            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") newExtraData[code].plan = planCol;
+            if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
+            if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
           }
         });
       }
@@ -1526,40 +1473,17 @@ async function fetchRealTimeData(cacheKey) {
            const allCodes = new Set([...Object.keys(stockConsolidado), ...Object.keys(pcoData)]);
            products = Array.from(allCodes).map(cod => {
                let desc = (stockConsolidado[cod] ? stockConsolidado[cod].descripcion : "Sin descripción") || "Sin descripción";
+               
                let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
                let pcoQty = pcoData[cod] || 0;
+               
                let pavQty = Math.max(0, erpTotal - pcoQty);
                
                return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
            }).filter(p => isValidCode(p.codigo));
-           
-           EXTRA_DATA = newExtraData;
-           safeSetLocal(cacheKey, JSON.stringify({products, EXTRA_DATA}));
-           
-           // Actualización silenciosa de la interfaz
-           renderGrid();
-           renderUFMultiSelect();
-           renderLastUpdated();
        }
     }
-  } catch (err) {
-      console.error("Error en sincronización en vivo", err);
-  } finally {
-      detenerCargadorInteractivo(); // Seguro anti-bloqueos
-  }
-}
-
-function toggleTheme() { 
-  const body = document.body; const btn = document.getElementById('themeToggleBtn'); 
-  if (body.classList.contains('light-mode')) { 
-      body.classList.remove('light-mode'); 
-      safeSetLocal('theme', 'dark'); 
-      btn.innerHTML = svgSun; 
-  } else { 
-      body.classList.add('light-mode'); 
-      safeSetLocal('theme', 'light'); 
-      btn.innerHTML = svgMoon; 
-  } 
+  } catch (err) {}
 }
 
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
@@ -1680,7 +1604,7 @@ function updateGridDOM(append) {
     let extraHTML = '';
     if (ed.valor || ed.plan) {
         extraHTML = `<div class="extras-wrap">
-          ${ed.valor ? `<div class="card-stock-row"><span class="status-text-pill">${ed.valor} UF</span></div>` : ``}
+          ${ed.valor ? `<div class="card-stock-row"><span class="status-text">${ed.valor} UF</span></div>` : ``}
           ${ed.plan ? `<div class="card-plan">${ed.plan}</div>` : ``}
         </div>`;
     }
@@ -1695,41 +1619,20 @@ function updateGridDOM(append) {
         </div>
       </div>
       <div class="card-body">
-        <div class="card-top-row">
-            <div class="card-code">${p.codigo}</div>
-            <div class="status-text">
-                <span class="${statusObj.cls}">PAV: ${qty}</span>
-                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<span class="pco-text">PCO: ${p.cantidadPCO}</span>` : ''}
+        <div class="card-main-info">
+            <div class="card-name" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
+            <div class="card-stock-wrapper">
+                <div class="stock-pill pav-pill">PAV: <span>${qty}</span></div>
+                ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div class="stock-pill pco-pill">PCO: <span>${p.cantidadPCO}</span></div>` : ''}
             </div>
-        </div>
-        <div class="card-name" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
-        <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
-        <div class="card-stock-wrapper">
-            <div class="stock-pill pav-pill">PAV: <span>${qty}</span></div>
-            ${(p.cantidadPCO && p.cantidadPCO > 0) ? `<div class="stock-pill pco-pill">PCO: <span>${p.cantidadPCO}</span></div>` : ''}
         </div>
         <div class="card-bottom-info">
             <div class="card-code">${p.codigo}</div>
             ${extraHTML}
         </div>
-        ${extraHTML}
       </div>`;
     grid.appendChild(card);
   });
-  
-  // Limpieza de duplicados generados por la estructura dividida móvil/escritorio
-  document.querySelectorAll('.card-body').forEach(body => {
-      if(window.innerWidth > 600) {
-          let name = body.querySelector('.card-name'); if(name) name.remove();
-          let stock = body.querySelector('.card-stock-wrapper'); if(stock) stock.remove();
-          let btm = body.querySelector('.card-bottom-info'); if(btm) btm.remove();
-      } else {
-          let top = body.querySelector('.card-top-row'); if(top) top.remove();
-          let desc = body.querySelector('.card-desc'); if(desc) desc.remove();
-          let extra = body.querySelector(':scope > .extras-wrap'); if(extra) extra.remove();
-      }
-  });
-
   const resCount = document.getElementById('resultsCount'); if(resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
   updateCompareUI();
 }
@@ -1785,6 +1688,7 @@ function renderModalData(p) {
   document.getElementById('modalDesc').textContent = p.descripcion || "";
   document.getElementById('modalCode').textContent = p.codigo; 
   
+  // STOCK PAV Y PCO SIN REDUNDANCIAS DE TEXTO Y CONDICIONAL
   document.getElementById('modalStock').innerHTML = p.cantidad || 0; 
   let pcoWrap = document.getElementById('modalStockPcoContainer');
   if (pcoWrap) {
