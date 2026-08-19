@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS (5 PALETAS)
+       SISTEMA DE TEMAS (7 PALETAS)
        ========================================= */
        
     /* 1. PALETA NOCHE (Verde Ftalo / Original) - Por defecto */
@@ -213,6 +213,88 @@
       --accent-gold: #DB2777;
     }
 
+    /* 6. PALETA PASTEL LILA / LAVANDA */
+    body.theme-lavender {
+      --bg-body: #F5F3F7;
+      --bg-gradient: linear-gradient(145deg, #F5F3F7 0%, #EAE6EE 100%);
+      --header-bg: #EAE6EE;
+      --header-bg-solid: rgba(234, 230, 238, 0.95);
+      --header-title: #4A3F54;
+      --header-shadow: none;
+      --text-main: #5A4D66;
+      --text-muted: #7D6F8A;
+      --text-code: #6D5C7A;
+      --glass-bg: rgba(234, 230, 238, 0.6);
+      --glass-border: #D8D0DE;
+      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1);
+      --card-bg: #FFFFFF;
+      --card-border-hover: #C2B6C9;
+      --card-img-border: #EAE6EE;
+      --card-overlay: rgba(245, 243, 247, 0.7);
+      --input-bg: #FCFBFC;
+      --input-border: #D8D0DE;
+      --tab-bg: #EAE6EE;
+      --tab-active-bg: #D8D0DE;
+      --tab-active-color: #4A3F54;
+      --tab-active-border: #C2B6C9;
+      --tab-hover-bg: #F5F3F7;
+      --btn-bg: #FFFFFF;
+      --btn-hover: #D8D0DE;
+      --btn-text: #4A3F54;
+      --modal-bg: #F5F3F7;
+      --modal-overlay: rgba(74, 63, 84, 0.75);
+      --modal-info-bg: #EAE6EE;
+      --modal-close-bg: #FFFFFF;
+      --modal-close-hover: #EF4444;
+      --stock-online: #10B981;
+      --neon-yellow: #F59E0B;
+      --neon-red: #EF4444;
+      --accent-gold: #8B7B99;
+    }
+
+    /* 7. PALETA ORGULLO PASTEL (AURORA GLASSMORPHISM) */
+    body.theme-pride {
+      --bg-body: #FDFBFA;
+      /* Gradiente arcoíris pastel emulando aurora boreal */
+      --bg-gradient: linear-gradient(120deg, #FFD1D1 0%, #FFE4C4 20%, #E2F0CB 40%, #D4F0F0 60%, #E1D5E7 80%, #F3D8E6 100%);
+      --header-bg: rgba(255, 255, 255, 0.4);
+      --header-bg-solid: rgba(255, 255, 255, 0.9);
+      --header-title: #4B5563;
+      --header-shadow: none;
+      --text-main: #374151;
+      --text-muted: #6B7280;
+      --text-code: #8B5CF6;
+      /* Glassmorphism ultra translúcido para dejar pasar el arcoíris */
+      --glass-bg: rgba(255, 255, 255, 0.5);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+      --glass-shadow-hover: 0 12px 40px rgba(31, 38, 135, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
+      --card-bg: rgba(255, 255, 255, 0.4);
+      --card-border-hover: #A78BFA;
+      --card-img-border: rgba(255, 255, 255, 0.6);
+      --card-overlay: rgba(255, 255, 255, 0.7);
+      --input-bg: rgba(255, 255, 255, 0.7);
+      --input-border: #E5E7EB;
+      --tab-bg: rgba(255, 255, 255, 0.5);
+      --tab-active-bg: rgba(139, 92, 246, 0.15);
+      --tab-active-color: #6D28D9;
+      --tab-active-border: #A78BFA;
+      --tab-hover-bg: rgba(255, 255, 255, 0.8);
+      --btn-bg: rgba(255, 255, 255, 0.7);
+      --btn-hover: rgba(139, 92, 246, 0.1);
+      --btn-text: #4B5563;
+      --modal-bg: rgba(253, 251, 250, 0.95);
+      --modal-overlay: rgba(17, 24, 39, 0.6);
+      --modal-info-bg: rgba(255, 255, 255, 0.6);
+      --modal-close-bg: #FFFFFF;
+      --modal-close-hover: #EF4444;
+      --stock-online: #10B981;
+      --neon-yellow: #FBBF24;
+      --neon-red: #F87171;
+      --accent-gold: #8B5CF6;
+    }
+
     /* =========================================
        MODO CLIENTE
        ========================================= */
@@ -261,6 +343,7 @@
       font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
       background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
       position: relative; transition: background 0.3s ease, color 0.3s ease; 
+      background-attachment: fixed; /* Ayuda a que el fondo aurora se vea espectacular al scrollear */
     }
     
     body::before {
@@ -274,6 +357,7 @@
     header { 
       position: relative; text-align: center; padding: 40px 24px 20px; 
       background: var(--header-bg); z-index: 1; transition: background 0.3s ease; overflow: hidden;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
     header::before {
       content: ''; position: absolute; inset: 0;
@@ -406,7 +490,7 @@
     }
     
     .product-card { 
-      background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
+      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
       box-shadow: var(--glass-shadow); position: relative; 
       transform-style: preserve-3d; display: flex; flex-direction: column; 
@@ -478,6 +562,8 @@
     body.theme-gray .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(100,116,139,0.06) 50%, rgba(0,0,0,0.02) 75%); }
     body.theme-blue .skeleton { background: linear-gradient(90deg, rgba(2,132,199,0.02) 25%, rgba(2,132,199,0.06) 50%, rgba(2,132,199,0.02) 75%); }
     body.theme-pink .skeleton { background: linear-gradient(90deg, rgba(219,39,119,0.02) 25%, rgba(219,39,119,0.06) 50%, rgba(219,39,119,0.02) 75%); }
+    body.theme-lavender .skeleton { background: linear-gradient(90deg, rgba(139,123,153,0.02) 25%, rgba(139,123,153,0.06) 50%, rgba(139,123,153,0.02) 75%); }
+    body.theme-pride .skeleton { background: linear-gradient(90deg, rgba(139,92,246,0.02) 25%, rgba(139,92,246,0.08) 50%, rgba(139,92,246,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
@@ -766,6 +852,9 @@
                   <div class="theme-circle" style="background: #E5E7EB; border-color: #6B7280;" onclick="setTheme('theme-gray')" title="Gris Pastel"></div>
                   <div class="theme-circle" style="background: #DBEAFE; border-color: #38BDF8;" onclick="setTheme('theme-blue')" title="Azul Pastel"></div>
                   <div class="theme-circle" style="background: #FDF2F8; border-color: #F9A8D4;" onclick="setTheme('theme-pink')" title="Rosa Pastel"></div>
+                  <div class="theme-circle" style="background: #F5F3F7; border-color: #C2B6C9;" onclick="setTheme('theme-lavender')" title="Lila Pastel"></div>
+                  <!-- SÉPTIMO BOTÓN: ORGULLO PASTEL AURORA -->
+                  <div class="theme-circle" style="background: linear-gradient(135deg, #FF9A9E, #FECFEF, #A1C4FD, #C2E9FB); border-color: #8B5CF6;" onclick="setTheme('theme-pride')" title="Orgullo Pastel"></div>
               </div>
           </div>
           
@@ -979,7 +1068,7 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
+                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa, Lila, Pride) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
                 <li><strong>Animaciones Fluidas:</strong> Ahora las tarjetas aparecen suavemente a medida que te desplazas hacia abajo, dando una sensación mucho más fluida.</li>
                 <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que GitHub bloquee temporalmente tu red cuando hay muchos productos sin fotografía.</li>
             </ul>
@@ -1343,7 +1432,7 @@ function showToast(msg) {
 
 // LOGICA DE ROTACIÓN Y SETEO DE TEMAS VISUALES
 function applyThemeClass(themeName) {
-    document.body.classList.remove('light-mode', 'theme-gray', 'theme-blue', 'theme-pink');
+    document.body.classList.remove('light-mode', 'theme-gray', 'theme-blue', 'theme-pink', 'theme-lavender', 'theme-pride');
     if (themeName === 'light') {
         document.body.classList.add('light-mode');
     } else if (themeName !== 'dark') {
