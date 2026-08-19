@@ -8,8 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600&family=Dancing+Script:wght@400;500&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     /* =========================================
-       SISTEMA DE TEMAS: OSCURO Y CLARO (PALETA VERDE FTALO / BEIGE)
+       SISTEMA DE TEMAS (5 PALETAS)
        ========================================= */
+       
+    /* 1. PALETA NOCHE (Verde Ftalo / Original) - Por defecto */
     :root {
       --bg-body: #0B1411;
       --bg-gradient: linear-gradient(145deg, #0B1411 0%, #070d0a 100%);
@@ -43,7 +45,7 @@
       --modal-info-bg: rgba(0,0,0,0.2);
       --modal-close-bg: rgba(26,44,35,.8);
       --modal-close-hover: rgba(139,58,58,.8);
-      --stock-online: #34d399; /* Exclusivo para el destello/animación */
+      --stock-online: #34d399; 
       --neon-yellow: #B39266; 
       --neon-red: #8B3A3A;
       --accent-gold: #B39266;
@@ -51,6 +53,7 @@
       --radius-lg: 20px;
     }
 
+    /* 2. PALETA DÍA (Beige / Original) */
     body.light-mode {
       --bg-body: #fdfbf7;
       --bg-gradient: linear-gradient(145deg, #fdfbf7 0%, #EAE2D2 100%);
@@ -88,6 +91,126 @@
       --neon-yellow: #d97706;
       --neon-red: #dc2626;
       --accent-gold: #AE8A77;
+    }
+
+    /* 3. PALETA PASTEL GRIS */
+    body.theme-gray {
+      --bg-body: #F4F5F6;
+      --bg-gradient: linear-gradient(145deg, #F4F5F6 0%, #E5E7EB 100%);
+      --header-bg: #E5E7EB;
+      --header-bg-solid: rgba(229, 231, 235, 0.95);
+      --header-title: #374151;
+      --header-shadow: none;
+      --text-main: #374151;
+      --text-muted: #6B7280;
+      --text-code: #4B5563;
+      --glass-bg: rgba(229, 231, 235, 0.6);
+      --glass-border: #D1D5DB;
+      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1);
+      --card-bg: #FFFFFF;
+      --card-border-hover: #9CA3AF;
+      --card-img-border: #E5E7EB;
+      --card-overlay: rgba(243, 244, 246, 0.7);
+      --input-bg: #F9FAFB;
+      --input-border: #D1D5DB;
+      --tab-bg: #E5E7EB;
+      --tab-active-bg: #D1D5DB;
+      --tab-active-color: #374151;
+      --tab-active-border: #9CA3AF;
+      --tab-hover-bg: #F3F4F6;
+      --btn-bg: #F9FAFB;
+      --btn-hover: #D1D5DB;
+      --btn-text: #374151;
+      --modal-bg: #F3F4F6;
+      --modal-overlay: rgba(55, 65, 81, 0.75);
+      --modal-info-bg: #E5E7EB;
+      --modal-close-bg: #FFFFFF;
+      --modal-close-hover: #EF4444;
+      --stock-online: #10B981;
+      --neon-yellow: #F59E0B;
+      --neon-red: #EF4444;
+      --accent-gold: #4B5563;
+    }
+
+    /* 4. PALETA PASTEL AZUL */
+    body.theme-blue {
+      --bg-body: #F0F9FF;
+      --bg-gradient: linear-gradient(145deg, #F0F9FF 0%, #E0F2FE 100%);
+      --header-bg: #E0F2FE;
+      --header-bg-solid: rgba(224, 242, 254, 0.95);
+      --header-title: #0C4A6E;
+      --header-shadow: none;
+      --text-main: #0284C7;
+      --text-muted: #0369A1;
+      --text-code: #0284C7;
+      --glass-bg: rgba(224, 242, 254, 0.6);
+      --glass-border: #BAE6FD;
+      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1);
+      --card-bg: #FFFFFF;
+      --card-border-hover: #7DD3FC;
+      --card-img-border: #E0F2FE;
+      --card-overlay: rgba(240, 249, 255, 0.7);
+      --input-bg: #F8FAFC;
+      --input-border: #BAE6FD;
+      --tab-bg: #E0F2FE;
+      --tab-active-bg: #BAE6FD;
+      --tab-active-color: #0C4A6E;
+      --tab-active-border: #7DD3FC;
+      --tab-hover-bg: #F0F9FF;
+      --btn-bg: #FFFFFF;
+      --btn-hover: #BAE6FD;
+      --btn-text: #0C4A6E;
+      --modal-bg: #F0F9FF;
+      --modal-overlay: rgba(12, 74, 110, 0.75);
+      --modal-info-bg: #E0F2FE;
+      --modal-close-bg: #FFFFFF;
+      --modal-close-hover: #EF4444;
+      --stock-online: #10B981;
+      --neon-yellow: #F59E0B;
+      --neon-red: #EF4444;
+      --accent-gold: #0284C7;
+    }
+
+    /* 5. PALETA PASTEL ROSA */
+    body.theme-pink {
+      --bg-body: #FDF2F8;
+      --bg-gradient: linear-gradient(145deg, #FDF2F8 0%, #FCE7F3 100%);
+      --header-bg: #FCE7F3;
+      --header-bg-solid: rgba(252, 231, 243, 0.95);
+      --header-title: #831843;
+      --header-shadow: none;
+      --text-main: #9D174D;
+      --text-muted: #BE185D;
+      --text-code: #9D174D;
+      --glass-bg: rgba(252, 231, 243, 0.6);
+      --glass-border: #FBCFE8;
+      --glass-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+      --glass-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.1);
+      --card-bg: #FFFFFF;
+      --card-border-hover: #F9A8D4;
+      --card-img-border: #FCE7F3;
+      --card-overlay: rgba(253, 242, 248, 0.7);
+      --input-bg: #FFF1F2;
+      --input-border: #FBCFE8;
+      --tab-bg: #FCE7F3;
+      --tab-active-bg: #FBCFE8;
+      --tab-active-color: #831843;
+      --tab-active-border: #F9A8D4;
+      --tab-hover-bg: #FDF2F8;
+      --btn-bg: #FFFFFF;
+      --btn-hover: #FBCFE8;
+      --btn-text: #831843;
+      --modal-bg: #FDF2F8;
+      --modal-overlay: rgba(131, 24, 67, 0.75);
+      --modal-info-bg: #FCE7F3;
+      --modal-close-bg: #FFFFFF;
+      --modal-close-hover: #EF4444;
+      --stock-online: #10B981;
+      --neon-yellow: #F59E0B;
+      --neon-red: #EF4444;
+      --accent-gold: #DB2777;
     }
 
     /* =========================================
@@ -344,9 +467,12 @@
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
-    /* SKELETON DORADO OSCURO */
+    /* SKELETON ADAPTADO A TEMAS */
     .skeleton { background: linear-gradient(90deg, rgba(179,146,102,0.02) 25%, rgba(179,146,102,0.08) 50%, rgba(179,146,102,0.02) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(179, 146, 102,0.06) 50%, rgba(0,0,0,0.02) 75%); }
+    body.theme-gray .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(100,116,139,0.06) 50%, rgba(0,0,0,0.02) 75%); }
+    body.theme-blue .skeleton { background: linear-gradient(90deg, rgba(2,132,199,0.02) 25%, rgba(2,132,199,0.06) 50%, rgba(2,132,199,0.02) 75%); }
+    body.theme-pink .skeleton { background: linear-gradient(90deg, rgba(219,39,119,0.02) 25%, rgba(219,39,119,0.06) 50%, rgba(219,39,119,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
@@ -623,7 +749,7 @@
     <div class="controls-main-bar">
       
       <div class="search-header-mobile">
-          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema"></button>
+          <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Cambiar Tema de Color"></button>
           
           <button class="icon-btn" onclick="toggleViewMode()" id="viewToggleBtn" title="Cambiar Vista">
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -835,9 +961,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Visibilidad de Sucursales</strong>Ahora puedes visualizar al instante el stock disponible tanto para el Parque Américo Vespucio (PAV) como para PCO de forma automática y en tiempo real.</li>
-                <li><strong>Navegación Fluida</strong>Implementamos una nueva "Vitrina" animada en la parte superior que guarda los productos que has visto recientemente para que vuelvas a ellos con un solo clic.</li>
-                <li><strong>Modo Cliente y Anti-Errores</strong>Se agregó un "Modo Cliente" (icono de ojo) perfecto para ocultar stocks y precios al mostrar el celular a las familias. Además, el buscador ahora es tolerante a errores ortográficos rápidos.</li>
+                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
+                <li><strong>Animaciones Fluidas:</strong> Ahora las tarjetas aparecen suavemente a medida que te desplazas hacia abajo, dando una sensación mucho más fluida.</li>
+                <li><strong>Protección Antlo-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que GitHub bloquee temporalmente tu red cuando hay muchos productos sin fotografía.</li>
             </ul>
         </div>
     </div>
@@ -851,6 +977,9 @@
 function safeGetLocal(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
 function safeSetLocal(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
 function safeRemoveLocal(key) { try { localStorage.removeItem(key); } catch(e) {} }
+
+function safeGetSession(key) { try { return sessionStorage.getItem(key); } catch(e) { return null; } }
+function safeSetSession(key, val) { try { sessionStorage.setItem(key, val); } catch(e) {} }
 
 const URL_POWER_AUTOMATE = "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA"; 
 const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "COF0034", "COF0008", "ANF0292", "ANF0291", "ANF0290"];
@@ -882,8 +1011,8 @@ const cardObserver = new IntersectionObserver((entries, observer) => {
 let recentHistory = JSON.parse(safeGetLocal('recentHistory') || '[]');
 let compareList = [];
 
-const svgSun = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-const svgMoon = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+// Íconos de Control
+const svgPalette = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.992 6.012 17.5 2 12 2z"></path></svg>`;
 const svgGrid = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`;
 const svgList = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>`;
 const svgEyeOn = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
@@ -1036,10 +1165,20 @@ function isFuzzyMatch(text, query) {
 }
 
 window.handleImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    if (window.invalidImageCodes.has(codigo)) return;
+
+    if (!imgEl.dataset.fallbackState) { 
+        imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { 
+        imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
+        let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+        if (!missing.includes(codigo)) {
+            missing.push(codigo);
+            safeSetSession('missingImagesCache', JSON.stringify(missing));
+        }
+
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
         if (card) card.remove();
         if (window.currentFilteredList) {
@@ -1052,10 +1191,18 @@ window.handleImageFallback = function(imgEl, codigo) {
 };
 
 window.handleModalImageFallback = function(imgEl, codigo) {
-    if (!imgEl.dataset.fallbackState) { imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
-    } else if (imgEl.dataset.fallbackState === '1') { imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+    if (!imgEl.dataset.fallbackState) { 
+        imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+    } else if (imgEl.dataset.fallbackState === '1') { 
+        imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
+        let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+        if (!missing.includes(codigo)) {
+            missing.push(codigo);
+            safeSetSession('missingImagesCache', JSON.stringify(missing));
+        }
+
         const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
         if (card) card.remove();
         if (window.currentFilteredList) {
@@ -1197,19 +1344,41 @@ function showToast(msg) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// LOGICA DE ROTACIÓN DE TEMAS
+const themes = ['dark', 'light', 'theme-gray', 'theme-blue', 'theme-pink'];
+let currentThemeIndex = 0;
+
+function applyThemeClass(themeName) {
+    document.body.classList.remove('light-mode', 'theme-gray', 'theme-blue', 'theme-pink');
+    if (themeName === 'light') {
+        document.body.classList.add('light-mode');
+    } else if (themeName !== 'dark') {
+        document.body.classList.add(themeName);
+    }
+}
+
+function toggleTheme() {
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    const newTheme = themes[currentThemeIndex];
+    safeSetLocal('theme', newTheme);
+    applyThemeClass(newTheme);
+    showToast("Tema visual actualizado 🎨");
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
-  // LOGICA DE TEMA (MODO DÍA PREDETERMINADO)
-  let currentTheme = safeGetLocal('theme');
-  if (currentTheme !== 'dark') { 
-      document.body.classList.add('light-mode'); 
-      document.getElementById('themeToggleBtn').innerHTML = svgMoon; 
-      safeSetLocal('theme', 'light');
-  } else { 
-      document.body.classList.remove('light-mode');
-      document.getElementById('themeToggleBtn').innerHTML = svgSun; 
-  }
+  // Cargar caché temporal de imágenes perdidas para proteger contra el Rate Limit
+  let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+  missing.forEach(c => window.invalidImageCodes.add(c));
+  
+  // LOGICA DE INICIO DE TEMA
+  let savedTheme = safeGetLocal('theme') || 'dark';
+  currentThemeIndex = themes.indexOf(savedTheme);
+  if (currentThemeIndex === -1) currentThemeIndex = 0;
+  
+  document.getElementById('themeToggleBtn').innerHTML = svgPalette;
+  applyThemeClass(savedTheme);
   
   applyViewMode();
   applyClientMode();
@@ -1466,12 +1635,6 @@ async function sincronizarERP() {
   } catch (err) {}
 }
 
-function toggleTheme() { 
-  const body = document.body; const btn = document.getElementById('themeToggleBtn'); 
-  if (body.classList.contains('light-mode')) { body.classList.remove('light-mode'); safeSetLocal('theme', 'dark'); btn.innerHTML = svgSun; } 
-  else { body.classList.add('light-mode'); safeSetLocal('theme', 'light'); btn.innerHTML = svgMoon; } 
-}
-
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
 function renderLastUpdated() { document.getElementById('lastUpdatedBadge').textContent = 'Stock en línea'; }
 function getCategory(c) { const code = String(c).toLowerCase(); if (code.startsWith('anf')) return {label:'Ánfora'}; if (code.startsWith('cof')) return {label:'Cofre'}; if (code.startsWith('rel')) return {label:'Relicario'}; if (code.startsWith('pul')) return {label:'Pulsera'}; return {label:'Otro'}; }
@@ -1511,7 +1674,7 @@ function updateGridDOM(append) {
 
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
-    if(window.invalidImageCodes.has(p.codigo)) return false;
+    if(window.invalidImageCodes.has(p.codigo)) return false; // Filtra si está en caché de errores 404
     
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
@@ -1695,7 +1858,6 @@ function renderModalData(p) {
   const totalQty = (p.cantidad || 0) + (p.cantidadPCO || 0);
   const status = getStockStatus(totalQty, isDesc);
   
-  // Agregar el punto pulsante al modal
   document.getElementById('modalStatus').innerHTML = `<span class="pulse-dot"></span>${status.text}`; 
   document.getElementById('modalStatus').className = "modal-stock-status " + status.cls;
   
