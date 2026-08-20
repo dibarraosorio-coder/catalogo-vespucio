@@ -343,7 +343,7 @@
       font-family: 'Nunito', 'Nunito Sans', -apple-system, Arial, sans-serif; 
       background: var(--bg-gradient); min-height: 100vh; color: var(--text-main); 
       position: relative; transition: background 0.3s ease, color 0.3s ease; 
-      background-attachment: fixed; /* Ayuda a que el fondo aurora se vea espectacular al scrollear */
+      background-attachment: fixed; 
     }
     
     body::before {
@@ -556,6 +556,17 @@
     .card-img-wrap img.loaded { opacity: 1; }
     .product-card:hover .card-img-wrap img { transform: scale(1.08); }
     
+    /* IMAGEN PLACEHOLDER GENÉRICA */
+    .no-photo-placeholder {
+        opacity: 0.15 !important;
+        filter: grayscale(100%) !important;
+        transform: scale(0.6) !important;
+        transition: transform 0.3s ease !important;
+    }
+    .product-card:hover .no-photo-placeholder {
+        transform: scale(0.65) !important; 
+    }
+
     /* SKELETON ADAPTADO A TEMAS */
     .skeleton { background: linear-gradient(90deg, rgba(179,146,102,0.02) 25%, rgba(179,146,102,0.08) 50%, rgba(179,146,102,0.02) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; }
     body.light-mode .skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(179, 146, 102,0.06) 50%, rgba(0,0,0,0.02) 75%); }
@@ -853,7 +864,6 @@
                   <div class="theme-circle" style="background: #DBEAFE; border-color: #38BDF8;" onclick="setTheme('theme-blue')" title="Azul Pastel"></div>
                   <div class="theme-circle" style="background: #FDF2F8; border-color: #F9A8D4;" onclick="setTheme('theme-pink')" title="Rosa Pastel"></div>
                   <div class="theme-circle" style="background: #F5F3F7; border-color: #C2B6C9;" onclick="setTheme('theme-lavender')" title="Lila Pastel"></div>
-                  <!-- SÉPTIMO BOTÓN: ORGULLO PASTEL AURORA -->
                   <div class="theme-circle" style="background: linear-gradient(135deg, #FF9A9E, #FECFEF, #A1C4FD, #C2E9FB); border-color: #8B5CF6;" onclick="setTheme('theme-pride')" title="Orgullo Pastel"></div>
               </div>
           </div>
@@ -1068,9 +1078,10 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa, Lila, Pride) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
-                <li><strong>Animaciones Fluidas:</strong> Ahora las tarjetas aparecen suavemente a medida que te desplazas hacia abajo, dando una sensación mucho más fluida.</li>
-                <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que GitHub bloquee temporalmente tu red cuando hay muchos productos sin fotografía.</li>
+                <li><strong>Carga y Filtrado Reparado:</strong> Se eliminó el error que hacía desaparecer productos del contador total. Ahora los productos sin foto muestran un placeholder gris con el logo sin afectar tu inventario.</li>
+                <li><strong>Buscador Exacto:</strong> El buscador ahora es 100% preciso. Si buscas una palabra, solo te mostrará los productos que la contengan exactamente, sin mostrar "parecidos".</li>
+                <li><strong>Colores Pasteles Mejorados:</strong> Oscurecimos un poco las paletas Azul y Gris pastel para que tengan mejor contraste, se vean más sólidas y lean mejor.</li>
+                <li><strong>Nueva Paleta LGBTQ+ (Aurora):</strong> Hemos añadido una séptima paleta "Orgullo Pastel" con un hermoso fondo estilo aurora boreal difuminada. ¡Pruébala en el ícono de paleta!</li>
             </ul>
         </div>
     </div>
@@ -1250,6 +1261,7 @@ function isFuzzyMatch(text, query) {
     return qWords.every(qw => text.includes(qw));
 }
 
+// LÓGICA DE FALLBACK REPARADA (No elimina el producto, muestra Placeholder)
 window.handleImageFallback = function(imgEl, codigo) {
     if (window.invalidImageCodes.has(codigo)) return;
 
@@ -1265,14 +1277,11 @@ window.handleImageFallback = function(imgEl, codigo) {
             safeSetSession('missingImagesCache', JSON.stringify(missing));
         }
 
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-        }
+        // REPARACIÓN: En lugar de borrar la tarjeta, se pone el Logo como marca de agua.
+        imgEl.onerror = null; 
+        imgEl.src = 'img/LOGO.png';
+        imgEl.className = 'loaded no-photo-placeholder';
+        if (imgEl.parentElement) imgEl.parentElement.classList.remove('skeleton');
     }
 };
 
@@ -1289,15 +1298,14 @@ window.handleModalImageFallback = function(imgEl, codigo) {
             safeSetSession('missingImagesCache', JSON.stringify(missing));
         }
 
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-            if (window.currentFilteredList.length > 0) { setTimeout(() => window.navegarModal(window.lastNavDirection), 50); } else { closeModal(); }
-        } else { closeModal(); }
+        // REPARACIÓN: En el modal, también se muestra el logo translúcido
+        imgEl.onerror = null;
+        imgEl.src = 'img/LOGO.png';
+        imgEl.style.opacity = '0.15';
+        imgEl.style.filter = 'grayscale(100%)';
+        imgEl.style.transform = 'scale(0.5)';
+        const wrap = document.getElementById('modalImgSection');
+        if(wrap) wrap.classList.remove('skeleton');
     }
 };
 
@@ -1325,7 +1333,13 @@ function renderRecentHistory() {
     recentHistory.forEach(code => {
         const item = document.createElement('div');
         item.className = 'recent-item';
-        item.innerHTML = `<img src="img_sin_fondo/${code}.png" onerror="this.src='img/${code}.png'; this.onerror=null;"/> <span>${code}</span>`;
+        
+        let imgSrc = `img_sin_fondo/${code}.png`;
+        if (window.invalidImageCodes.has(code)) {
+            imgSrc = 'img/LOGO.png';
+        }
+        
+        item.innerHTML = `<img src="${imgSrc}" onerror="this.src='img/${code}.png'; this.onerror=null;"/> <span>${code}</span>`;
         item.onclick = () => {
             const p = products.find(x => x.codigo === code);
             if (p) showModal(p);
@@ -1390,8 +1404,15 @@ function generateCompareColumnHTML(code) {
     const status = getStockStatus(totalQty, isDesc);
     const cat = getCategory(p.codigo).label;
     
+    let imgSrc = `img_sin_fondo/${p.codigo}.png`;
+    let imgStyle = '';
+    if (window.invalidImageCodes.has(p.codigo)) {
+        imgSrc = 'img/LOGO.png';
+        imgStyle = 'opacity:0.15; filter:grayscale(100%); transform:scale(0.5);';
+    }
+    
     return `
-      <div class="compare-img-wrap"><img src="img_sin_fondo/${p.codigo}.png" onerror="this.src='img/${p.codigo}.png';"/></div>
+      <div class="compare-img-wrap"><img src="${imgSrc}" style="${imgStyle}" onerror="this.src='img/${p.codigo}.png';"/></div>
       <div class="modal-category">${cat}</div>
       <h2 class="modal-desc-large">${p.descripcion || "Sin descripción"}</h2>
       <p class="modal-code-small">${p.codigo}</p>
@@ -1618,6 +1639,9 @@ window.clearFilters = function() {
   const wrapper = document.getElementById('filtersWrapper');
   if(wrapper && wrapper.classList.contains('open')) { toggleMobileFilters(); }
   renderGrid();
+  
+  // REPARACIÓN: Scroll hacia arriba suave al limpiar para no quedar atrapado abajo
+  window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
@@ -1752,7 +1776,6 @@ function updateGridDOM(append) {
 
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
-    if(window.invalidImageCodes.has(p.codigo)) return false; 
     
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
@@ -1840,6 +1863,17 @@ function updateGridDOM(append) {
     
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    // REPARACIÓN: Control de Imágenes Fallidas con Placeholder
+    let imgSrc = `img_sin_fondo/${p.codigo}.png`;
+    let fallbackAttr = `onerror="handleImageFallback(this, '${p.codigo}')"`;
+    let imgClass = '';
+
+    if (window.invalidImageCodes.has(p.codigo)) {
+        imgSrc = 'img/LOGO.png';
+        fallbackAttr = ''; // No intentar fallback nuevamente
+        imgClass = 'no-photo-placeholder';
+    }
+    
     let extrasHTML = `<div class="extras-wrap">
         <div style="display:flex; gap:6px; width:100%; justify-content: flex-end;">
             ${ed.valor ? `<div class="card-plan" style="color:var(--accent-gold); border-color:rgba(179,146,102,0.3); background:rgba(179,146,102,0.1)">${ed.valor} UF</div>` : ``}
@@ -1849,7 +1883,7 @@ function updateGridDOM(append) {
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
-        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
+        <img src="${imgSrc}" class="${imgClass}" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" ${fallbackAttr} loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay">
             <button class="view-btn">Ver Detalle</button>
             <button class="view-btn compare-btn" onclick="toggleCompare('${p.codigo}', event)">${compareList.includes(p.codigo) ? 'Quitar' : '◨ Comparar'}</button>
@@ -1958,12 +1992,23 @@ function renderModalData(p) {
       delete imgEl.dataset.fallbackState;
       imgEl.style.opacity = '0'; // Ocultar mientras carga
       
-      imgEl.src = `img_sin_fondo/${p.codigo}.png`;
-      imgEl.onload = function() {
-          imgEl.style.opacity = '1';
+      // REPARACIÓN: Si está en el caché de imágenes fallidas, mostrar Placeholder en Modal directamente
+      if (window.invalidImageCodes.has(p.codigo)) {
+          imgEl.src = 'img/LOGO.png';
+          imgEl.style.opacity = '0.15';
+          imgEl.style.filter = 'grayscale(100%)';
+          imgEl.style.transform = 'scale(0.5)';
           if (imgWrap) imgWrap.classList.remove('skeleton');
-      };
-      imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+      } else {
+          imgEl.style.filter = 'none';
+          imgEl.style.transform = 'none';
+          imgEl.src = `img_sin_fondo/${p.codigo}.png`;
+          imgEl.onload = function() {
+              imgEl.style.opacity = '1';
+              if (imgWrap) imgWrap.classList.remove('skeleton');
+          };
+          imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+      }
   }
   
   window.currentShareFile = null;
