@@ -490,11 +490,12 @@
     }
     
     .product-card { 
-      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); 
+      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+      border: 1px solid var(--glass-border); 
+      border-top: 4px solid var(--glass-border); /* OPCIÓN D: Barra superior por defecto */
       border-radius: var(--radius); overflow: hidden; cursor: pointer; 
       box-shadow: var(--glass-shadow); position: relative; 
       transform-style: preserve-3d; display: flex; flex-direction: column; 
-      /* Animación Reveal on Scroll: */
       opacity: 0; transform: translateY(30px);
       transition: transform 0.4s ease-out, opacity 0.4s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
     }
@@ -518,7 +519,9 @@
 
     /* VISTA DE LISTA (LIST TOGGLE) */
     .catalog-wrap.list-view #catalogGrid { display: flex; flex-direction: column; gap: 12px; max-width: 800px; margin: 0 auto;}
-    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; transform-style: flat; }
+    .catalog-wrap.list-view .product-card { flex-direction: row; height: 130px; align-items: center; justify-content: flex-start; padding: 0; transform-style: flat; border-top: 1px solid var(--glass-border); border-left: 4px solid var(--glass-border); }
+    .catalog-wrap.list-view .card-stock-zero { border-top-color: rgba(139,58,58,.4) !important; border-left-color: var(--neon-red) !important; }
+    .catalog-wrap.list-view .card-stock-low { border-top-color: rgba(179, 146, 102,.4) !important; border-left-color: var(--neon-yellow) !important; }
     .catalog-wrap.list-view .product-card:hover { transform: translateY(-4px); } 
     .catalog-wrap.list-view .card-img-wrap { width: 130px; height: 100%; border-bottom: none; border-right: 1px solid var(--card-img-border); flex-shrink: 0; transform: none;}
     .catalog-wrap.list-view .card-body { padding: 12px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; transform: none;}
@@ -528,27 +531,28 @@
     .catalog-wrap.list-view .extras-wrap { margin-top: 8px; justify-content: flex-end; }
     .catalog-wrap.list-view .badge-seal { top: 50%; transform: translateY(-50%); right: 12px; }
 
-    /* SELLOS DE CERA / METÁLICOS */
+    /* SELLOS ANTIGUOS (Se mantienen en CSS para no borrar código, pero ya no se usan en el DOM) */
     .badge-seal {
-        position: absolute; top: 12px; right: 12px;
-        width: 52px; height: 52px;
-        border-radius: 50%;
+        position: absolute; top: -8px; right: -8px;
+        width: 52px; height: 52px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center; text-align: center;
         font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-        z-index: 10; line-height: 1.1;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
+        z-index: 10; line-height: 1.1; box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
         border: 2px solid rgba(179,146,102,0.3);
     }
     .seal-out { background: radial-gradient(circle at 30% 30%, #a54242, var(--neon-red)); color: white; border-color: rgba(255,255,255,0.2); }
     .seal-low { background: radial-gradient(circle at 30% 30%, #d4b58e, var(--accent-gold)); color: #0B1411; border-color: rgba(255,255,255,0.4); }
     .seal-desc { background: radial-gradient(circle at 30% 30%, #7d8b9e, #475569); color: white; border-color: rgba(255,255,255,0.2); font-size: 0.5rem; }
 
-    .card-stock-zero { border: 1px solid rgba(139,58,58,.4); }
+    /* OPCIÓN D: COLORES PARA LA BARRA DE ESTADO (Borde superior) */
+    .card-stock-zero { border-color: rgba(139,58,58,.4); border-top-color: var(--neon-red) !important; }
     .card-stock-zero .card-code, .card-stock-zero .status-text { color: var(--neon-red); }
     .card-stock-zero .card-img-wrap { background: rgba(139,58,58,.03); }
-    .card-stock-low { border: 1px solid rgba(179, 146, 102,.4); }
+    
+    .card-stock-low { border-color: rgba(179, 146, 102,.4); border-top-color: var(--neon-yellow) !important; }
     .card-stock-low .card-img-wrap { background: rgba(179, 146, 102,.03); }
-    .card-stock-ok { border: 1px solid var(--glass-border); }
+    
+    .card-stock-ok { border-color: var(--glass-border); }
     .card-stock-ok .card-img-wrap { background: transparent; }
 
     .card-img-wrap { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--card-img-border); flex-shrink: 0; }
@@ -579,23 +583,27 @@
 
     .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--accent-gold); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
-    .view-btn:hover { background: #fff; transform: scale(1.05); }
     
-    .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
-    .compare-btn:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+    /* BOTONES ADAPTADOS (Color dinámico para contraste perfecto) */
+    .view-btn { background: var(--accent-gold); color: var(--bg-body); padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+    .view-btn:hover { background: var(--text-main); color: var(--bg-body); transform: scale(1.05); }
+    
+    .compare-btn { background: rgba(255,255,255,0.1); color: var(--text-main); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
+    .compare-btn:hover { background: var(--accent-gold); color: var(--bg-body); border-color: var(--accent-gold); }
     .product-card.comparing { border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(179, 146, 102,0.4); }
 
     .product-card:hover .view-btn { transform: translateY(0); }
 
     .card-body { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
     
+    /* JERARQUÍA TIPOGRÁFICA CORREGIDA */
     .product-card .card-code { font-family: 'Nunito', sans-serif; font-size: 0.9rem; color: var(--accent-gold); font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; }
-    .product-card .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; line-height: 1.3; color: var(--text-main); margin-bottom: 12px; text-transform: uppercase; min-height: 2.6em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
+    .product-card .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: var(--text-main); margin-bottom: 12px; text-transform: uppercase; min-height: 2.6em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
     @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--accent-gold); } }
 
-    .stock-pills-wrap { display: flex; gap: 8px; margin-bottom: auto; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .stock-pill { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 4px; }
+    /* PÍLDORAS REDISEÑADAS (Burbuja limpia) */
+    .stock-pills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: auto; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .stock-pill { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid transparent; display: flex; align-items: center; gap: 4px; }
     .stock-pill strong { color: var(--text-main); font-size: 0.8rem; font-weight: 800; }
 
     .product-card .extras-wrap { display: flex; justify-content: flex-end; align-items: center; margin-top: 12px; width: 100%; }
@@ -626,8 +634,9 @@
 
     .modal-category { font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 8px; color: var(--text-muted); }
     
-    .modal-desc-large { font-size: 1.8rem; font-weight: 800; color: var(--text-main); letter-spacing: 0.02em; text-transform: uppercase; margin: 0 0 8px 0; line-height: 1.2; }
-    .modal-code-small { font-size: 1rem; font-weight: 700; color: var(--accent-gold); letter-spacing: .05em; text-transform: uppercase; margin: 0; line-height: 1.1; }
+    /* INVERSIÓN DE COLORES Y ESPACIADO EN MODAL */
+    .modal-desc-large { font-size: 1.8rem; font-weight: 800; color: var(--accent-gold); letter-spacing: 0.02em; text-transform: uppercase; margin: 0 0 12px 0; line-height: 1.2; }
+    .modal-code-small { font-size: 1rem; font-weight: 700; color: var(--text-main); letter-spacing: .05em; text-transform: uppercase; margin: 0; line-height: 1.1; }
     
     .modal-stock-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
     .modal-stock-number { font-size: 2.5rem; font-weight: 800; color: var(--text-main); line-height: 1; }
@@ -642,7 +651,7 @@
     .modal-close:hover { transform: scale(1.1); background: var(--modal-close-hover); border-color: var(--neon-red); color: var(--neon-red); }
     
     .btn-share-modal { background: rgba(229, 222, 206, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); width: 100%; max-width: 250px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-    .btn-share-modal:hover { background: var(--accent-gold); color: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); border-color: var(--accent-gold); }
+    .btn-share-modal:hover { background: var(--accent-gold); color: var(--bg-body); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); border-color: var(--accent-gold); }
 
     .modal-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--modal-close-bg); color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
     .modal-nav-btn:hover { background: var(--btn-hover); color: var(--accent-gold); border-color: var(--accent-gold); transform: translateY(-50%) scale(1.1); }
@@ -660,7 +669,7 @@
     .comp-btn { padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; border: none; }
     .comp-clear { background: rgba(139,58,58,0.1); color: var(--neon-red); border: 1px solid rgba(139,58,58,0.3); }
     .comp-clear:hover { background: var(--neon-red); color: white; }
-    .comp-run { background: var(--accent-gold); color: #000; box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); }
+    .comp-run { background: var(--accent-gold); color: var(--bg-body); box-shadow: 0 4px 12px rgba(179, 146, 102,0.3); }
     .comp-run:hover { transform: scale(1.05); }
     .comp-run:disabled { background: var(--glass-bg); color: var(--text-muted); cursor: not-allowed; box-shadow: none; border: 1px solid var(--glass-border);}
 
@@ -797,7 +806,7 @@
       .action-btn.clean-btn { grid-column: 1 / -1; margin-top: 8px; height: 44px; justify-content: center; font-size: 1.05rem; }
       
       .product-card { transform-style: flat !important; } 
-      .card-img-wrap, .card-body, .badge-seal { transform: translateZ(0) !important; }
+      .card-img-wrap, .card-body { transform: translateZ(0) !important; }
       .product-card .card-body { padding: 16px 12px; }
       .product-card .card-body > div:first-child { text-align: center; }
       .product-card .card-code { text-align: center; }
@@ -1078,9 +1087,10 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
+                <li><strong>Estética de Alta Gama:</strong> Hemos rediseñado la interfaz puliendo tipografías, colores de botones y aplicando la "Barra de Estado" para indicar si un producto está agotado sin tapar la fotografía.</li>
+                <li><strong>Imágenes Limpias:</strong> Hemos retirado los sellos circulares. Ahora, la imagen de cada ánfora o cofre se aprecia al 100%.</li>
                 <li><strong>Catálogo Limpio:</strong> Los productos sin stock en ambas bodegas ahora se ocultan por defecto para mantener el catálogo limpio. Puedes verlos seleccionando "Stock: Sin Stock".</li>
-                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa, Lila, Pride) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
-                <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que GitHub bloquee temporalmente tu red cuando hay muchos productos sin fotografía.</li>
+                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel sumadas a los clásicos Día y Noche.</li>
             </ul>
         </div>
     </div>
@@ -1253,9 +1263,10 @@ function stopVoiceSearch() {
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
 
-// BÚSQUEDA ROBUSTA
+// BÚSQUEDA ROBUSTA (Exact Substring Match por palabras)
 function isFuzzyMatch(text, query) {
     const qWords = query.trim().split(/\s+/);
+    // Cada palabra ingresada en el buscador DEBE estar contenida en el texto del producto
     return qWords.every(qw => text.includes(qw));
 }
 
@@ -1785,7 +1796,6 @@ function updateGridDOM(append) {
     const pcoQty = p.cantidadPCO || 0;
     const totalQty = pavQty + pcoQty;
     
-    // REPARACIÓN: Control exacto para ocultar ceros por defecto en la Bodega seleccionada
     if (bodegaVal === 'pav') {
         if (currentStockFilter === 'with' && pavQty === 0) return false;
         if (currentStockFilter === 'without' && pavQty > 0) return false;
@@ -1831,14 +1841,6 @@ function updateGridDOM(append) {
     const badge = getStockBadge(totalQty); 
     const ed = EXTRA_DATA[p.codigo] || {}; 
     let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
-    
-    let ribbon = ''; 
-    if (totalQty === 0) { 
-        if(isDesc) ribbon = `<div class="badge-seal seal-desc">Agotado<br>Desc.</div>`; 
-        else ribbon = `<div class="badge-seal seal-out">Agotado</div>`; 
-    } else if (totalQty <= 3) {
-        ribbon = `<div class="badge-seal seal-low">Últimas</div>`;
-    }
 
     const card = document.createElement('div'); 
     card.className = `product-card card-${badge.cls} ${compareList.includes(p.codigo) ? 'comparing' : ''}`; 
@@ -1870,6 +1872,15 @@ function updateGridDOM(append) {
         imgClass = 'no-photo-placeholder';
     }
     
+    // CREACIÓN DE LA PÍLDORA DE ESTADO Y ADVERTENCIAS
+    let statusPill = ''; 
+    if (totalQty === 0) { 
+        if(isDesc) statusPill = `<span class="stock-pill" style="color: #94a3b8; border-color: rgba(148,163,184,0.5); font-weight: 800; background: rgba(148,163,184,0.1);">AGOTADO (DESC)</span>`; 
+        else statusPill = `<span class="stock-pill" style="color: var(--neon-red); border-color: rgba(239,68,68,0.5); font-weight: 800; background: rgba(239,68,68,0.1);">AGOTADO</span>`; 
+    } else if (totalQty <= 3) {
+        statusPill = `<span class="stock-pill" style="color: var(--neon-yellow); border-color: rgba(245,158,11,0.5); font-weight: 800; background: rgba(245,158,11,0.1);">ÚLTIMAS UNIDADES</span>`;
+    }
+
     let extrasHTML = `<div class="extras-wrap">
         <div style="display:flex; gap:6px; width:100%; justify-content: flex-end;">
             ${ed.valor ? `<div class="card-plan" style="color:var(--accent-gold); border-color:rgba(179,146,102,0.3); background:rgba(179,146,102,0.1)">${ed.valor} UF</div>` : ``}
@@ -1877,7 +1888,7 @@ function updateGridDOM(append) {
         </div>
     </div>`;
     
-    card.innerHTML = `${ribbon}
+    card.innerHTML = `
       <div class="card-img-wrap skeleton">
         <img src="${imgSrc}" class="${imgClass}" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" ${fallbackAttr} loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay">
@@ -1890,9 +1901,10 @@ function updateGridDOM(append) {
         <div class="card-code">${p.codigo}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         
-        <div class="stock-pills-wrap">
+        <div class="stock-pills-wrap" style="flex-wrap: wrap;">
             <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
             <span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>
+            ${statusPill}
         </div>
         
         ${extrasHTML}
