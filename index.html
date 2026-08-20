@@ -1270,47 +1270,55 @@ function isFuzzyMatch(text, query) {
     return qWords.every(qw => text.includes(qw));
 }
 
-// LÓGICA DE FALLBACK 
+// LÓGICA DE FALLBACK 100% BLINDADA PARA GITHUB PAGES
 window.handleImageFallback = function(imgEl, codigo) {
+    // Si ya sabemos que está rota en esta sesión, salimos para no molestar a GitHub.
     if (window.invalidImageCodes.has(codigo)) return;
 
-    // FIX: Obligar al navegador a descargar el repuesto inmediatamente
     imgEl.removeAttribute('loading');
 
     if (!imgEl.dataset.fallbackState) { 
-        imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+        imgEl.dataset.fallbackState = '1'; 
+        imgEl.src = `img/${codigo}.png`;
     } else if (imgEl.dataset.fallbackState === '1') { 
-        imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+        imgEl.dataset.fallbackState = '2'; 
+        imgEl.src = `img/${codigo}.jpg`;
     } else {
+        // Todas las opciones fallaron. Guardamos este código en la caché de tu navegador.
+        // Así, si refrescas la página, el navegador ni siquiera intentará buscar esta foto y GitHub no te bloqueará.
         window.invalidImageCodes.add(codigo);
-        let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+        let missing = JSON.parse(safeGetSession('brokenImagesSession') || '[]');
         if (!missing.includes(codigo)) {
             missing.push(codigo);
-            safeSetSession('missingImagesCache', JSON.stringify(missing));
+            safeSetSession('brokenImagesSession', JSON.stringify(missing));
         }
 
         imgEl.onerror = null; 
-        imgEl.src = 'img/LOGO.png';
+        imgEl.src = 'img/logo.png'; // Todo en minúsculas por seguridad de Linux
         imgEl.className = 'loaded no-photo-placeholder';
         if (imgEl.parentElement) imgEl.parentElement.classList.remove('skeleton');
     }
 };
 
 window.handleModalImageFallback = function(imgEl, codigo) {
+    imgEl.removeAttribute('loading');
+    
     if (!imgEl.dataset.fallbackState) { 
-        imgEl.dataset.fallbackState = '1'; imgEl.src = `img/${codigo}.png`;
+        imgEl.dataset.fallbackState = '1'; 
+        imgEl.src = `img/${codigo}.png`;
     } else if (imgEl.dataset.fallbackState === '1') { 
-        imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
+        imgEl.dataset.fallbackState = '2'; 
+        imgEl.src = `img/${codigo}.jpg`;
     } else {
         window.invalidImageCodes.add(codigo);
-        let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+        let missing = JSON.parse(safeGetSession('brokenImagesSession') || '[]');
         if (!missing.includes(codigo)) {
             missing.push(codigo);
-            safeSetSession('missingImagesCache', JSON.stringify(missing));
+            safeSetSession('brokenImagesSession', JSON.stringify(missing));
         }
 
         imgEl.onerror = null;
-        imgEl.src = 'img/LOGO.png';
+        imgEl.src = 'img/logo.png';
         imgEl.style.opacity = '0.15';
         imgEl.style.filter = 'grayscale(100%)';
         imgEl.style.transform = 'scale(0.5)';
@@ -1346,7 +1354,7 @@ function renderRecentHistory() {
         
         let imgSrc = `img_sin_fondo/${code}.png`;
         if (window.invalidImageCodes.has(code)) {
-            imgSrc = 'img/LOGO.png';
+            imgSrc = 'img/logo.png';
         }
         
         item.innerHTML = `<img src="${imgSrc}" onerror="this.src='img/${code}.png'; this.onerror=null;"/> <span>${code}</span>`;
@@ -1417,7 +1425,7 @@ function generateCompareColumnHTML(code) {
     let imgSrc = `img_sin_fondo/${p.codigo}.png`;
     let imgStyle = '';
     if (window.invalidImageCodes.has(p.codigo)) {
-        imgSrc = 'img/LOGO.png';
+        imgSrc = 'img/logo.png';
         imgStyle = 'opacity:0.15; filter:grayscale(100%); transform:scale(0.5);';
     }
     
@@ -1481,8 +1489,8 @@ function setTheme(themeName) {
 document.addEventListener('DOMContentLoaded', async () => {
   iniciarCargadorInteractivo();
   
-  // Cargar caché temporal de imágenes perdidas para proteger contra el Rate Limit de GitHub
-  let missing = JSON.parse(safeGetSession('missingImagesCache') || '[]');
+  // Rescatar las imágenes rotas recordadas en esta sesión para no hacer solicitudes DDoS a GitHub
+  let missing = JSON.parse(safeGetSession('brokenImagesSession') || '[]');
   missing.forEach(c => window.invalidImageCodes.add(c));
   
   // LOGICA DE INICIO DE TEMA (Se carga el guardado o Noche por defecto)
@@ -1836,9 +1844,6 @@ function updateGridDOM(append) {
   const paginated = filtered.slice(append ? (currentPage-1)*ITEMS_PER_PAGE : 0, currentPage * ITEMS_PER_PAGE);
   if (window.currentTotalItems === 0 && !append) { grid.innerHTML = `<div class="empty-state">Ningún producto coincide con la búsqueda o el ERP no envió datos.</div>`; }
 
-  // FIX: Se agrega la fecha de hoy como rompe-caché a la URL de la imagen para forzar actualización
-  let cacheBustVersion = new Date().toISOString().split('T')[0]; 
-  
   paginated.forEach((p, index) => {
     const pavQty = p.cantidad || 0;
     const pcoQty = p.cantidadPCO || 0;
@@ -1868,13 +1873,14 @@ function updateGridDOM(append) {
     
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
-    // Aplicando Cache Busting aquí
-    let imgSrc = `img_sin_fondo/${p.codigo}.png?v=${cacheBustVersion}`;
+    // Eliminé el cache-buster (?v=...) para que el navegador no acribille a GitHub con peticiones
+    let imgSrc = `img_sin_fondo/${p.codigo}.png`;
     let fallbackAttr = `onerror="handleImageFallback(this, '${p.codigo}')"`;
     let imgClass = '';
 
+    // Si ya sabemos que la imagen está rota, saltamos directamente al logo para ahorrarle trabajo a GitHub
     if (window.invalidImageCodes.has(p.codigo)) {
-        imgSrc = 'img/LOGO.png';
+        imgSrc = 'img/logo.png';
         fallbackAttr = ''; 
         imgClass = 'no-photo-placeholder';
     }
@@ -2002,14 +2008,14 @@ function renderModalData(p) {
   
   const imgWrap = document.getElementById('modalImgSection');
   const imgEl = document.getElementById('modalProductImg');
-  let cacheBustVersion = new Date().toISOString().split('T')[0];
+  
   if (imgEl) {
       if (imgWrap) imgWrap.classList.add('skeleton'); // Skeleton modal
       delete imgEl.dataset.fallbackState;
       imgEl.style.opacity = '0'; // Ocultar mientras carga
       
       if (window.invalidImageCodes.has(p.codigo)) {
-          imgEl.src = 'img/LOGO.png';
+          imgEl.src = 'img/logo.png';
           imgEl.style.opacity = '0.15';
           imgEl.style.filter = 'grayscale(100%)';
           imgEl.style.transform = 'scale(0.5)';
@@ -2017,7 +2023,7 @@ function renderModalData(p) {
       } else {
           imgEl.style.filter = 'none';
           imgEl.style.transform = 'none';
-          imgEl.src = `img_sin_fondo/${p.codigo}.png?v=${cacheBustVersion}`;
+          imgEl.src = `img_sin_fondo/${p.codigo}.png`;
           imgEl.onload = function() {
               imgEl.style.opacity = '1';
               if (imgWrap) imgWrap.classList.remove('skeleton');
@@ -2027,15 +2033,15 @@ function renderModalData(p) {
   }
   
   window.currentShareFile = null;
-  fetch(`img_sin_fondo/${p.codigo}.png?v=${cacheBustVersion}`)
+  fetch(`img_sin_fondo/${p.codigo}.png`)
     .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
     .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
     .catch(() => {
-       fetch(`img/${p.codigo}.png?v=${cacheBustVersion}`)
+       fetch(`img/${p.codigo}.png`)
          .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
          .then(b => window.currentShareFile = new File([b], `${p.codigo}.png`, {type: 'image/png'}))
          .catch(() => {
-            fetch(`img/${p.codigo}.jpg?v=${cacheBustVersion}`)
+            fetch(`img/${p.codigo}.jpg`)
               .then(r => { if(!r.ok) throw new Error(); return r.blob(); })
               .then(b => window.currentShareFile = new File([b], `${p.codigo}.jpg`, {type: 'image/jpeg'}))
               .catch(()=> {});
