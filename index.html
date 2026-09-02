@@ -475,13 +475,37 @@
     body.theme-pink .skeleton { background: linear-gradient(90deg, rgba(219,39,119,0.02) 25%, rgba(219,39,119,0.06) 50%, rgba(219,39,119,0.02) 75%); }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
+    /* ESTILOS DE LOS BOTONES "VER DETALLE" Y "COMPARAR" REFINADOS */
+    .card-hover-overlay { position: absolute; inset: 0; transition: background .3s; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; opacity: 0; z-index: 20; }
     .product-card:hover .card-hover-overlay { opacity: 1; background: var(--card-overlay); backdrop-filter: blur(2px); }
-    .view-btn { background: var(--accent-gold); color: #000; padding: 8px 16px; border-radius: 8px; font-size: .7rem; font-weight: 800; letter-spacing: .05em; transform: translateY(4px); transition: all .2s; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; }
-    .view-btn:hover { background: #fff; transform: scale(1.05); }
     
-    .compare-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); font-size: 0.65rem; }
-    .compare-btn:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
+    .view-btn { 
+        background: var(--accent-gold); 
+        color: #111; 
+        padding: 8px 24px; 
+        border-radius: 8px; 
+        font-size: .7rem; 
+        font-weight: 700; 
+        letter-spacing: .1em; 
+        transform: translateY(4px); 
+        transition: all .2s; 
+        text-transform: uppercase; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+        border: none; 
+        cursor: pointer; 
+    }
+    .view-btn:hover { background: #fff; color: #000; transform: scale(1.05); }
+    
+    .compare-btn { 
+        background: rgba(255,255,255,0.15); 
+        color: #fff; 
+        border: 1px solid rgba(255,255,255,0.4); 
+        backdrop-filter: blur(4px); 
+        font-size: 0.65rem; 
+        font-weight: 600; 
+    }
+    .compare-btn:hover { background: var(--accent-gold); color: #111; border-color: var(--accent-gold); }
+    
     .product-card.comparing { border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(179, 146, 102,0.4); }
 
     .product-card:hover .view-btn { transform: translateY(0); }
@@ -1144,40 +1168,14 @@ function stopVoiceSearch() {
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
 
-// BÚSQUEDA DIFUSA (LEVENSHTEIN)
-function levenshtein(a, b) {
-    if(a.length === 0) return b.length;
-    if(b.length === 0) return a.length;
-    let matrix = [];
-    for(let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for(let j = 0; j <= a.length; j++) matrix[0][j] = j;
-    for(let i = 1; i <= b.length; i++){
-        for(let j = 1; j <= a.length; j++){
-            if(b.charAt(i-1) === a.charAt(j-1)){
-                matrix[i][j] = matrix[i-1][j-1];
-            } else {
-                matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
-            }
-        }
-    }
-    return matrix[b.length][a.length];
+// BÚSQUEDA EXACTA POR PALABRAS
+function isExactMatch(text, query) {
+    const qWords = query.trim().split(/\s+/);
+    // Cada palabra ingresada debe estar contenida exactamente en alguna parte de la descripción o código
+    return qWords.every(qw => text.includes(qw));
 }
 
-function isFuzzyMatch(text, query) {
-    const tWords = text.split(/\s+/);
-    const qWords = query.split(/\s+/);
-    return qWords.every(qw => {
-        return tWords.some(tw => {
-            if (tw.includes(qw)) return true;
-            if (qw.length > 3 && levenshtein(qw, tw) <= 2) return true;
-            return false;
-        });
-    });
-}
-
-// ==========================================
 // SOLUCIÓN AL RATE LIMIT Y ATAQUE DDOS 404 (SIN BORRAR TARJETAS)
-// ==========================================
 window.handleImageFallback = function(imgEl, codigo) {
     if (window.invalidImageCodes.has(codigo)) {
         imgEl.onerror = null;
@@ -1274,7 +1272,7 @@ function renderRecentHistory() {
         
         if (window.invalidImageCodes.has(code)) {
             imgSrc = 'img/LOGO.png';
-            fallback = ''; 
+            fallback = ''; // Evitamos hacerle ping al servidor si ya sabemos que falla
         }
         
         item.innerHTML = `<img src="${imgSrc}" ${fallback}/> <span>${code}</span>`;
@@ -1734,7 +1732,7 @@ function updateGridDOM(append) {
     if (currentSearch) { 
       let q = normalizeStr(currentSearch); 
       let fullText = normalizeStr(p.codigo) + " " + (p.descripcion ? normalizeStr(p.descripcion) : ""); 
-      if (!isFuzzyMatch(fullText, q)) return false; 
+      if (!isExactMatch(fullText, q)) return false; 
     }
 
     const pavQty = p.cantidad || 0;
