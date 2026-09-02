@@ -218,7 +218,6 @@
        ========================================= */
     body.client-mode .card-stock-row,
     body.client-mode .status-text,
-    body.client-mode .badge-seal,
     body.client-mode .modal-stock-section,
     body.client-mode .card-code,
     body.client-mode .modal-code-small,
@@ -424,7 +423,7 @@
         opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1;
       }
       .product-card:hover::before { opacity: 1; }
-      .card-img-wrap, .card-body, .badge-seal { position: relative; z-index: 2; transform: translateZ(15px); } 
+      .card-img-wrap, .card-body { position: relative; z-index: 2; transform: translateZ(15px); } 
     }
 
     /* VISTA DE LISTA (LIST TOGGLE) */
@@ -437,22 +436,6 @@
     .catalog-wrap.list-view .card-desc { font-size: 1.1rem; -webkit-line-clamp: 1; min-height: auto; margin-bottom: 4px; }
     .catalog-wrap.list-view .stock-pills-wrap { margin-bottom: auto; border-bottom: none; padding-bottom: 0; }
     .catalog-wrap.list-view .extras-wrap { margin-top: 8px; justify-content: flex-end; }
-    .catalog-wrap.list-view .badge-seal { top: 50%; transform: translateY(-50%); right: 12px; }
-
-    /* SELLOS DE CERA / METÁLICOS */
-    .badge-seal {
-        position: absolute; top: 12px; right: 12px;
-        width: 52px; height: 52px;
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; text-align: center;
-        font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-        z-index: 10; line-height: 1.1;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
-        border: 2px solid rgba(179,146,102,0.3);
-    }
-    .seal-out { background: radial-gradient(circle at 30% 30%, #a54242, var(--neon-red)); color: white; border-color: rgba(255,255,255,0.2); }
-    .seal-low { background: radial-gradient(circle at 30% 30%, #d4b58e, var(--accent-gold)); color: #0B1411; border-color: rgba(255,255,255,0.4); }
-    .seal-desc { background: radial-gradient(circle at 30% 30%, #7d8b9e, #475569); color: white; border-color: rgba(255,255,255,0.2); font-size: 0.5rem; }
 
     .card-stock-zero { border: 1px solid rgba(139,58,58,.4); }
     .card-stock-zero .card-code, .card-stock-zero .status-text { color: var(--neon-red); }
@@ -516,7 +499,7 @@
     .product-card .card-desc { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800; line-height: 1.3; color: var(--text-main); margin-bottom: 12px; text-transform: uppercase; min-height: 2.6em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.2s; }
     @media (hover: hover) and (pointer: fine) { .card-desc { cursor: copy; } .card-desc:hover { color: var(--accent-gold); } }
 
-    .stock-pills-wrap { display: flex; gap: 8px; margin-bottom: auto; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .stock-pills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: auto; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center;}
     .stock-pill { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 4px; }
     .stock-pill strong { color: var(--text-main); font-size: 0.8rem; font-weight: 800; }
 
@@ -996,9 +979,10 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
+                <li><strong>Imágenes Libres y Píldora de Estado:</strong> Se eliminaron los sellos circulares sobre las fotografías. Ahora el estado de stock (Agotado, Últimas Unidades) se muestra mediante una elegante píldora en la sección de información, alineado con las cantidades de PAV y PCO.</li>
                 <li><strong>Catálogo Limpio Activo:</strong> Los productos sin stock en ambas bodegas se ocultan por defecto para mantener el catálogo limpio. Puedes verlos seleccionando "Stock: Sin Stock".</li>
-                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
-                <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que la red se vuelva inestable cuando faltan fotografías, sin borrar ningún producto del catálogo.</li>
+                <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel sumadas a los clásicos Día y Noche.</li>
+                <li><strong>Búsqueda Precisa:</strong> El buscador ahora exige exactitud por palabras completas, evitando que te sugiera productos no relacionados ("ROBLE" ya no mostrará "COBRE" ni "DOBLE").</li>
             </ul>
         </div>
     </div>
@@ -1168,7 +1152,7 @@ function stopVoiceSearch() {
     if (input && input.placeholder === "Escuchando...") input.placeholder = "Buscar código o descripción...";
 }
 
-// BÚSQUEDA EXACTA POR PALABRAS
+// BÚSQUEDA EXACTA POR PALABRAS COMPLETAS
 function isExactMatch(text, query) {
     const qWords = query.trim().split(/\s+/);
     // Cada palabra ingresada debe estar contenida exactamente en alguna parte de la descripción o código
@@ -1739,7 +1723,6 @@ function updateGridDOM(append) {
     const pcoQty = p.cantidadPCO || 0;
     const totalQty = pavQty + pcoQty;
     
-    // REGLA DE "CATÁLOGO LIMPIO" RECUPERADA
     if (bodegaVal === 'pav') {
         if (currentStockFilter === 'with' && pavQty === 0) return false;
         if (currentStockFilter === 'without' && pavQty > 0) return false;
@@ -1785,14 +1768,6 @@ function updateGridDOM(append) {
     const badge = getStockBadge(totalQty); 
     const ed = EXTRA_DATA[p.codigo] || {}; 
     let isDesc = p.descripcion && p.descripcion.toLowerCase().includes('descontinuado'); 
-    
-    let ribbon = ''; 
-    if (totalQty === 0) { 
-        if(isDesc) ribbon = `<div class="badge-seal seal-desc">Agotado<br>Desc.</div>`; 
-        else ribbon = `<div class="badge-seal seal-out">Agotado</div>`; 
-    } else if (totalQty <= 3) {
-        ribbon = `<div class="badge-seal seal-low">Últimas</div>`;
-    }
 
     const card = document.createElement('div'); 
     card.className = `product-card card-${badge.cls} ${compareList.includes(p.codigo) ? 'comparing' : ''}`; 
@@ -1826,10 +1801,10 @@ function updateGridDOM(append) {
     
     let statusPill = ''; 
     if (totalQty === 0) { 
-        if(isDesc) statusPill = `<span class="stock-pill" style="color: #94a3b8; border-color: rgba(148,163,184,0.5); font-weight: 800; background: rgba(148,163,184,0.1);">AGOTADO (DESC)</span>`; 
-        else statusPill = `<span class="stock-pill" style="color: var(--neon-red); border-color: rgba(239,68,68,0.5); font-weight: 800; background: rgba(239,68,68,0.1);">AGOTADO</span>`; 
+        if(isDesc) statusPill = `<span class="stock-pill" style="color: #9CA3AF; border-color: rgba(156,163,175,0.3); font-weight: 800; background: rgba(156,163,175,0.1); width: 100%; justify-content: center;">• DESCONTINUADO</span>`; 
+        else statusPill = `<span class="stock-pill" style="color: #EF4444; border-color: rgba(239,68,68,0.3); font-weight: 800; background: rgba(239,68,68,0.1); width: 100%; justify-content: center;">• AGOTADO</span>`; 
     } else if (totalQty <= 3) {
-        statusPill = `<span class="stock-pill" style="color: var(--neon-yellow); border-color: rgba(245,158,11,0.5); font-weight: 800; background: rgba(245,158,11,0.1);">ÚLTIMAS UNIDADES</span>`;
+        statusPill = `<span class="stock-pill" style="color: #F59E0B; border-color: rgba(245,158,11,0.3); font-weight: 800; background: rgba(245,158,11,0.1); width: 100%; justify-content: center;">• ÚLTIMAS UNIDADES</span>`;
     }
 
     let extrasHTML = `<div class="extras-wrap">
@@ -1839,7 +1814,7 @@ function updateGridDOM(append) {
         </div>
     </div>`;
     
-    card.innerHTML = `${ribbon}
+    card.innerHTML = `
       <div class="card-img-wrap skeleton">
         <img src="${imgSrc}" class="${imgClass}" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" ${fallbackAttr} loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay">
@@ -1852,7 +1827,7 @@ function updateGridDOM(append) {
         <div class="card-code">${p.codigo}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         
-        <div class="stock-pills-wrap" style="flex-wrap: wrap;">
+        <div class="stock-pills-wrap">
             <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
             <span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>
             ${statusPill}
