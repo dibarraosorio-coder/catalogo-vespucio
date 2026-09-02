@@ -499,6 +499,17 @@
     .product-card .extras-wrap { display: flex; justify-content: flex-end; align-items: center; margin-top: 12px; width: 100%; }
     .card-plan { font-size: 0.6rem; font-weight: 800; color: var(--text-main); background: rgba(255,255,255,0.05); padding: 4px 6px; border-radius: 6px; border: 1px solid var(--glass-border); letter-spacing: 0.05em; text-transform: uppercase; text-align: center; max-width: 100%; word-wrap: break-word; line-height: 1.2;}
 
+    /* IMAGEN PLACEHOLDER GENÉRICA */
+    .no-photo-placeholder {
+        opacity: 0.15 !important;
+        filter: grayscale(100%) !important;
+        transform: scale(0.6) !important;
+        transition: transform 0.3s ease !important;
+    }
+    .product-card:hover .no-photo-placeholder {
+        transform: scale(0.65) !important; 
+    }
+
     /* =========================================
        MODAL BENTO BOX
        ========================================= */
@@ -961,9 +972,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
+                <li><strong>Catálogo Limpio Activo:</strong> Los productos sin stock en ambas bodegas se ocultan por defecto para mantener el catálogo limpio. Puedes verlos seleccionando "Stock: Sin Stock".</li>
                 <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel (Gris, Azul, Rosa) sumadas a los clásicos Día y Noche. Haz clic en el ícono de la paleta arriba a la izquierda para probarlas todas.</li>
-                <li><strong>Animaciones Fluidas:</strong> Ahora las tarjetas aparecen suavemente a medida que te desplazas hacia abajo, dando una sensación mucho más fluida.</li>
-                <li><strong>Protección Antlo-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que GitHub bloquee temporalmente tu red cuando hay muchos productos sin fotografía.</li>
+                <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que la red se vuelva inestable cuando faltan fotografías, sin borrar ningún producto del catálogo.</li>
             </ul>
         </div>
     </div>
@@ -1165,17 +1176,17 @@ function isFuzzyMatch(text, query) {
 }
 
 // ==========================================
-// SOLUCIÓN AL RATE LIMIT Y ATAQUE DDOS 404
+// SOLUCIÓN AL RATE LIMIT Y ATAQUE DDOS 404 (SIN BORRAR TARJETAS)
 // ==========================================
 window.handleImageFallback = function(imgEl, codigo) {
-    // 1. Si sabemos que fallará, no hacemos peticiones de red y eliminamos la tarjeta
     if (window.invalidImageCodes.has(codigo)) {
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
+        imgEl.onerror = null;
+        imgEl.src = 'img/LOGO.png';
+        imgEl.className = 'loaded no-photo-placeholder';
+        if (imgEl.parentElement) imgEl.parentElement.classList.remove('skeleton');
         return;
     }
 
-    // 2. Quitamos loading lazy para que el navegador intente las caídas de repuesto inmediato
     imgEl.removeAttribute('loading');
 
     if (!imgEl.dataset.fallbackState) { 
@@ -1183,29 +1194,29 @@ window.handleImageFallback = function(imgEl, codigo) {
     } else if (imgEl.dataset.fallbackState === '1') { 
         imgEl.dataset.fallbackState = '2'; imgEl.src = `img/${codigo}.jpg`;
     } else {
-        // 3. Fallo total. Guardamos en almacenamiento local para no volver a pedirlo NUNCA MÁS a GitHub
         window.invalidImageCodes.add(codigo);
         let missing = JSON.parse(safeGetLocal('missingImagesCache') || '[]');
         if (!missing.includes(codigo)) {
             missing.push(codigo);
             safeSetLocal('missingImagesCache', JSON.stringify(missing));
         }
-
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-        }
+        
+        imgEl.onerror = null; 
+        imgEl.src = 'img/LOGO.png';
+        imgEl.className = 'loaded no-photo-placeholder';
+        if (imgEl.parentElement) imgEl.parentElement.classList.remove('skeleton');
     }
 };
 
 window.handleModalImageFallback = function(imgEl, codigo) {
     if (window.invalidImageCodes.has(codigo)) {
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
+        imgEl.onerror = null;
+        imgEl.src = 'img/LOGO.png';
+        imgEl.style.opacity = '0.15';
+        imgEl.style.filter = 'grayscale(100%)';
+        imgEl.style.transform = 'scale(0.5)';
+        const wrap = document.getElementById('modalImgSection');
+        if(wrap) wrap.classList.remove('skeleton');
         return;
     }
 
@@ -1223,15 +1234,13 @@ window.handleModalImageFallback = function(imgEl, codigo) {
             safeSetLocal('missingImagesCache', JSON.stringify(missing));
         }
 
-        const card = document.querySelector(`.product-card[data-code="${codigo}"]`);
-        if (card) card.remove();
-        if (window.currentFilteredList) {
-            window.currentFilteredList = window.currentFilteredList.filter(p => p.codigo !== codigo);
-            window.currentTotalItems = window.currentFilteredList.length;
-            const resCount = document.getElementById('resultsCount');
-            if (resCount) resCount.textContent = `Mostrando ${Math.min(window.currentTotalItems, currentPage * ITEMS_PER_PAGE)} de ${window.currentTotalItems} productos`;
-            if (window.currentFilteredList.length > 0) { setTimeout(() => window.navegarModal(window.lastNavDirection), 50); } else { closeModal(); }
-        } else { closeModal(); }
+        imgEl.onerror = null;
+        imgEl.src = 'img/LOGO.png';
+        imgEl.style.opacity = '0.15';
+        imgEl.style.filter = 'grayscale(100%)';
+        imgEl.style.transform = 'scale(0.5)';
+        const wrap = document.getElementById('modalImgSection');
+        if(wrap) wrap.classList.remove('skeleton');
     }
 };
 
@@ -1265,7 +1274,7 @@ function renderRecentHistory() {
         
         if (window.invalidImageCodes.has(code)) {
             imgSrc = 'img/LOGO.png';
-            fallback = ''; // Evitamos hacerle ping al servidor si ya sabemos que falla
+            fallback = ''; 
         }
         
         item.innerHTML = `<img src="${imgSrc}" ${fallback}/> <span>${code}</span>`;
@@ -1719,9 +1728,6 @@ function updateGridDOM(append) {
   let filtered = products.filter(p => {
     if(!p || !isValidCode(p.codigo) || EXCLUDED_CODES.includes(String(p.codigo).toUpperCase())) return false; 
     
-    // Filtro Anti-DDoS: Si la imagen está en la caché de errores, la saltamos sin pedirle a GitHub
-    if(window.invalidImageCodes.has(p.codigo)) return false; 
-    
     let cat = normalizeStr(getCategory(p.codigo).label); let filterVal = normalizeStr(catVal);
     if (catVal !== 'all' && cat !== filterVal && cat !== filterVal + 's') return false; 
     
@@ -1735,6 +1741,7 @@ function updateGridDOM(append) {
     const pcoQty = p.cantidadPCO || 0;
     const totalQty = pavQty + pcoQty;
     
+    // REGLA DE "CATÁLOGO LIMPIO" RECUPERADA
     if (bodegaVal === 'pav') {
         if (currentStockFilter === 'with' && pavQty === 0) return false;
         if (currentStockFilter === 'without' && pavQty > 0) return false;
@@ -1746,6 +1753,7 @@ function updateGridDOM(append) {
     } else {
         if (currentStockFilter === 'with' && totalQty === 0) return false;
         if (currentStockFilter === 'without' && totalQty > 0) return false;
+        if (currentStockFilter === 'all' && totalQty === 0) return false; 
     }
 
     let valStr = (EXTRA_DATA[p.codigo] || {}).valor;
@@ -1808,6 +1816,24 @@ function updateGridDOM(append) {
     
     let cleanDesc = p.descripcion ? p.descripcion.replace(/"/g, '&quot;') : p.codigo;
     
+    let imgSrc = `img_sin_fondo/${p.codigo}.png`;
+    let fallbackAttr = `onerror="handleImageFallback(this, '${p.codigo}')"`;
+    let imgClass = '';
+
+    if (window.invalidImageCodes.has(p.codigo)) {
+        imgSrc = 'img/LOGO.png';
+        fallbackAttr = ''; 
+        imgClass = 'no-photo-placeholder';
+    }
+    
+    let statusPill = ''; 
+    if (totalQty === 0) { 
+        if(isDesc) statusPill = `<span class="stock-pill" style="color: #94a3b8; border-color: rgba(148,163,184,0.5); font-weight: 800; background: rgba(148,163,184,0.1);">AGOTADO (DESC)</span>`; 
+        else statusPill = `<span class="stock-pill" style="color: var(--neon-red); border-color: rgba(239,68,68,0.5); font-weight: 800; background: rgba(239,68,68,0.1);">AGOTADO</span>`; 
+    } else if (totalQty <= 3) {
+        statusPill = `<span class="stock-pill" style="color: var(--neon-yellow); border-color: rgba(245,158,11,0.5); font-weight: 800; background: rgba(245,158,11,0.1);">ÚLTIMAS UNIDADES</span>`;
+    }
+
     let extrasHTML = `<div class="extras-wrap">
         <div style="display:flex; gap:6px; width:100%; justify-content: flex-end;">
             ${ed.valor ? `<div class="card-plan" style="color:var(--accent-gold); border-color:rgba(179,146,102,0.3); background:rgba(179,146,102,0.1)">${ed.valor} UF</div>` : ``}
@@ -1817,7 +1843,7 @@ function updateGridDOM(append) {
     
     card.innerHTML = `${ribbon}
       <div class="card-img-wrap skeleton">
-        <img src="img_sin_fondo/${p.codigo}.png" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" onerror="handleImageFallback(this, '${p.codigo}')" loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
+        <img src="${imgSrc}" class="${imgClass}" onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton');" ${fallbackAttr} loading="lazy" decoding="async" alt="Imagen de ${cleanDesc}"/>
         <div class="card-hover-overlay">
             <button class="view-btn">Ver Detalle</button>
             <button class="view-btn compare-btn" onclick="toggleCompare('${p.codigo}', event)">${compareList.includes(p.codigo) ? 'Quitar' : '◨ Comparar'}</button>
@@ -1828,9 +1854,10 @@ function updateGridDOM(append) {
         <div class="card-code">${p.codigo}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         
-        <div class="stock-pills-wrap">
+        <div class="stock-pills-wrap" style="flex-wrap: wrap;">
             <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
             <span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>
+            ${statusPill}
         </div>
         
         ${extrasHTML}
@@ -1926,12 +1953,22 @@ function renderModalData(p) {
       delete imgEl.dataset.fallbackState;
       imgEl.style.opacity = '0'; // Ocultar mientras carga
       
-      imgEl.src = `img_sin_fondo/${p.codigo}.png`;
-      imgEl.onload = function() {
-          imgEl.style.opacity = '1';
+      if (window.invalidImageCodes.has(p.codigo)) {
+          imgEl.src = 'img/LOGO.png';
+          imgEl.style.opacity = '0.15';
+          imgEl.style.filter = 'grayscale(100%)';
+          imgEl.style.transform = 'scale(0.5)';
           if (imgWrap) imgWrap.classList.remove('skeleton');
-      };
-      imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+      } else {
+          imgEl.style.filter = 'none';
+          imgEl.style.transform = 'none';
+          imgEl.src = `img_sin_fondo/${p.codigo}.png`;
+          imgEl.onload = function() {
+              imgEl.style.opacity = '1';
+              if (imgWrap) imgWrap.classList.remove('skeleton');
+          };
+          imgEl.onerror = function() { handleModalImageFallback(this, p.codigo); };
+      }
   }
   
   window.currentShareFile = null;
