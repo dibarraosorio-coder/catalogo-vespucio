@@ -20,18 +20,17 @@ jobs:
         run: mkdir -p data
 
       - name: Descargar ERP (Power Automate)
-        run: curl -sLf -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA" -o data/erp.json
+        run: curl -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA" -o data/erp.json
 
-      - name: Descargar Bodega PCO (Google Sheets API)
-        # Cambiamos a la URL /gviz/tq que es exclusiva para extracción de datos de servidores
-        run: curl -sLf "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0" -o data/pco.csv
+      - name: Descargar Bodega PCO (Google Sheets)
+        # Usamos el enlace /export y agregamos el disfraz de Google Chrome
+        run: curl -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0" -o data/pco.csv
 
-      - name: Descargar Planes y Valores (Google Sheets API)
-        # Usamos el enlace /export directo para evitar la pantalla de bloqueo de Google
-        run: curl -sLf "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv" -o data/extra.csv
+      - name: Descargar Planes y Valores (Google Sheets)
+        # Agregamos el disfraz de Google Chrome
+        run: curl -sL -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv" -o data/extra.csv
 
       - name: Limpieza de formato
-        # Aseguramos que los archivos se guarden sin errores de formato web
         run: |
           sed -i '/^</ d' data/pco.csv || true
           sed -i '/^</ d' data/extra.csv || true
