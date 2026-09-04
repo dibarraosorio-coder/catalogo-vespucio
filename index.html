@@ -980,10 +980,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Imágenes Libres y Píldora de Estado:</strong> Se eliminaron los sellos circulares sobre las fotografías. Ahora el estado de stock (Agotado, Últimas Unidades) se muestra mediante una elegante píldora en la sección de información.</li>
+                <li><strong>Carga Instantánea y Protección Activa:</strong> El catálogo ahora respalda automáticamente su inventario. Se han eliminado las dependencias de servidores externos, asegurando que la plataforma cargue de inmediato y sea 100% inmune a caídas.</li>
+                <li><strong>Imágenes Libres y Píldora de Estado:</strong> Se eliminaron los sellos circulares sobre las fotografías. Ahora el estado de stock se muestra mediante una elegante píldora en la sección de información.</li>
                 <li><strong>Catálogo Limpio Activo:</strong> Los productos sin stock se ocultan por defecto para mantener el catálogo limpio. Puedes verlos seleccionando "Stock: Sin Stock".</li>
-                <li><strong>Protección Anti-Bloqueo:</strong> Hemos mejorado la forma en la que el sistema busca las imágenes para evitar que la red se vuelva inestable cuando faltan fotografías.</li>
-                <li><strong>Búsqueda Precisa:</strong> El buscador ahora exige exactitud por palabras completas, evitando que te sugiera productos no relacionados ("ROBLE" ya no mostrará "COBRE" ni "DOBLE").</li>
             </ul>
         </div>
     </div>
@@ -1001,7 +1000,6 @@ function safeRemoveLocal(key) { try { localStorage.removeItem(key); } catch(e) {
 function safeGetSession(key) { try { return sessionStorage.getItem(key); } catch(e) { return null; } }
 function safeSetSession(key, val) { try { sessionStorage.setItem(key, val); } catch(e) {} }
 
-const URL_POWER_AUTOMATE = "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA"; 
 const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "COF0034", "COF0008", "ANF0292", "ANF0291", "ANF0290"];
 
 let products = []; let EXTRA_DATA = {};
@@ -1473,7 +1471,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   setupCustomDropdowns();
   
-  // LA SINCRONIZACIÓN INTACTA DEL ARCHIVO ORIGINAL
+  // SINCRONIZACIÓN DE ALTO RENDIMIENTO (LEE DEL REPOSITORIO LOCAL)
   await sincronizarERP();
   
   renderLastUpdated(); 
@@ -1580,95 +1578,101 @@ window.clearFilters = function() {
 
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
+// ==========================================
+// NUEVA SINCRONIZACIÓN DE ALTO RENDIMIENTO
+// Lee directamente de los archivos alojados en GitHub (data/)
+// ==========================================
 async function sincronizarERP() {
-  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
+  const timestamp = new Date().getTime(); // Rompe-cachés para evitar lectura de memoria antigua
+  
   try {
     let pcoData = {};
-    const pcoUrls = [
-        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/gviz/tq?tqx=out:csv&gid=0",
-        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/export?format=csv&gid=0",
-        "https://docs.google.com/spreadsheets/d/1UuDzdH4DEjnedbSM7gvo4mxKF0YrPxJEz2z8JDSffAc/pub?gid=0&single=true&output=csv",
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv"
-    ];
     
-    for (let url of pcoUrls) {
-        try {
-            let pcoRes = await fetch(url);
-            if (pcoRes.ok) {
-                const text = await pcoRes.text();
-                const rows = text.split(/\r?\n/);
-                let successCount = 0;
-                rows.forEach(row => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
-                    let code = null;
-                    for (let i=0; i<cols.length; i++) {
-                        if (isValidCode(cols[i])) { code = cols[i].toUpperCase(); break; }
-                    }
-                    if (code && cols.length > 5) {
-                        let cellVal = cols[5] ? cols[5].replace(/[^\d.-]/g, '') : "";
-                        if (cellVal !== "") {
-                            let val = parseInt(cellVal);
-                            if (!isNaN(val)) { pcoData[code] = val; successCount++; }
-                        }
-                    }
-                });
-                if (successCount > 0) break; 
-            }
-        } catch(e) {}
-    }
-
+    // 1. Descargar Bodega PCO (Archivo Local)
     try {
-      const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
+        let pcoRes = await fetch(`data/pco.csv?v=${timestamp}`);
+        if (pcoRes.ok) {
+            const text = await pcoRes.text();
+            const rows = text.split(/\r?\n/);
+            rows.forEach(row => {
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+                let code = null;
+                for (let i=0; i<cols.length; i++) {
+                    if (isValidCode(cols[i])) { code = cols[i].toUpperCase(); break; }
+                }
+                if (code && cols.length > 5) {
+                    let cellVal = cols[5] ? cols[5].replace(/[^\d.-]/g, '') : "";
+                    if (cellVal !== "") {
+                        let val = parseInt(cellVal);
+                        if (!isNaN(val)) { pcoData[code] = val; }
+                    }
+                }
+            });
+        }
+    } catch(e) { console.warn("PCO local no encontrado. El bot podría no haberlo generado aún."); }
+
+    // 2. Descargar Planes y Valores (Archivo Local)
+    try {
+      const valRes = await fetch(`data/extra.csv?v=${timestamp}`);
       if (valRes.ok) {
-        const rows = (await valRes.text()).split(/\r?\n/); 
+        const text = await valRes.text();
+        const rows = text.split(/\r?\n/); 
         let planIdx = 3; let valorIdx = 4; 
         rows.forEach((row, index) => {
           const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
           if (index === 0) {
-            const hp = cols.findIndex(c => c.toUpperCase().includes('PLAN')); const hv = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
+            const hp = cols.findIndex(c => c.toUpperCase().includes('PLAN')); 
+            const hv = cols.findIndex(c => c.toUpperCase().includes('VALOR'));
             if(hp !== -1) planIdx = hp; if(hv !== -1) valorIdx = hv; return;
           }
           let codeIdx = cols.findIndex(c => isValidCode(c));
           if(codeIdx !== -1) {
-            let code = cols[codeIdx].toUpperCase().trim(); if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
+            let code = cols[codeIdx].toUpperCase().trim(); 
+            if(!EXTRA_DATA[code]) EXTRA_DATA[code] = {};
             let valCol = cols[valorIdx]; let planCol = cols[planIdx];
             if(valCol && valCol !== "" && valCol.toLowerCase() !== "x") EXTRA_DATA[code].valor = valCol;
             if(planCol && planCol !== "" && planCol.toLowerCase() !== "x") EXTRA_DATA[code].plan = planCol;
           }
         });
       }
-    } catch(e) {}
+    } catch(e) { console.warn("Valores extra locales no encontrados."); }
 
-    const response = await fetch(URL_POWER_AUTOMATE);
-    if (response.ok) {
-       const datosERP = await response.json();
-       if(Array.isArray(datosERP) && datosERP.length > 0) {
-           const stockConsolidado = {};
-           datosERP.forEach(mov => {
-               const cod = String(mov.codigo).toUpperCase().trim();
-               if (!stockConsolidado[cod]) {
-                   stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" };
-               }
-               stockConsolidado[cod].cantidad += parseFloat(mov.cantidad || 0);
-               if (mov.descripcion && mov.descripcion.trim() !== "" && stockConsolidado[cod].descripcion === "Sin descripción") {
-                   stockConsolidado[cod].descripcion = mov.descripcion;
-               }
-           });
+    // 3. Descargar ERP consolidado (Archivo Local)
+    try {
+        const response = await fetch(`data/erp.json?v=${timestamp}`);
+        if (response.ok) {
+           const datosERP = await response.json();
+           if(Array.isArray(datosERP) && datosERP.length > 0) {
+               const stockConsolidado = {};
+               datosERP.forEach(mov => {
+                   const cod = String(mov.codigo).toUpperCase().trim();
+                   if (!stockConsolidado[cod]) {
+                       stockConsolidado[cod] = { cantidad: 0, descripcion: mov.descripcion || "Sin descripción" };
+                   }
+                   stockConsolidado[cod].cantidad += parseFloat(mov.cantidad || 0);
+                   if (mov.descripcion && mov.descripcion.trim() !== "" && stockConsolidado[cod].descripcion === "Sin descripción") {
+                       stockConsolidado[cod].descripcion = mov.descripcion;
+                   }
+               });
 
-           const allCodes = new Set([...Object.keys(stockConsolidado), ...Object.keys(pcoData)]);
-           products = Array.from(allCodes).map(cod => {
-               let desc = (stockConsolidado[cod] ? stockConsolidado[cod].descripcion : "Sin descripción") || "Sin descripción";
-               
-               let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
-               let pcoQty = pcoData[cod] || 0;
-               
-               let pavQty = Math.max(0, erpTotal - pcoQty);
-               
-               return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
-           }).filter(p => isValidCode(p.codigo));
-       }
-    }
-  } catch (err) {}
+               const allCodes = new Set([...Object.keys(stockConsolidado), ...Object.keys(pcoData)]);
+               products = Array.from(allCodes).map(cod => {
+                   let desc = (stockConsolidado[cod] ? stockConsolidado[cod].descripcion : "Sin descripción") || "Sin descripción";
+                   
+                   let erpTotal = stockConsolidado[cod] ? stockConsolidado[cod].cantidad : 0;
+                   let pcoQty = pcoData[cod] || 0;
+                   
+                   let pavQty = Math.max(0, erpTotal - pcoQty);
+                   
+                   return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
+               }).filter(p => isValidCode(p.codigo));
+           }
+        } else {
+           document.getElementById('loaderText').textContent = "Esperando sincronización del bot..."; 
+        }
+    } catch(e) { console.warn("ERP local no encontrado."); }
+
+  } catch (err) { console.error("Error general de lectura:", err); }
 }
 
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
@@ -1724,6 +1728,7 @@ function updateGridDOM(append) {
     const pcoQty = p.cantidadPCO || 0;
     const totalQty = pavQty + pcoQty;
     
+    // REGLA DE "CATÁLOGO LIMPIO" RECUPERADA
     if (bodegaVal === 'pav') {
         if (currentStockFilter === 'with' && pavQty === 0) return false;
         if (currentStockFilter === 'without' && pavQty > 0) return false;
@@ -1828,7 +1833,7 @@ function updateGridDOM(append) {
         <div class="card-code">${p.codigo}</div>
         <div class="card-desc" title="Haz clic para copiar" data-desc="${cleanDesc}" onclick="if(window.matchMedia('(hover: hover) and (pointer: fine)').matches) { event.stopPropagation(); copiarTexto(this); }">${p.descripcion || "Sin descripción"}</div>
         
-        <div class="stock-pills-wrap">
+        <div class="stock-pills-wrap" style="flex-wrap: wrap;">
             <span class="stock-pill">PAV: <strong>${pavQty}</strong></span>
             <span class="stock-pill">PCO: <strong>${pcoQty}</strong></span>
             ${statusPill}
