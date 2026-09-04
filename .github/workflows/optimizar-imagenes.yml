@@ -1,0 +1,32 @@
+name: Optimizar Imágenes
+
+# Este bloque le dice al bot que solo trabaje cuando subas fotos a estas dos carpetas
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'img/**'
+      - 'img_sin_fondo/**'
+
+jobs:
+  optimizar:
+    name: Comprimir JPG y PNG
+    runs-on: ubuntu-latest
+    
+    # Permisos para que el bot pueda hacer commit de las fotos nuevas
+    permissions:
+      contents: write
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Ejecutar compresor Calibre
+        uses: calibreapp/image-actions@main
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          # Configuración para proteger la transparencia del PNG y la calidad
+          pngQuantSpeed: 4
+          jpegQuality: 80
+          compressOnly: true
