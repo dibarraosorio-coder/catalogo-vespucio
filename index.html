@@ -980,9 +980,9 @@
             <button class="modal-close" onclick="closeChangelogModal()" title="Cerrar">✕</button>
             <h2 class="modal-desc-large" style="margin-bottom: 24px;">Últimas Mejoras</h2>
             <ul class="changelog-list">
-                <li><strong>Sincronización Inteligente:</strong> El catálogo ahora cuenta con una arquitectura de sincronización sin conexión que descarga el inventario localmente, haciendo la plataforma a prueba de caídas y ultrarrápida.</li>
                 <li><strong>Catálogo Limpio Activo:</strong> Los productos sin stock en ambas bodegas se ocultan por defecto para mantener el catálogo limpio. Puedes verlos seleccionando "Stock: Sin Stock".</li>
                 <li><strong>Múltiples Paletas de Color:</strong> Hemos añadido nuevas paletas en tonos pastel sumadas a los clásicos Día y Noche.</li>
+                <li><strong>Búsqueda Precisa:</strong> El buscador ahora exige exactitud por palabras completas, evitando que te sugiera productos no relacionados.</li>
             </ul>
         </div>
     </div>
@@ -1000,6 +1000,7 @@ function safeRemoveLocal(key) { try { localStorage.removeItem(key); } catch(e) {
 function safeGetSession(key) { try { return sessionStorage.getItem(key); } catch(e) { return null; } }
 function safeSetSession(key, val) { try { sessionStorage.setItem(key, val); } catch(e) {} }
 
+const URL_POWER_AUTOMATE = "https://defaultc9de65b0590045e8967debc553f353.81.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a652c02764724cdc81b3868ca8ad5df0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I3jYEqWHJW0it2AsocfVtb-4pLtR--_brJvTdCzB-cA"; 
 const EXCLUDED_CODES = ["COF0067", "COF0060", "COF0058", "COF0046", "COF0040", "COF0034", "COF0008", "ANF0292", "ANF0291", "ANF0290"];
 
 let products = []; let EXTRA_DATA = {};
@@ -1154,6 +1155,7 @@ function stopVoiceSearch() {
 // BÚSQUEDA EXACTA POR PALABRAS COMPLETAS
 function isExactMatch(text, query) {
     const qWords = query.trim().split(/\s+/);
+    // Cada palabra ingresada debe estar contenida exactamente en alguna parte de la descripción o código
     return qWords.every(qw => text.includes(qw));
 }
 
@@ -1470,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   setupCustomDropdowns();
   
-  // SINCRONIZACIÓN DE ALTO RENDIMIENTO (LEE DEL REPOSITORIO LOCAL)
+  // SINCRONIZACIÓN ORIGINAL REPARADA (CONEXIÓN DIRECTA EN VIVO)
   await sincronizarERP();
   
   renderLastUpdated(); 
@@ -1578,17 +1580,17 @@ window.clearFilters = function() {
 function isValidCode(code) { return code ? String(code).toUpperCase().match(/^(ANF|COF|REL|PUL)/) !== null : false; }
 
 // ==========================================
-// NUEVA SINCRONIZACIÓN DE ALTO RENDIMIENTO
-// Lee directamente de los archivos alojados en GitHub (data/)
+// CONEXIÓN DIRECTA RESTAURADA
+// Usa los enlaces 2PACX blindados de Google Sheets y la API directa de Power Automate
 // ==========================================
 async function sincronizarERP() {
-  const timestamp = new Date().getTime(); 
-  
+  if (!URL_POWER_AUTOMATE || URL_POWER_AUTOMATE === "") { document.getElementById('loaderText').textContent = "Modo Demo"; return; }
   try {
     let pcoData = {};
     
+    // 1. Conexión Directa a Bodega PCO (Google Sheets Público 2PACX)
     try {
-        let pcoRes = await fetch(`data/pco.csv?v=${timestamp}`);
+        let pcoRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?output=csv");
         if (pcoRes.ok) {
             const text = await pcoRes.text();
             const rows = text.split(/\r?\n/);
@@ -1607,10 +1609,11 @@ async function sincronizarERP() {
                 }
             });
         }
-    } catch(e) { console.warn("PCO local no encontrado."); }
+    } catch(e) { console.error("Error PCO:", e); }
 
+    // 2. Conexión Directa a Planes y Valores (Google Sheets Público 2PACX)
     try {
-      const valRes = await fetch(`data/extra.csv?v=${timestamp}`);
+      const valRes = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRvOH3xHFkBQ-BzvfRUi5rdXDT9pZOlgUXgvPFEpnyxphL5d282gGaEwm1_HggiW3iumBmhFTdEVQcr/pub?gid=1192465732&single=true&output=csv");
       if (valRes.ok) {
         const text = await valRes.text();
         const rows = text.split(/\r?\n/); 
@@ -1632,10 +1635,11 @@ async function sincronizarERP() {
           }
         });
       }
-    } catch(e) { console.warn("Valores extra locales no encontrados."); }
+    } catch(e) { console.error("Error Extra:", e); }
 
+    // 3. Conexión Directa a ERP (Power Automate)
     try {
-        const response = await fetch(`data/erp.json?v=${timestamp}`);
+        const response = await fetch(URL_POWER_AUTOMATE);
         if (response.ok) {
            const datosERP = await response.json();
            if(Array.isArray(datosERP) && datosERP.length > 0) {
@@ -1660,12 +1664,10 @@ async function sincronizarERP() {
                    return { codigo: cod, descripcion: desc, cantidad: pavQty, cantidadPCO: pcoQty };
                }).filter(p => isValidCode(p.codigo));
            }
-        } else {
-           document.getElementById('loaderText').textContent = "Esperando sincronización del bot..."; 
         }
-    } catch(e) { console.warn("ERP local no encontrado."); }
+    } catch(e) { console.error("Error ERP:", e); }
 
-  } catch (err) { console.error("Error general de lectura:", err); }
+  } catch (err) { console.error("Error general:", err); }
 }
 
 const normalizeStr = (s) => s ? String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : '';
